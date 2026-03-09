@@ -1,6 +1,6 @@
-# Jules: A Claude Code Operating System
+# Jules: A Claude Code Reference Implementation
 
-A reference implementation of a personal AI operating system built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). This repo documents the architecture, patterns, and configuration that turns Claude Code from a coding assistant into a full strategic collaborator.
+A reference implementation of a personal AI collaborator built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). This repo documents the architecture, patterns, and configuration that turns Claude Code from a coding assistant into a full strategic collaborator.
 
 **Built in 28 days. 539 commits. 30 custom skills. 23 behavioral rules. 9 automation hooks. 5 specialized subagents. ~34,600 lines of configuration and automation.**
 
