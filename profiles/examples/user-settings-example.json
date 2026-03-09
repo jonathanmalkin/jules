@@ -1,0 +1,24 @@
+{
+  "_comment": "User-level settings (~/.claude/settings.json). These apply across ALL projects.",
+  "permissions": {
+    "allow": [
+      "Edit(/Users/you/projects/**)",
+      "Write(/Users/you/projects/**)",
+      "WebSearch",
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(make:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(curl * | sh)",
+      "Bash(curl * | bash)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -f *)"
+    ]
+  },
+  "effortLevel": "medium"
+}
