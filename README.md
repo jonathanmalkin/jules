@@ -2,13 +2,85 @@
 
 A reference implementation of a personal AI collaborator built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). This repo documents the architecture, patterns, and configuration that turns Claude Code from a coding assistant into a full strategic collaborator.
 
-**Built in 28 days. 539 commits. 30 custom skills. 23 behavioral rules. 9 automation hooks. 5 specialized subagents. ~34,600 lines of configuration and automation.**
+**Built in 28 days. 35 skills. 24 rules. 9 hooks. 8 agents. 6 standing orders.**
 
 ## What This Is
 
 This is a real system, not a tutorial. It runs a solo founder's entire operation: morning briefings, content pipeline, product analytics, engagement scanning, deployment automation, and strategic decision-making. The AI agent has a defined personality, decision authority framework, and knows when to act autonomously versus when to ask.
 
 This repo contains sanitized versions of the actual configuration files, with personal details replaced by framework templates. The best way to use it: **give Claude Code the URL and ask it to analyze your setup against these patterns.** It'll tell you what's worth adopting and what to skip. See [Getting Started](#getting-started) for the prompt.
+
+## Workflow
+
+Every interaction follows this pipeline. Messy voice input goes in, shipped results come out.
+
+```
+┌───────────────────────────────────────────┐
+│  🎙️ Voice · 🔍 Intent · 📋 Classify      │
+│       Quick · Debug · Advisory · Scope    │
+└────────────────────┬──────────────────────┘
+                     │
+         ┌───────────┴───────────┐
+         ▼                       ▼
+┌─────────────────┐   ┌─────────────────┐
+│  💡 Advisory     │   │  🏗️ Code         │
+│                  │   │                  │
+│  Steelman        │   │  Plan · Review   │
+│  Pre-mortem      │   │  Build · Test    │
+│  Reversibility   │   │                  │
+│  Bias scan       │   │                  │
+│       │          │   │       │          │
+│       ▼          │   │       ▼          │
+│  ✅ Execute      │   │  🚀 Ship         │
+│ Approve / Reject │   │ Dev / Staging    │
+│     / Discuss    │   │   / Production   │
+└────────┬─────────┘   └────────┬─────────┘
+         │                      │
+         └──────────┬───────────┘
+                    ▼
+      ┌──────────────────────────┐
+      │  🔄 Wrap-up               │
+      │  Session report           │
+      │  Memory updates · Commit  │
+      │  Self-improvement retro   │
+      └──────────────────────────┘
+```
+
+## A Day with Jules
+
+The system runs autonomously around the clock, not just during active sessions.
+
+| Time | What Happens |
+|------|-------------|
+| **5:00 AM** | Quiz analytics report generated and emailed |
+| **7:00 AM** | Morning briefing synthesized (analytics, blockers, content, decisions) |
+| **Session** | Active collaboration: building, debugging, content, strategy |
+| **1:00 PM** | Afternoon scan: quiz health, blockers, content pipeline, git status |
+| **Wrap-up** | Session report, memory updates, commit, self-improvement retro |
+
+## Architecture
+
+Five layers, bottom to top. Identity is the foundation. Products are the output.
+
+### 🟣 Identity
+**Jules · Jonathan · Business**
+Voice, decision authority, directives, values, goals. Three persistent profiles loaded into every session.
+
+### 🔵 Operational State
+**Terrain · Memory · Briefings · Decision Queue**
+Live state that persists across sessions and context window compactions. The agent always knows where things stand.
+
+### 🟤 Infrastructure
+**9 Hooks · Deploy Pipeline · Scheduled Jobs · Monitoring**
+Deterministic layer. Bash scripts that execute the same way every time. Safety guards, output compression, deployment gates.
+
+### 🟠 Automation
+**35 Skills · 24 Rules · 8 Agents · 6 Standing Orders**
+Probabilistic layer. The agent's capabilities: advisory, debugging, content, deploys, growth audits, engagement scanning.
+
+### 🟢 Products
+**Quiz App · Discord Bot · Website · Community · Content Pipeline**
+What the system actually produces. Real users, real data, real feedback loops.
 
 ## Getting Started
 
@@ -51,15 +123,15 @@ If you prefer to browse and borrow directly:
 
 Start small. The system grew to 30 skills and 23 rules over 28 days of daily use. Don't try to build the whole thing on day one.
 
-## Architecture
+## Directory Structure
 
 ```
 .claude/
   settings.json        # Hook wiring, permissions, env vars (the glue)
-  skills/              # 30 custom skill definitions
-  rules/               # 23 behavioral rules
+  skills/              # 35 custom skill definitions
+  rules/               # 24 behavioral rules
   hooks/               # 9 automation hooks
-  agents/              # 5 specialized subagent definitions
+  agents/              # 8 specialized subagent definitions
 
 profiles/              # Agent and user profile templates + examples
 Documents/
@@ -110,7 +182,7 @@ The most architecturally interesting piece. Every action falls into exactly one 
 
 ## What's Included
 
-### Skills (30)
+### Skills (35)
 
 | Skill | What It Does |
 |-------|-------------|
@@ -147,7 +219,7 @@ The most architecturally interesting piece. Every action falls into exactly one 
 
 **Also available (not included):** 4 Anthropic built-in skills (`docx`, `pptx`, `xlsx`, `pdf`) ship with Claude Code's skill system. 4 plugins (`simplify`, `claude-api`, `claude-code-setup`, `skill-creator`) are available via Claude Code's plugin system.
 
-### Rules (23)
+### Rules (24)
 
 | Rule | Purpose |
 |------|---------|
