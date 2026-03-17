@@ -1,14 +1,194 @@
 # Jules: A Claude Code Reference Implementation
 
-A reference implementation of a personal AI collaborator built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). This repo documents the architecture, patterns, and configuration that turns Claude Code from a coding assistant into a full strategic collaborator.
+A reference implementation of a personal AI collaborator built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). This repo documents the architecture, patterns, and configuration that turns Claude Code from a coding assistant into a full strategic collaborator with autonomous scheduled operations.
 
-**Built in 28 days. 35 skills. 24 rules. 9 hooks. 8 agents. 6 standing orders.**
+**20 skills. 17 rules. 12 hooks. 5 agents. Container infrastructure. 7 scheduled jobs. Slack daemon.**
+
+> **v2.0** adds the container infrastructure, scheduled automation pipeline, Slack daemon, and architecture documentation that were in production but missing from v1.
+
+## What's New in v2
+
+v2 adds the layers that make the system autonomous:
+
+- **Container infrastructure** (`.claude/container/`): Docker setup for the always-on automation sidecar
+- **Scheduled automation** (`.claude/scripts/`): Daily retro, morning orchestrator, auth health checks, Slack daemon
+- **Architecture documentation** (`docs/architecture.md`): Written overview of the hybrid architecture, credential flow, and job pipeline
+- **Evolved skills/rules/hooks**: Slimmer, more focused set reflecting 6+ weeks of production use (35 skills → 20, 24 rules → 17, 9 hooks → 12, 5 agents)
+- **System diagram**: Mermaid diagram showing the full hybrid architecture
+
+See [Version History](#version-history) for what changed.
 
 ## What This Is
 
-This is a real system, not a tutorial. It runs a solo founder's entire operation: morning briefings, content pipeline, product analytics, engagement scanning, deployment automation, and strategic decision-making. The AI agent has a defined personality, decision authority framework, and knows when to act autonomously versus when to ask.
+This is a real system, not a tutorial. It runs a solo founder's entire operation: morning briefings, content pipeline, engagement scanning, deployment automation, and strategic decision-making. The AI agent has a defined personality, decision authority framework, and knows when to act autonomously versus when to ask.
 
 This repo contains sanitized versions of the actual configuration files, with personal details replaced by framework templates. The best way to use it: **give Claude Code the URL and ask it to analyze your setup against these patterns.** It'll tell you what's worth adopting and what to skip. See [Getting Started](#getting-started) for the prompt.
+
+## System Overview
+
+```mermaid
+graph TB
+    subgraph Mac["Mac (Interactive Development)"]
+        CLI["Claude Code CLI"]
+        VSCode["VS Code"]
+        Skills["Skills / Rules / Hooks"]
+    end
+
+    subgraph VPS["VPS Container (Automation Sidecar)"]
+        Cron["Cron Jobs"]
+        Slack["Slack Daemon"]
+        MCP["MCP Servers"]
+
+        Cron --> Retro["3 AM: Daily Retro"]
+        Cron --> Morning["5 AM: Morning Orchestrator"]
+        Cron --> Auth["2:45 AM: Auth Refresh"]
+        Cron --> Afternoon["4 PM: Afternoon Scan"]
+        Cron --> News["Hourly: News Monitor"]
+    end
+
+    subgraph GitHub["GitHub"]
+        Repo["Active Workspace Repo"]
+        Memory["Shared Memory<br/>(.claude-memory/)"]
+    end
+
+    subgraph Services["External Services"]
+        OP["1Password<br/>(Secret Injection)"]
+        SlackAPI["Slack API<br/>(Socket Mode)"]
+        Claude["Claude API"]
+    end
+
+    CLI -->|"git push"| Repo
+    Cron -->|"git pull (1 min)"| Repo
+    Repo -->|"git pull"| CLI
+
+    Memory -.->|"symlinked"| CLI
+    Memory -.->|"symlinked"| Cron
+
+    OP -->|"op inject at startup"| VPS
+    SlackAPI <-->|"Socket Mode"| Slack
+    CLI -->|"claude -p"| Claude
+    Cron -->|"claude -p"| Claude
+    Slack -->|"claude -p"| Claude
+
+    Phone["📱 Phone"] -->|"Slack message"| SlackAPI
+```
+
+## A Day with Jules
+
+The system runs autonomously around the clock, not just during active sessions.
+
+| Time | What Happens |
+|------|-------------|
+| **Every 1 min** | Container pulls latest code from GitHub |
+| **2:45 AM** | Auth health check (validates token before jobs run) |
+| **3:00 AM** | Daily retro: parallel agents analyze yesterday's session issues |
+| **5:00 AM** | Morning orchestrator: memory synthesis, briefing generation |
+| **8 AM-10 PM** | News feed monitor: polls AI reading feeds hourly |
+| **Session** | Active collaboration: building, debugging, content, strategy |
+| **4:00 PM** | Afternoon scan: context refresh, engagement check |
+| **Wrap-up** | Session report, memory updates, commit, self-improvement retro |
+| **Anytime** | Slack message from phone → Slack daemon → `claude -p` dispatch |
+
+## Architecture
+
+Six layers, bottom to top. Identity is the foundation. Automation is what makes it autonomous.
+
+### Layer 1: Identity
+`Profiles/` — Agent personality, user context, business identity, goals. Loaded into every session.
+
+### Layer 2: Operational State
+`Terrain.md`, `Briefing.md`, `Documents/` — Live working state. What's happening now, next, and waiting.
+
+### Layer 3: Configuration
+`.claude/settings.json`, `.claude/rules/`, `.claude/skills/`, `.claude/agents/` — Behavioral layer. How the agent works.
+
+### Layer 4: Infrastructure
+`.claude/hooks/`, `.claude/container/` — Deterministic layer. Safety guards, Docker setup, entrypoints. Executes the same way every time.
+
+### Layer 5: Automation
+`.claude/scripts/` — Scheduled jobs, Slack daemon, background agents. The always-on layer.
+
+### Layer 6: Products
+`Code/` — The applications being built. Everything above exists to make this layer ship faster.
+
+For a detailed walkthrough: [`docs/architecture.md`](docs/architecture.md)
+
+## Container Infrastructure
+
+The container is a Debian-based Docker image that runs as an always-on sidecar to your Mac development environment.
+
+**What's inside:**
+- Claude Code CLI, Node.js 22, Python 3, git, ripgrep, SSH server
+- 1Password CLI for secret injection at startup
+- tini as PID 1 (zombie process reaping — critical for `claude -p` workloads)
+- Supervisor loop that restarts crashed daemons and hot-reloads on code changes
+
+**Key files:**
+
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Multi-stage build: system deps, Node, Python, SSH, Claude CLI, 1Password |
+| `docker-compose.yml` | Service definition: ports, volumes, resource limits, security options |
+| `docker-entrypoint-root.sh` | Root stage: starts sshd + cron, drops to claude user |
+| `entrypoint.sh` | User stage: 8 phases from secret injection to supervisor loop |
+| `.env.template` | 1Password vault references (resolved at startup, never real values) |
+| `crontab` | Job schedule with secret sourcing pattern |
+
+**Setup:** See the [Getting Started](#getting-started) section. Container setup is optional — the skills, rules, hooks, and agent definitions work without it.
+
+## Scheduled Automation
+
+Six scripts that show distinct architectural patterns:
+
+| Script | Lines | Pattern |
+|--------|-------|---------|
+| `daily-retro.sh` | ~540 | Parallel `claude -p` agents + per-issue synthesis + signal file output |
+| `morning-orchestrator.sh` | ~200 (excerpt) | Multi-phase orchestrator with parallel dispatch and phase coordination |
+| `auth-refresh.sh` | ~90 | Proactive auth health monitoring with Slack alerting |
+| `git-auto-pull.sh` | ~60 | Fast-forward pull with divergence detection |
+| `slack-daemon/index.js` | ~850 | Socket Mode Slack → complexity heuristic → `claude -p` dispatch |
+
+The daily retro is the flagship: it parses session issues into individual files, runs analysis agents in parallel (each iterating at its own pace), synthesizes per-issue, and assembles a report. The morning orchestrator reads the retro's signal file and incorporates it into the daily briefing.
+
+## Getting Started
+
+The fastest way to learn from this repo is to point Claude Code at it and ask for recommendations tailored to your project.
+
+### The One-Prompt Approach
+
+Open Claude Code in your project directory and paste this:
+
+```
+Analyze my current Claude Code setup (CLAUDE.md, .claude/ directory, and codebase) and
+compare it against the reference implementation at https://github.com/jonathanmalkin/jules.
+
+1. Read my existing configuration and understand my project, workflow, and goals.
+2. Fetch and study the Jules repo README, CLAUDE.md, profiles/, .claude/rules/,
+   .claude/hooks/, .claude/skills/, .claude/agents/, .claude/container/,
+   .claude/scripts/, and docs/architecture.md to understand the patterns.
+3. Identify the highest-impact improvements I could make, prioritized by:
+   - What I'm missing entirely (e.g., no safety hooks, no decision framework)
+   - What I have but could strengthen (e.g., thin CLAUDE.md, no agent personality)
+   - What's in Jules that doesn't apply to my situation (skip these)
+4. Give me a concrete, prioritized action plan. Start with 2-3 changes I can make today.
+
+Don't try to replicate the whole system. Tell me what would actually help MY setup.
+```
+
+### Manual Setup
+
+If you prefer to browse and borrow directly:
+
+1. Fork this repo
+2. Copy the `.claude/` directory structure into your project
+3. Edit `CLAUDE.md` with your agent's identity and your working style
+4. Fill in the profile templates in `profiles/`
+5. Start with 2-3 skills and expand based on what you actually need
+6. Add rules as patterns emerge across sessions
+7. Add hooks for safety and automation only when the probabilistic version isn't reliable enough
+8. **Optional:** Set up the container for scheduled automation (`.claude/container/`)
+
+Start small. The system grew organically over weeks of daily use. Don't try to build the whole thing on day one.
 
 ## Workflow
 
@@ -46,92 +226,20 @@ Every interaction follows this pipeline. Messy voice input goes in, shipped resu
       └──────────────────────────┘
 ```
 
-## A Day with Jules
-
-The system runs autonomously around the clock, not just during active sessions.
-
-| Time | What Happens |
-|------|-------------|
-| **5:00 AM** | Quiz analytics report generated and emailed |
-| **7:00 AM** | Morning briefing synthesized (analytics, blockers, content, decisions) |
-| **Session** | Active collaboration: building, debugging, content, strategy |
-| **1:00 PM** | Afternoon scan: quiz health, blockers, content pipeline, git status |
-| **Wrap-up** | Session report, memory updates, commit, self-improvement retro |
-
-## Architecture
-
-Five layers, bottom to top. Identity is the foundation. Products are the output.
-
-### 🟣 Identity
-**Jules · Jonathan · Business**
-Voice, decision authority, directives, values, goals. Three persistent profiles loaded into every session.
-
-### 🔵 Operational State
-**Terrain · Memory · Briefings · Decision Queue**
-Live state that persists across sessions and context window compactions. The agent always knows where things stand.
-
-### 🟤 Infrastructure
-**9 Hooks · Deploy Pipeline · Scheduled Jobs · Monitoring**
-Deterministic layer. Bash scripts that execute the same way every time. Safety guards, output compression, deployment gates.
-
-### 🟠 Automation
-**35 Skills · 24 Rules · 8 Agents · 6 Standing Orders**
-Probabilistic layer. The agent's capabilities: advisory, debugging, content, deploys, growth audits, engagement scanning.
-
-### 🟢 Products
-**Quiz App · Discord Bot · Website · Community · Content Pipeline**
-What the system actually produces. Real users, real data, real feedback loops.
-
-## Getting Started
-
-The fastest way to learn from this repo is to point Claude Code at it and ask for recommendations tailored to your project.
-
-### The One-Prompt Approach
-
-Open Claude Code in your project directory and paste this:
-
-```
-Analyze my current Claude Code setup (CLAUDE.md, .claude/ directory, and codebase) and
-compare it against the reference implementation at https://github.com/jonathanmalkin/jules.
-
-1. Read my existing configuration and understand my project, workflow, and goals.
-2. Fetch and study the Jules repo README, CLAUDE.md, profiles/, .claude/rules/,
-   .claude/hooks/, .claude/skills/, and .claude/agents/ to understand the patterns
-   and architecture.
-3. Identify the highest-impact improvements I could make, prioritized by:
-   - What I'm missing entirely (e.g., no safety hooks, no decision framework)
-   - What I have but could strengthen (e.g., thin CLAUDE.md, no agent personality)
-   - What's in Jules that doesn't apply to my situation (skip these)
-4. Give me a concrete, prioritized action plan. Start with 2-3 changes I can make today.
-
-Don't try to replicate the whole system. Tell me what would actually help MY setup.
-```
-
-This works because Claude Code can fetch the repo, read your local config, and bridge the gap with specific recommendations.
-
-### Manual Setup
-
-If you prefer to browse and borrow directly:
-
-1. Fork this repo
-2. Copy the `.claude/` directory structure into your project
-3. Edit `CLAUDE.md` with your agent's identity and your working style
-4. Fill in the profile templates in `profiles/`
-5. Start with 2-3 skills and expand based on what you actually need
-6. Add rules as patterns emerge across sessions
-7. Add hooks for safety and automation only when the probabilistic version isn't reliable enough
-
-Start small. The system grew to 30 skills and 23 rules over 28 days of daily use. Don't try to build the whole thing on day one.
-
 ## Directory Structure
 
 ```
 .claude/
-  settings.json        # Hook wiring, permissions, env vars (the glue)
-  skills/              # 35 custom skill definitions
-  rules/               # 24 behavioral rules
-  hooks/               # 9 automation hooks
-  agents/              # 8 specialized subagent definitions
+  settings.json        # Hook wiring, permissions, env vars, effort level
+  container/           # Docker infrastructure (Dockerfile, compose, entrypoint, crontab)
+  scripts/             # Scheduled automation (retro, orchestrator, Slack daemon)
+  skills/              # 20 custom skill definitions
+  rules/               # 17 behavioral rules
+  hooks/               # 12 automation hooks
+  agents/              # 5 specialized subagent definitions
+
+docs/
+  architecture.md      # Detailed architecture overview
 
 profiles/              # Agent and user profile templates + examples
 Documents/
@@ -140,127 +248,74 @@ Documents/
   Field-Notes/         # Session retros, decision log, briefing archives
 CLAUDE.md              # The master configuration (always-loaded context)
 Terrain.md             # Operational state template
-Briefing.md            # Daily briefing template (generated by good-morning skill)
+Briefing.md            # Daily briefing template (generated by morning orchestrator)
 ```
-
-The `.claude/` directory mirrors the exact structure Claude Code expects. Copy it into your project and the hooks, skills, rules, and agents work immediately.
-
-A user-level settings example (`profiles/examples/user-settings-example.json`) shows permission patterns and deny rules for `~/.claude/settings.json`, which applies across all your projects.
-
-### How It Fits Together
-
-**CLAUDE.md** is the foundation. ~500 lines loaded into every session. It defines who the agent is, how it makes decisions, what it can do autonomously, and where the boundaries are. Think of it as the agent's constitution.
-
-**Skills** are structured markdown files that define reusable capabilities. Each skill has a description (for triggering), instructions, and optionally supporting scripts. When you say `/wrap-up`, the agent loads the wrap-up skill and follows its playbook.
-
-**Rules** fire on specific patterns. They're behavioral modifiers: "when you see X, do Y." Token efficiency, code intelligence preferences, safety constraints, editing conventions.
-
-**Hooks** are shell scripts that run before or after tool calls. Pre-commit validation, bash command safety guards, output compression, clipboard handling. These are deterministic -- they execute the same way every time, unlike probabilistic skill instructions.
-
-**Agents** are specialized subagent definitions with constrained tool access and specific models. A security reviewer that audits code changes. A content drafter that writes in a calibrated voice. A code reviewer that provides external perspective.
-
-**Profiles** define the agent's identity and the user's context. The agent profile covers personality, voice, decision authority, and operational behaviors. The user profile provides values, goals, communication style, and failure modes the agent should watch for.
-
-### The Decision Authority Framework
-
-The most architecturally interesting piece. Every action falls into exactly one of two modes:
-
-**Just Do It** -- Agent decides autonomously. All four criteria must be true:
-1. Two-way door (easily reversible)
-2. Within approved direction
-3. No external impact
-4. No emotional weight
-
-**Ask First** -- Agent presents a Decision Card. Any single criterion triggers this:
-1. One-way door
-2. Involves money, legal, or external communication
-3. User-facing changes
-4. New strategic direction
-5. Agent is genuinely unsure
-
-**Standing Orders** bridge the gap: pre-approved recurring autonomous actions with explicit bounds and conflict overrides. "Deploy to production after tests pass" is a standing order. "Deploy a new feature for the first time" triggers Ask First regardless.
 
 ## What's Included
 
-### Skills (35)
+### Skills (20)
 
 | Skill | What It Does |
 |-------|-------------|
-| `advisory` | Thinking partner for decisions, strategy, and research. Steelmans alternatives, runs pre-mortems, checks for cognitive bias. |
-| `afternoon` | Afternoon operational scan. Pulls analytics, checks blockers, synthesizes mid-day status. |
-| `agent-browser` | Browser automation library. Authentication, session management, form filling, video recording, snapshot-based navigation. |
-| `catchup` | Reload essential context after `/clear`. Reads operational state, memory, and recent changes. |
-| `check-updates` | Display the latest Claude Code change monitor report. Tracks upstream changes. |
-| `content-marketing` | Content pipeline domain knowledge. Brand voice, content tracks, platform formatting, workflow modes, quality standards. |
+| `advisory` | Thinking partner for decisions, strategy, and research. Steelmans alternatives, runs pre-mortems. |
+| `agent-browser` | Browser automation library. Authentication, session management, form filling, navigation. |
+| `check-updates` | Display the latest Claude Code change monitor report. |
+| `content-marketing` | Content pipeline domain knowledge. Brand voice, content tracks, platform formatting. |
 | `copy-for` | Format text for a target platform (Discord, Reddit, LinkedIn, X) and copy to clipboard. |
-| `deploy-app` | Validate locally, deploy to staging, smoke test, and (with approval) deploy to production. Full deployment pipeline. |
-| `engage` | Scan Reddit, LinkedIn, and X for engagement opportunities. Draft response angles. |
+| `diagram` | Generate and iterate on Mermaid diagrams with live preview. |
 | `executing-plans` | Execute a written implementation plan with human review between batches. |
 | `generate-image-openai` | Generate images using OpenAI/DALL-E models via MCP server. |
-| `good-morning` | Autonomous morning briefing. Pulls analytics, scans operational state, synthesizes priorities. |
-| `growth-audit` | Structured growth analysis. Funnel metrics, bottleneck identification, RICE scoring, experiment design. |
+| `good-morning` | Autonomous morning briefing. Synthesizes analytics, blockers, content, decisions. |
+| `long-form-publish` | Multi-platform content publishing for long-form articles. |
 | `post-article` | Post a queued article to Reddit and X. Cross-platform publishing flow. |
-| `preview-report` | Generate and preview a daily analytics report email. |
-| `reply-scout` | Scan Reddit and X for questions matching FAQ patterns. Draft replies, queue for approval. |
-| `report-latest` | Pull latest analytics from production and report changes since last sync. |
-| `retro-deep` | Deep retrospective. Forensic analysis of the current session -- issues, compliance gaps, patterns. Auto-applies fixes. |
-| `review-plan` | Auto-tiered review for plans and architecture decisions. Classifies (Light/Standard/Deep) and runs proportional review. |
-| `scope` | Scope and design implementation work before building. Explores requirements, challenges assumptions, produces validated designs. |
-| `scout-techniques` | Scout for Claude Code technical insights. Searches Reddit, GitHub, HN for patterns worth adopting. |
-| `smoke-test` | Browser-based smoke test against staging or production. Phased test methodology with automation scripts. |
-| `subagent-driven-development` | Fast autonomous plan execution. Dispatch fresh subagents per task with two-stage review (spec + code quality). |
-| `system-health` | System health diagnostic. Checks syntax, cross-references, freshness, deprecation candidates, configuration consistency. |
-| `systematic-debugging` | Structured debugging methodology. Hypothesize, test, narrow. Prevents shotgun debugging. |
-| `test-local-dev` | Test your app UI in the local development environment. Dev server startup, fast-forward, flow navigation. |
-| `test-prod` | Smoke test or verify the app on staging or production. Full user flow verification. |
-| `user-testing` | Persona-driven UX evaluation. Dispatches review groups covering 8 evaluation lenses. Returns structured problem/fix list. |
-| `wrap-up` | End-of-session checklist. Commits, memory updates, operational state, session reports. Feeds the learning pipeline. |
-| `writing-plans` | Design implementation plans for multi-step coding tasks. File-level change specs, dependency ordering, risk identification. |
+| `retro-deep` | Deep retrospective. Forensic analysis of session issues. Auto-applies fixes. |
+| `review-plan` | Auto-tiered review for plans and architecture decisions. |
+| `scope` | Scope and design implementation work before building. |
+| `scout` | Scout for Claude Code technical insights and engagement opportunities. |
+| `skill-creator` | Meta-skill for creating new skills with proper conventions. |
+| `subagent-driven-development` | Fast autonomous plan execution with two-stage review. |
+| `systematic-debugging` | Structured debugging methodology. Hypothesize, test, narrow. |
+| `user-testing` | Persona-driven UX evaluation with 8 evaluation lenses. |
+| `wrap-up` | End-of-session checklist. Commits, memory, state, session reports. |
 
-**Also available (not included):** 4 Anthropic built-in skills (`docx`, `pptx`, `xlsx`, `pdf`) ship with Claude Code's skill system. 4 plugins (`simplify`, `claude-api`, `claude-code-setup`, `skill-creator`) are available via Claude Code's plugin system.
+**Also available:** Writing-plans, executing-plans, scout-techniques, system-health, and more. Plus Anthropic's built-in skills (docx, pptx, xlsx, pdf) and plugins (skill-creator, LSP servers).
 
-### Rules (24)
+### Rules (17)
 
 | Rule | Purpose |
 |------|---------|
-| `1password` | 1Password CLI integration patterns and vault reference conventions |
-| `bash-prohibited-commands` | Document which commands are blocked by safety hooks and their substitutes |
-| `browser-testing` | Conventions for browser-based testing (viewports, screenshots, selectors) |
-| `business-principles` | Business operating principles that inform agent decision-making |
+| `bash-prohibited-commands` | Commands blocked by safety hooks and their substitutes |
 | `claude-cli-scripting` | Patterns for scripting Claude Code in CI, hooks, and automation |
-| `code-intelligence` | Prefer LSP over grep for code navigation |
-| `decision-gates` | Approval gates for irreversible or high-impact actions |
+| `credential-lookup` | Deterministic credential resolution order (env vars → 1Password) |
+| `cron-status` | How to check container cron jobs, logs, and daemon health |
+| `docker-container` | Container rebuild rules, auth patterns, crash-loop recovery |
 | `dotfiles` | Conventions for managing dotfiles and shell configuration |
 | `editing-claude-config` | Safe patterns for editing Claude Code configuration files |
-| `hosting-provider` | Server-specific conventions (SSH, file paths, deployment targets) |
+| `env-vars-config` | Environment variable reference (active, evaluated, architecture) |
 | `intent-extraction` | Parse messy voice-dictated input correctly |
+| `investigation-budget` | Stop investigating when you can present options |
 | `mcp-servers` | MCP server management conventions |
-| `plan-execution` | Pre-check before implementing plans (prevent redundant work) |
 | `plan-review-docs` | Standards for plan documents (structure, completeness, review) |
 | `proactive-research` | Research instead of deflecting ("check the docs") |
-| `production-deploys` | Production deployment safety conventions |
-| `read-efficiency` | Grep before reading large files, delegate research to subagents |
-| `skills` | Conventions for writing and maintaining skill definitions |
-| `social-posting-automation` | Automation patterns for social media posting |
+| `research-phase` | Auto-dispatch research agents before skills |
 | `terrain-editing` | Conventions for updating operational state |
 | `token-efficiency` | Compress bash output, select appropriate models for subagents |
-| `wordpress-elementor` | WordPress/Elementor-specific editing patterns |
-| `x-browser-posting` | Browser-based posting automation for X (Twitter) |
 
-### Hooks (9)
-
-Hooks are shell scripts, but they're dead code without wiring. The included `.claude/settings.json` connects each hook to its trigger event. Without that file, none of these fire.
+### Hooks (12)
 
 | Hook | Trigger | What It Does |
 |------|---------|-------------|
-| `bash-safety-guard.sh` | PreToolUse: Bash | Blocks dangerous commands (rm, sudo, force-push, pipe-to-shell) |
+| `bash-safety-guard.sh` | PreToolUse: Bash, Read | Blocks dangerous commands (rm, sudo, force-push, credentials, pipe-to-shell) |
 | `bash-compress-hook.sh` | PreToolUse: Bash | Compresses verbose output (npm, git, docker) to save context |
 | `pre-commit-verify.sh` | PreToolUse: Bash | Validates commits have proper messages and staged files |
-| `clipboard-validate.sh` | PostToolUse: Bash | Validates and auto-copies generated content to clipboard |
+| `clipboard-validate.sh` | PostToolUse: Bash, Write, Edit | Validates and auto-copies generated content to clipboard |
 | `pre-compact-save.sh` | PreCompact | Saves context before automatic compaction |
 | `notify-input.sh` | Notification | Plays a sound when the agent needs user input |
 | `cloud-bootstrap.sh` | SessionStart | Bootstraps environment for cloud/remote sessions |
-| `plan-review-enforcer.sh` | PostToolUse: Write\|Edit | Enforces plan review before implementation changes |
+| `inject-datetime.sh` | UserPromptSubmit | Injects current date/time into every prompt |
+| `inject-environment.sh` | SessionStart | Injects environment context (Mac vs container) |
+| `slack-log-hook.sh` | PostToolUse: all | Logs tool calls to Slack for mobile monitoring |
+| `plan-review-enforcer.sh` | PostToolUse: Write, Edit | Enforces plan review before implementation changes |
 | `plan-review-gate.sh` | PreToolUse: ExitPlanMode | Gates execution on plan approval status |
 
 ### Agents (5)
@@ -268,63 +323,31 @@ Hooks are shell scripts, but they're dead code without wiring. The included `.cl
 | Agent | Model | Purpose |
 |-------|-------|---------|
 | `security-reviewer` | Sonnet | Reviews code changes for vulnerabilities, data leakage, privacy violations |
-| `content-marketing-draft` | Sonnet | Creative writing with voice calibration. Drafts, adapts, maintains consistency. |
-| `content-marketing` | Haiku | Read-only content tasks. Backlog, inventory, calendar, monitoring. Cost-efficient. |
-| `codex-review` | Haiku | External code review via OpenAI Codex CLI. Template -- update model names for your Codex version. |
-| `app-tester` | Sonnet | Automated test suite runner. Knows the full testing matrix and selects the right subset. |
-
-### Profiles
-
-| File | Type | Description |
-|------|------|-------------|
-| `profiles/agent-profile.md` | Template | Agent identity: personality, voice, directives, autonomy rules |
-| `profiles/user-profile.md` | Template | User context: values, goals, communication style, failure modes |
-| `profiles/business-identity.md` | Template | Business identity: entity, products, audience, brand, operating principles |
-| `profiles/goals.md` | Template | Goal framework: 4 pillars (Purpose, People, Profit, Health), quarterly cadence |
-| `profiles/examples/agent-profile-example.md` | Example | "Ember" the owl -- shows the framework with a completely different personality |
-| `profiles/examples/user-profile-example.md` | Example | Alex Chen -- solo game dev toolmaker, shows realistic user profile |
-| `profiles/examples/business-identity-example.md` | Example | Pixel Forge Studios -- AI tools for indie game devs |
-| `profiles/examples/goals-example.md` | Example | Quarterly goals across all 4 pillars with realistic progress tracking |
-| `profiles/examples/user-settings-example.json` | Example | User-level `~/.claude/settings.json` with permission patterns and deny rules |
-
-### Documents
-
-Several skills read from and write to a `Documents/` directory. Template files are included so skills work on first run.
-
-| File | Used By | Purpose |
-|------|---------|---------|
-| `Content-Pipeline/Content-Queue.md` | content-marketing, engage, post-article | Priority-ordered posting queue |
-| `Content-Pipeline/Content-Ideas.md` | content-marketing | Scored ideas backlog |
-| `Content-Pipeline/Published-URLs.md` | engage, reply-scout, post-article | Published article URLs for linking in replies |
-| `Engagement/reply-queue.md` | reply-scout | Pending drafted replies awaiting approval |
-| `Engagement/feedback.md` | engage, reply-scout | Quality preferences and scoring calibration |
-| `Field-Notes/Decision-Log.md` | decision-gates rule, wrap-up | Full rationale for significant decisions |
-
-Skills also write to these directories (created with `.gitkeep`):
-
-| Directory | Written By | Purpose |
-|-----------|-----------|---------|
-| `Content-Pipeline/01-Drafts/Seeds/` | good-morning, agent (content flagging) | Content seed ideas captured during sessions |
-| `Content-Pipeline/03-Pending-Human-Review/` | content-marketing | Articles awaiting editorial review |
-| `Content-Pipeline/05-Published/` | post-article | Published article archive |
-| `Field-Notes/Logs/` | wrap-up | Session reports |
-| `Field-Notes/CC-Intelligence/` | scout-techniques | Claude Code intelligence reports |
+| `explore` | Haiku | Fast read-only codebase exploration with pre-computed index |
+| `codex-review` | Haiku | External code review via OpenAI Codex CLI |
+| `app-tester` | Sonnet | Automated test suite runner. Knows the full testing matrix. |
+| `content-marketing` | Haiku | Read-only content tasks. Backlog, inventory, calendar, monitoring. |
 
 ## Key Design Decisions
 
-**Identity persistence over memory.** Memory is lossy. Context windows reset. The CLAUDE.md hierarchy solves this by loading ~500 lines of identity, decision rules, and behavioral patterns into every session. The agent doesn't need to remember who it is -- it's told every time.
+**Identity persistence over memory.** Memory is lossy. Context windows reset. The CLAUDE.md hierarchy loads identity, decision rules, and behavioral patterns into every session. The agent doesn't need to remember who it is — it's told every time.
 
-**Deterministic over probabilistic.** When a pattern works, codify it into a script, not guidance. Skills and rules are probabilistic (the LLM might follow them). Hooks and scripts are deterministic (they execute the same way every time). Push behavior toward determinism whenever possible.
+**Deterministic over probabilistic.** When a pattern works, codify it into a script. Skills and rules are probabilistic (the LLM might follow them). Hooks and scripts are deterministic (they execute the same way every time). Push behavior toward determinism whenever possible.
 
-**Configuration as codebase.** The `.claude/` directory is version-controlled, reviewed, and iterated on like any codebase. 539 commits in 28 days. The configuration IS the product.
+**Hybrid architecture.** Mac for interactive development, container for always-on automation. Memory synced via git. Neither environment is complete alone — together they form a 24/7 system.
+
+**Signal files for job coordination.** The daily retro and morning orchestrator communicate via signal files rather than direct invocation. Either can run independently, retry without affecting the other, and the orchestrator gracefully handles a missing or failed retro.
 
 **Explicit autonomy boundaries.** No ambiguity about what the agent can do on its own. The "Just Do It / Ask First" framework with standing orders eliminates the gray zone that makes autonomous agents unreliable.
 
 **Minimal engineering.** Leverage Claude Code's built-in features (plan mode, auto memory, skills, rules) before building custom infrastructure. Don't build what a config option handles.
 
-## Philosophy
+## Version History
 
-The right amount of complexity is the minimum needed for the current task. Three similar lines of code is better than a premature abstraction. A bash script that runs is better than a skill document the LLM might follow. Revenue is a signal, not a goal. Ship, see what happens, adjust.
+| Version | Date | What Changed |
+|---------|------|-------------|
+| [v2.0](https://github.com/jonathanmalkin/jules/releases/tag/v2.0) | Mar 2026 | Container infrastructure, scheduled automation, Slack daemon, architecture docs, evolved skills/rules/hooks |
+| [v1.0](https://github.com/jonathanmalkin/jules/releases/tag/v1.0) | Mar 2026 | Initial release: skills, rules, hooks, agents, profile templates |
 
 ## Acknowledgments
 
