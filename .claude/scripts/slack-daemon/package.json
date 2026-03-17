@@ -1,0 +1,13 @@
+{
+  "name": "agent-slack-daemon",
+  "version": "1.0.0",
+  "description": "Real-time Slack daemon — Socket Mode inbound messaging to claude -p dispatch",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.1.0",
+    "dotenv": "^16.4.0"
+  }
+}
