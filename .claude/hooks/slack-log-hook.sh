@@ -19,7 +19,7 @@ fi
 
 # ── Load credentials ───────────────────────────────────────────
 
-ENV_FILE="$HOME/.env.jules"
+ENV_FILE="$HOME/.env.local"
 if [ -f "$ENV_FILE" ]; then
     # shellcheck source=/dev/null
     source "$ENV_FILE"
