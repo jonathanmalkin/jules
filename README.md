@@ -27,50 +27,44 @@ This repo contains sanitized versions of the actual configuration files, with pe
 ## System Overview
 
 ```mermaid
-graph TB
-    subgraph Mac["Mac (Interactive Development)"]
+graph LR
+    subgraph Mac["🖥️ Mac (Interactive Dev)"]
         CLI["Claude Code CLI"]
-        VSCode["VS Code"]
-        Skills["Skills / Rules / Hooks"]
+        VS["VS Code"]
+        Config["Skills / Rules / Hooks"]
     end
 
-    subgraph VPS["VPS Container (Automation Sidecar)"]
-        Cron["Cron Jobs"]
-        Slack["Slack Daemon"]
-        MCP["MCP Servers"]
-
-        Cron --> Retro["3 AM: Daily Retro"]
-        Cron --> Morning["5 AM: Morning Orchestrator"]
-        Cron --> Auth["2:45 AM: Auth Refresh"]
-        Cron --> Afternoon["4 PM: Afternoon Scan"]
-        Cron --> News["Hourly: News Monitor"]
+    subgraph GH["GitHub"]
+        Repo["Workspace Repo"]
+        Mem["Shared Memory"]
     end
 
-    subgraph GitHub["GitHub"]
-        Repo["Active Workspace Repo"]
-        Memory["Shared Memory<br/>(.claude-memory/)"]
+    subgraph Container["📦 VPS Container (Automation)"]
+        Auth["2:45 AM Auth"]
+        Retro["3 AM Retro"]
+        Orch["5 AM Orchestrator"]
+        Scan["4 PM Scan"]
+        SlackD["Slack Daemon"]
+        MCPs["MCP Servers"]
     end
 
-    subgraph Services["External Services"]
-        OP["1Password<br/>(Secret Injection)"]
-        SlackAPI["Slack API<br/>(Socket Mode)"]
+    subgraph Ext["External Services"]
+        OP["1Password"]
+        SlackAPI["Slack API"]
         Claude["Claude API"]
     end
 
-    CLI -->|"git push"| Repo
-    Cron -->|"git pull (1 min)"| Repo
-    Repo -->|"git pull"| CLI
+    Phone["📱 Phone"]
 
-    Memory -.->|"symlinked"| CLI
-    Memory -.->|"symlinked"| Cron
-
-    OP -->|"op inject at startup"| VPS
-    SlackAPI <-->|"Socket Mode"| Slack
-    CLI -->|"claude -p"| Claude
-    Cron -->|"claude -p"| Claude
-    Slack -->|"claude -p"| Claude
-
-    Phone["📱 Phone"] -->|"Slack message"| SlackAPI
+    CLI -- git push --> Repo
+    Repo -- git pull 1m --> Container
+    Mem -. symlinked .-> Mac
+    Mem -. symlinked .-> Container
+    OP -- op inject --> Container
+    SlackAPI <-- Socket Mode --> SlackD
+    CLI -- claude -p --> Claude
+    Container -- claude -p --> Claude
+    Phone -- Slack msg --> SlackAPI
 ```
 
 ## A Day with Jules
