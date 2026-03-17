@@ -1,0 +1,58 @@
+# Agent Dev Container — docker compose up -d
+#
+# Full development environment: SSH, cron (scheduled jobs), Slack daemon, Claude CLI.
+# SSH in from any device for interactive sessions.
+# Autonomous jobs run via cron inside the container.
+#
+# Auth: SSH in, run 'claude login' once. Token persists in claude-config volume.
+#
+# File access: Mounts workspace via bind mount.
+# SSH: deploy keys only — personal keys stay off the container.
+
+services:
+  agent:
+    build: .
+    container_name: your-agent-dev
+    env_file:
+      - ~/.env/.op-token                     # OP_SERVICE_ACCOUNT_TOKEN for 1Password CLI
+    hostname: your-agent
+    ports:
+      - "127.0.0.1:2222:22"                  # SSH — loopback only (not exposed to network)
+      - "127.0.0.1:8001:8000"                # App dev server — loopback only
+      - "127.0.0.1:8080:8080"                # Vite/HMR dev server — loopback only
+    volumes:
+      # Persist Claude auth + state across container rebuilds
+      - claude-config:/home/claude/.claude
+      # Persist VS Code Server (extensions, settings) across rebuilds
+      - vscode-server:/home/claude/.vscode-server
+      # The workspace — full bind mount
+      - ../../:/home/claude/workspace
+      # Deploy keys only — personal keys stay off the container
+      # Replace with your actual deploy key filenames
+      - ~/.ssh/id_ed25519_your_agent:/home/claude/.ssh/id_ed25519_your_agent:ro
+      - ~/.ssh/id_ed25519_your_agent.pub:/home/claude/.ssh/id_ed25519_your_agent.pub:ro
+      - ~/.ssh/id_ed25519_your_repo:/home/claude/.ssh/id_ed25519_your_repo:ro
+      - ~/.ssh/id_ed25519_your_repo.pub:/home/claude/.ssh/id_ed25519_your_repo.pub:ro
+      - ~/.ssh/authorized_keys:/home/claude/.ssh/authorized_keys:ro
+      - ~/.ssh/known_hosts:/home/claude/.ssh/known_hosts:ro
+    security_opt:
+      - no-new-privileges:true               # Prevents privilege escalation inside container
+    environment:
+      - TZ=America/Chicago                    # Container timezone (adjust to yours)
+      # OP_SERVICE_ACCOUNT_TOKEN loaded via env_file above (not committed to repo)
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4g                          # Adjust based on your VPS/machine
+          cpus: '2.0'
+          pids: 400                           # Prevents fork bombs
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+volumes:
+  claude-config:
+  vscode-server:
