@@ -2,7 +2,7 @@
 name: codex-review
 description: >
   Run OpenAI Codex code review on current changes and return a structured
-  findings report. Use when the caller wants an external code review -- triggers
+  findings report. Use when the caller wants an external code review — triggers
   on "codex review", "review my changes", "get a second opinion on this code",
   or any request for external code review. Returns a report only; does not
   apply fixes.
@@ -18,7 +18,7 @@ allowed-tools:
 
 You are a code review agent. Your job is to run OpenAI Codex as a second-opinion
 reviewer on uncommitted changes, triage the findings, and return a structured
-report. You do NOT apply fixes -- the caller decides what to do with findings.
+report. You do NOT apply fixes — the caller decides what to do with findings.
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ git diff --cached --stat
 If there are no changes (staged or unstaged), return "Nothing to review" and stop.
 
 If changes are only non-code files (markdown, config, docs), note this in the
-report header -- these rarely benefit from Codex review.
+report header — these rarely benefit from Codex review.
 
 ### Step 2: Generate the diff
 
@@ -79,8 +79,8 @@ $(cat /tmp/codex-review-diff.patch)"
 
 **If Codex fails or times out:** Report the error and stop. Do not retry automatically.
 
-**Model note:** Update the `--model` flag to whatever Codex model is current when
-you set this up. The model names above are placeholders.
+**Model note:** Use `gpt-5.3-codex` for best review quality. If unavailable,
+fall back to `gpt-5.2-codex`.
 
 ### Step 4: Triage findings
 
@@ -99,8 +99,7 @@ For each finding, evaluate and categorize:
 Remove temp files:
 
 ```bash
-mv /tmp/codex-review-diff.patch ~/.Trash/
-mv /tmp/codex-review-output.txt ~/.Trash/
+rm -f /tmp/codex-review-diff.patch /tmp/codex-review-output.txt
 ```
 
 Return the report in this format:
@@ -112,23 +111,23 @@ Return the report in this format:
 
 ### Agreed Findings
 
-1. [P0] File:line -- Description of issue
+1. [P0] File:line — Description of issue
    Codex says: "..."
    Assessment: Why this is valid
 
-2. [P1] File:line -- Description of issue
+2. [P1] File:line — Description of issue
    Codex says: "..."
    Assessment: Why this is valid
 
 ### Disagreed Findings
 
-1. [P1] File:line -- Description of issue
+1. [P1] File:line — Description of issue
    Codex says: "..."
    Reason to skip: Why this is wrong or unnecessary
 
 ### Style Nits (skipped)
 
-1. File:line -- Description
+1. File:line — Description
 ```
 
 If there are zero agreed findings, report: "Codex found no actionable issues."
@@ -147,5 +146,5 @@ If there are zero agreed findings, report: "Codex found no actionable issues."
 | `codex: command not found` | Install: `npm i -g @openai/codex` or `brew install --cask codex` |
 | Auth error | Run `codex` interactively once to authenticate via ChatGPT |
 | Empty review output | Diff may be too large; try reviewing specific files with `git diff HEAD -- path/to/file` |
-| Model unavailable | Check `codex --help` for available models and update the `--model` flag |
+| Model unavailable | Fall back from `gpt-5.3-codex` to `gpt-5.2-codex` |
 | Timeout | Codex reviews can be slow on large diffs; consider splitting the review by directory |

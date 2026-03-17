@@ -3,8 +3,6 @@ name: scope
 description: "Scope and design implementation work before building. Explores requirements, challenges assumptions, identifies risks, and produces a validated design. Chains to writing-plans after design approval. Triggers on 'add a feature', 'build', 'implement', 'create a component', 'refactor', 'scope this', 'scope this out', or any request to build/change software. Do NOT use for decisions, strategy, or advisory — use /advisory for those. Do NOT use for bugs/test failures — use /systematic-debugging for those."
 ---
 
-*Adapted from [Superpowers](https://github.com/obra/superpowers) by Jesse Vincent. Heavily customized.*
-
 # Scope: From Idea to Validated Design
 
 ## Overview
@@ -26,21 +24,34 @@ Every project goes through this process. A todo list, a single-function utility,
 
 ## Step 0: Brain Dump Parsing
 
-Parse voice-dictated or stream-of-consciousness input. Summarize back and confirm before proceeding.
+Follow the `intent-extraction` rule for parsing voice-dictated input. Summarize back and confirm before proceeding.
 
 ## Step 1: Local Context Search
 
-Before asking questions or doing web research, search the workspace for relevant context:
+Before asking questions or doing web research, search [Your Name]'s workspace for relevant context:
 
 | Topic Signal | Where to Search |
 |-------------|----------------|
-| Existing project/feature | `~/your-workspace/Code/{project}/` |
+| Existing project/feature | `~/workspace/Code/{project}/` |
 | Past research/plans | `~/.claude/plans/`, documents with "Research" or "Plan" in name |
-| Past decisions | `documents/decision-log.md` |
-| Current priorities | `Terrain.md` |
+| Past decisions | `~/workspace/Documents/Field-Notes/Decision-Log.md` |
+| Current priorities | `~/workspace/Terrain.md` |
 
-**Always read**: Today's briefing (`Briefing.md`) for synthesized priorities. If no briefing exists for today, or if this isn't the first session of the day, read `Terrain.md` directly instead.
-**Always check**: `documents/decision-log.md` (has this been decided before?)
+### Domain Detection
+
+Detect the domain from the request to load relevant context:
+
+| Path Pattern | Domain | Extra Context to Load |
+|-------------|--------|----------------------|
+| `.claude/`, `Scripts/`, `container/`, infrastructure keywords | **Jules Infrastructure** | Full system access context. Load `.claude/rules/`, recent cron logs, container config. You have deep knowledge of the entire Jules system. |
+| `Code/`, app keywords, user-facing features | **External Product** | User-facing context. Load project CLAUDE.md, test suites, deployment config. Focus on user experience and data safety. |
+| `Content-Pipeline/`, `Documents/Content/`, content keywords | **Content** | Load content-marketing skill domain knowledge, voice profile, social strategy. |
+| `Documents/`, `Profiles/`, life/business keywords | **Business/Personal** | Load relevant profile docs. Consider routing to /advisory instead. |
+
+Apply heuristics from the request text and any file paths mentioned. When ambiguous, ask.
+
+**Always read**: Today's briefing (`~/workspace/Briefing.md`) for synthesized priorities. If no briefing exists for today, or if this isn't the first session of the day, read `~/workspace/Terrain.md` directly instead.
+**Always check**: `~/workspace/Documents/Field-Notes/Decision-Log.md` (has this been decided before?)
 
 Launch parallel Explore subagents (on Haiku for speed/cost) for local and web searches when both are needed.
 
@@ -88,7 +99,7 @@ digraph implementation {
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke any other implementation skill. The ONLY skill you invoke after scope is writing-plans.
+**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after scope is writing-plans.
 
 ### Implementation Process Details
 
@@ -109,7 +120,7 @@ digraph implementation {
 - Cover: architecture, components, data flow, error handling, testing
 
 **Reviewing and improving the design (MANDATORY — do not skip):**
-Before presenting the design to the user, run a self-review using four lenses:
+Before presenting the design to the user, run a self-review using the four lenses from review-plan:
 1. **Failure post-mortem** — What would make this design fail?
 2. **Over-engineering post-mortem** — What's unnecessary complexity?
 3. **Unstated assumptions** — What are we taking for granted?

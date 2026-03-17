@@ -1,5 +1,5 @@
 #!/bin/bash
-# pre-commit-verify.sh -- PreToolUse hook for Bash commands
+# pre-commit-verify.sh — PreToolUse hook for Bash commands
 # When a git commit is about to run, injects additionalContext reminding
 # Claude to verify before committing (tests, diff review, clean workspace).
 # Also reminds about /wrap-up once per session (learning pipeline entry point).
@@ -33,7 +33,7 @@ if echo "$COMMAND" | grep -qE '\bgit\b.*\bcommit\b'; then
 
   if ! $WRAPUP_REMINDED; then
     touch "$WRAPUP_TRACK"
-    WRAPUP_MSG="WRAP-UP REMINDER: This session has commits. Remember to /wrap-up before ending -- it feeds the learning pipeline (session reports, memory updates, terrain, morning briefing)."
+    WRAPUP_MSG="WRAP-UP REMINDER: This session has commits. Remember to /wrap-up before ending — it feeds the learning pipeline (session reports, memory updates, terrain, morning briefing)."
     if [ -n "$MSG" ]; then
       MSG="$MSG | $WRAPUP_MSG"
     else
@@ -43,6 +43,7 @@ if echo "$COMMAND" | grep -qE '\bgit\b.*\bcommit\b'; then
 
   # Emit combined advisory if there's anything to say
   if [ -n "$MSG" ]; then
+    # Use jq to safely encode the message as JSON string
     printf '%s' "$MSG" | jq -Rs '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:.}}'
   fi
 fi

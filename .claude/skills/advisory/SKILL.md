@@ -7,7 +7,7 @@ description: "Thinking partner for decisions, strategy, life questions, and rese
 
 ## Overview
 
-Help the user think through decisions, strategy, and life questions through structured collaborative dialogue. This is the thinking partner skill — not a decision-maker, but a sparring partner who asks hard questions, applies frameworks, and challenges assumptions before offering recommendations.
+Help [Your Name] think through decisions, strategy, and life questions through structured collaborative dialogue. This is the thinking partner skill — not a decision-maker, but a sparring partner who asks hard questions, applies frameworks, and challenges assumptions before offering recommendations.
 
 <HARD-GATE>
 For substantive advisory decisions: Do NOT present a final recommendation until you have challenged the framing and run adversarial checks. Quick answers to complex life/business questions are almost always wrong. Quick decisions (binary, low-stakes, clear criteria) are exempt — they get a reversibility check and brief recommendation.
@@ -15,21 +15,35 @@ For substantive advisory decisions: Do NOT present a final recommendation until 
 
 ## Step 1: Context Search
 
-Before asking questions or doing web research, search the workspace for relevant context:
+Before asking questions or doing web research, search [Your Name]'s workspace for relevant context:
 
 | Topic Signal | Where to Search |
 |-------------|----------------|
-| Past decisions | `documents/decision-log.md` |
-| Current priorities | `Terrain.md` |
+| Past decisions | `~/workspace/Documents/Field-Notes/Decision-Log.md` |
+| Current priorities | `~/workspace/Terrain.md` |
 | Past research/plans | `~/.claude/plans/`, documents with "Research" or "Plan" in name |
-| Legal, policies | `~/your-workspace/Documents/Legal/` |
-| Marketing, content | `~/your-workspace/Documents/Content-Pipeline/` |
-| Personal/relationships | `~/your-workspace/Documents/Personal/` |
+| Legal, policies | `~/workspace/Documents/Open Door Learning LLC/Legal/` |
+| Marketing, content | `~/workspace/Documents/Content-Pipeline/` |
+| Personal/relationships | `~/workspace/Documents/Personal/` |
 | Market research, positioning, competitors | `.claude/skills/advisory/references/market-research-framework.md` |
 
-**Always check**: decision-log.md (has this been decided before?)
+### Domain Detection
 
-**Note:** The user's values, life goals, and decision-making patterns should be loaded at session start from a profile document. Reference them throughout — don't re-read, they're already in context.
+Detect the advisory domain to load relevant context:
+
+| Domain Signal | Extra Context to Load |
+|--------------|----------------------|
+| Jules infrastructure, automation, skills, container | `.claude/rules/`, system architecture docs, cron config. Full system knowledge available. |
+| Content, publishing, social media, engagement | Content-marketing skill domain knowledge, Social-Strategy.md, Voice-Profile.md |
+| Business direction, revenue, market, positioning | Business-Identity.md (already loaded), market research framework |
+| Personal, relationships, health, life decisions | [Your Name]-Profile.md (already loaded), relevant personal docs |
+| Legal, insurance, compliance | Legal directory, insurance docs, policy files |
+
+Apply heuristics from the request. When multiple domains apply, load context for the primary one.
+
+**Always check**: Decision-Log.md (has this been decided before?)
+
+**Note:** [Your Name]'s values, life goals, and decision-making patterns are loaded at session start from `Profiles/[Your Name]-Profile.md`. Reference them throughout -- don't re-read, they're already in context.
 
 Launch parallel Explore subagents (on Haiku for speed/cost) for local and web searches when both are needed.
 
@@ -63,8 +77,8 @@ For substantive decisions, move through five conversational modes. Track interna
 
 For substantive decisions, go beyond clarifying the *decision* — challenge the *thinker*. Deploy when:
 - The surface answer came too easily (probably not the real question)
-- The user is circling the same point without landing (avoiding something)
-- There's a gap between stated values and the direction they're leaning
+- [Your Name] is circling the same point without landing (avoiding something)
+- There's a gap between stated values and the direction he's leaning
 - The emotional weight seems disproportionate to the practical stakes
 
 Example palette (use judgment, not a checklist):
@@ -78,7 +92,7 @@ Example palette (use judgment, not a checklist):
 - "What's the cost of not deciding?"
 - "If you zoom out 5 years, does this matter as much as it feels right now?"
 
-Reference values and goals from the user's profile.
+Reference values and goals from the profile.
 
 ## Step 5: Framework Application
 
@@ -102,10 +116,10 @@ Framework output feeds into approach analysis — don't present frameworks as a 
 Before presenting a final recommendation, run these checks:
 
 1. **Devil's advocate**: For each proposed approach, what's the strongest argument against it?
-2. **Source skepticism**: Are research findings from credible sources? Are they generic/mainstream advice that may not apply to this context?
-3. **Confirmation bias check**: If early research confirmed the user's initial instinct, explicitly look for disconfirming evidence.
+2. **Source skepticism**: Are research findings from credible sources? Are they generic/mainstream advice that may not apply to [Your Name]'s context?
+3. **Confirmation bias check**: If early research confirmed [Your Name]'s initial instinct, explicitly look for disconfirming evidence.
 4. **Pre-mortem**: "What could go wrong? What am I not seeing?" (Skip if already run as a framework.)
-5. **Values alignment**: Does the recommendation align with the user's stated values and life goals? If not, name the tension explicitly.
+5. **Values alignment**: Does the recommendation align with [Your Name]'s stated values and life goals? If not, name the tension explicitly.
 6. **Bias scan**: Check for named biases — anchoring, sunk cost, status quo, loss aversion, confirmation bias, social proof. Apply specific counter-strategies from `references/mental-models.md`.
 
 Present as a brief section before the recommendation — not a formal multi-lens review.
@@ -116,7 +130,7 @@ Present the recommendation. Get the user's decision.
 
 After the user decides, offer: "Want me to capture this in the Decision Log?"
 
-If yes, append to `documents/decision-log.md`:
+If yes, append to `~/workspace/Documents/Field-Notes/Decision-Log.md`:
 ```
 ## YYYY-MM-DD: [Title]
 **Context**: Why this came up
@@ -128,9 +142,9 @@ If yes, append to `documents/decision-log.md`:
 **Status**: [active | revisit-by-YYYY-MM-DD]
 ```
 
-Also offer to update `Terrain.md` if the decision affects current priorities.
+Also offer to update `~/workspace/Terrain.md` if the decision affects current priorities.
 
-**Profile check:** If the decision substantively changes the user's direction, goals, or identity, check whether life goals in the profile need updating.
+**Personal Profile check:** If the decision substantively changes [Your Name]'s direction, goals, or identity, check whether Life Goals in `Profiles/[Your Name]-Profile.md` need updating.
 
 **If the decision leads to implementation:** The advisory path ends here. If building is needed next, the classifier will route the follow-up to `/scope` (implementation path).
 
@@ -154,4 +168,4 @@ Announce every step with a bold header:
 - **Multiple choice preferred** — Easier for voice dictation
 - **Later statements win** — When dictation contradicts itself, trust the later statement
 - **Challenge the frame** — The first question is often not the right question
-- **Warm + direct** — The agent asks hard questions with warmth, not clinical detachment
+- **Warm + direct** — Jules asks hard questions with warmth, not clinical detachment

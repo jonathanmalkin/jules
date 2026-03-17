@@ -1,6 +1,6 @@
 # Mental Models Reference
 
-Select 1-2 models per decision based on relevance. Not a checklist -- pick what fits.
+Select 1-2 models per decision based on relevance. Not a checklist — pick what fits.
 
 ---
 
@@ -17,12 +17,12 @@ Select 1-2 models per decision based on relevance. Not a checklist -- pick what 
 **Counter-strategy:** Defeats argument from authority and analogy-based reasoning.
 
 ### Second-Order Thinking
-**What:** "And then what?" -- chase consequences 3-4 levels deep. First-order effects are obvious; second and third order effects are where surprises live.
+**What:** "And then what?" — chase consequences 3-4 levels deep. First-order effects are obvious; second and third order effects are where surprises live.
 **When:** Decisions with ripple effects. Policy changes. Community dynamics.
 **Counter-strategy:** Prevents short-term optimization that creates long-term problems.
 
 ### Map vs. Territory
-**What:** The model of reality is not reality. Plans, research, and frameworks are maps -- they simplify and distort.
+**What:** The model of reality is not reality. Plans, research, and frameworks are maps — they simplify and distort.
 **When:** Over-relying on research. Analysis paralysis. "The data says..." as a substitute for judgment.
 **Counter-strategy:** Keep testing against reality. Ship and see what actually happens.
 
@@ -31,7 +31,7 @@ Select 1-2 models per decision based on relevance. Not a checklist -- pick what 
 ## Economics
 
 ### Opportunity Cost
-**What:** Every choice has a hidden cost -- what you gave up by not choosing the alternative. Time spent on X is time NOT spent on Y.
+**What:** Every choice has a hidden cost — what you gave up by not choosing the alternative. Time spent on X is time NOT spent on Y.
 **When:** Resource allocation. "Should I do X or Y?" Especially when both options seem good.
 **Counter-strategy:** Forces explicit comparison instead of evaluating options in isolation.
 
@@ -60,7 +60,7 @@ Select 1-2 models per decision based on relevance. Not a checklist -- pick what 
 **Counter-strategy:** Reframe: "What's the cost of NOT changing over 12 months?" Make the status quo loss visible.
 
 ### Social Proof
-**What:** "Everyone else is doing it" feels like evidence. It isn't -- it's comfort.
+**What:** "Everyone else is doing it" feels like evidence. It isn't — it's comfort.
 **When:** Justifying a choice because others made it. Community consensus as a decision input.
 **Counter-strategy:** Ask: "Would this be the right choice if nobody else were doing it?"
 
@@ -98,7 +98,7 @@ Select 1-2 models per decision based on relevance. Not a checklist -- pick what 
 ## Strategy
 
 ### Reversibility
-**What:** Two-way doors (reversible) -> move fast, decide now. One-way doors (irreversible) -> slow down, gather more info.
+**What:** Two-way doors (reversible) → move fast, decide now. One-way doors (irreversible) → slow down, gather more info.
 **When:** Every decision. This is the first filter.
 **Counter-strategy:** Prevents both over-analysis of trivial choices and under-analysis of permanent ones.
 
@@ -113,6 +113,6 @@ Select 1-2 models per decision based on relevance. Not a checklist -- pick what 
 **Counter-strategy:** Forces concrete failure scenarios instead of vague "risks."
 
 ### Regret Minimization
-**What:** "When I'm 80, which choice will I regret more -- doing this and it failing, or never trying?"
+**What:** "When I'm 80, which choice will I regret more — doing this and it failing, or never trying?"
 **When:** Career decisions. Life direction. When fear of failure is the dominant emotion.
 **Counter-strategy:** Cuts through short-term anxiety to reveal long-term values.
