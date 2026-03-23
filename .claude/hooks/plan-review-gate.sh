@@ -24,8 +24,8 @@ PLAN_FILE=$(cat "$TRACK_FILE")
 [[ -z "$PLAN_FILE" || ! -f "$PLAN_FILE" ]] && exit 0
 
 # Content-based check: does the plan have the required Decision Brief?
-if ! grep -q '^## Decision Brief' "$PLAN_FILE"; then
-  echo "BLOCKED: Plan file '$PLAN_FILE' is missing Decision Brief. Run /review-plan on it first." >&2
+if ! grep -q '^## Reviewed' "$PLAN_FILE"; then
+  echo "BLOCKED: Plan file '$PLAN_FILE' is missing Reviewed marker. Run /review-plan on it first." >&2
   exit 2
 fi
 
