@@ -1,14 +1,16 @@
 #!/bin/bash
 # inject-environment.sh — SessionStart hook
-# Detects which environment Jules is running in and injects it as context.
-# This lets Jules make correct environment-specific decisions automatically
+# Detects which environment the agent is running in and injects it as context.
+# This lets the agent make correct environment-specific decisions automatically
 # (SSH commands, credential paths, clipboard, docker exec, etc.)
 
-# Detection order: most specific first
+# Detection order: most specific first.
+# Primary container signal: /tmp/agent-secrets.env written by entrypoint.sh on every container start.
+# SSH state file is a secondary signal (may not be present in all container sessions).
 if [ "$CLAUDE_CODE_REMOTE" = "true" ]; then
   ENV_NAME="anthropic-cloud"
   ENV_NOTES="Anthropic hosted cloud container. No persistent storage. No SSH access. No container tools. Uses CLAUDE_CODE_REMOTE=true."
-elif [ -f /tmp/ssh-state/ssh_config ]; then
+elif [ -f /tmp/agent-secrets.env ] || [ -f /tmp/ssh-state/ssh_config ]; then
   ENV_NAME="your-container"
   ENV_NOTES="your-agent-dev Docker container on VPS. Git push uses: GIT_SSH_COMMAND='ssh -F /tmp/ssh-state/ssh_config'. Credentials in /tmp/agent-secrets.env and env vars. No pbcopy. No docker exec (already inside). Daemon restarts via kill + supervisor respawn."
 elif [ "$(uname -s)" = "Darwin" ]; then
@@ -27,4 +29,6 @@ if [ -f "$TODAY_REPORT" ]; then
   HANDOFF=" Today's session report exists at $TODAY_REPORT. Read it for context from earlier sessions today."
 fi
 
-printf '{"context": "Jules is running in: %s. %s%s"}\n' "$ENV_NAME" "$ENV_NOTES" "$HANDOFF"
+cat <<HEREDOC | jq -Rs '{"context": .}'
+Agent is running in: ${ENV_NAME}. ${ENV_NOTES}${HANDOFF}
+HEREDOC

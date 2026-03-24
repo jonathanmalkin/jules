@@ -41,7 +41,7 @@ source ~/.config/x-api-creds
 
 Or use `op item get` directly with biometric:
 ```bash
-op item get "X" --vault "Dev Secrets" --fields "Consumer Key"
+op item get "X" --vault "Your-Vault" --fields "Consumer Key"
 ```
 
 ## Credential Names in the Container Env

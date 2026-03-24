@@ -20,7 +20,7 @@ WRAPPER="$(cd "$(dirname "${BASH_SOURCE[0]}")/../scripts" && pwd)/compress-wrapp
 
 # --- Simple rewrites (no wrapper needed) ---
 
-# git status (bare) -> git status --short
+# git status (bare) → git status --short
 if [[ "$COMMAND" =~ ^[[:space:]]*git[[:space:]]+status[[:space:]]*$ ]]; then
   printf '{"updatedInput":{"command":"git status --short"}}\n'
   exit 0
@@ -48,6 +48,9 @@ HANDLER=""
 # make targets
 [[ -z "$HANDLER" && "$COMMAND" =~ ^[[:space:]]*make[[:space:]]+ ]] && HANDLER="make-target"
 
+# ssh commands with potentially long output
+[[ -z "$HANDLER" && "$COMMAND" =~ ^[[:space:]]*ssh[[:space:]]+ ]] && HANDLER="ssh-command"
+
 # deploy scripts
 [[ -z "$HANDLER" && "$COMMAND" =~ deploy ]] && HANDLER="deploy-script"
 
@@ -57,5 +60,5 @@ if [[ -n "$HANDLER" ]]; then
   exit 0
 fi
 
-# No match -- allow as-is
+# No match — allow as-is
 exit 0

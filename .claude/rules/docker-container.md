@@ -14,8 +14,8 @@ These files are baked into the image at build time via `COPY` or `RUN`. Restarti
 
 ```bash
 # When git pull fails on VPS — SCP + rebuild workflow:
-scp .claude/container/entrypoint.sh your-vps:~/workspace/.claude/container/entrypoint.sh
-ssh your-vps "cd ~/workspace/.claude/container && docker compose build --no-cache && docker compose up -d"
+scp -P 2200 .claude/container/entrypoint.sh your-vps:~/workspace/.claude/container/entrypoint.sh
+ssh -p 2200 your-vps "cd ~/workspace/.claude/container && docker compose build --no-cache && docker compose up -d"
 ```
 
 **Always run `docker compose build --no-cache && docker compose up -d` when changing:**
@@ -101,6 +101,8 @@ ssh your-vps "docker exec -it --user claude your-agent-dev claude login"
 ssh your-vps "docker exec --user root your-agent-dev bash -c 'cp /root/.claude/.credentials.json /home/claude/.claude/.credentials.json && chown claude:claude /home/claude/.claude/.credentials.json'"
 ```
 
+Then verify with the auth heartbeat: `ssh your-vps "docker exec --user claude your-agent-dev claude -p 'say hi' --max-turns 1"`.
+
 ## Credential Wiring
 
 Credentials flow from 1Password into the container at startup — not at runtime.
@@ -110,12 +112,39 @@ Credentials flow from 1Password into the container at startup — not at runtime
 2. `docker-entrypoint-root.sh` starts sshd/cron as root, then drops to `claude` user via `su`
 3. `entrypoint.sh` runs `op inject` — resolves `op://Your-Vault/...` references in `.env.template` and writes real values to `/tmp/agent-secrets.env` (600 perms)
 4. `set -a; source /tmp/agent-secrets.env; set +a` — exports all secrets as env vars, inherited by all child processes (slack daemon, cron jobs, `claude -p` calls)
-5. `CLAUDE_CODE_OAUTH_TOKEN` gets special treatment: also written to `~/.claude/.credentials.json`
+5. `CLAUDE_CODE_OAUTH_TOKEN` gets special treatment: also written to `~/.claude/.credentials.json` (mode 444 — read-only)
+6. entrypoint writes `/tmp/agent-secrets.env.bak` and `/tmp/agent-credentials.json.bak` as fallbacks for `refresh-secrets.sh`'s restore path
+
+**Auth token format:** The setup-token is **opaque** (`sk-ant-oat01-*`), not a JWT. There is no `exp` claim to decode. Expiry is tracked via `token-written-date` (written by entrypoint.sh). The token has a ~1-year lifetime from creation.
+
+**Auth resilience layers:**
+1. `refresh-secrets.sh` (2:30 AM) — re-injects from 1Password, runs `op whoami` canary first
+2. `auth-refresh.sh` (hourly at :47) — validates token, classifies failures (auth vs API outage vs network), 3-attempt backoff retry
+3. `auth-check.sh` — shared library sourced by all cron jobs. Same classification logic. Writes structured log to `auth-checks.jsonl`
+4. `daily-auth-report.sh` (10:03 AM) — reads JSONL log, posts 24h pass/fail summary to #ops
+5. `weekly-health-digest.sh` (Monday 9:07 AM) — posts token age and deeper health summary
+6. `auth-failed.lock` — blocks all cron jobs when auth is **confirmed** broken (API reachable, token rejected)
+7. `api-outage.lock` — informational only. Set when Anthropic API is down. Jobs retry automatically, not blocked.
+8. Docker healthcheck (every 30s) — checks credentials.json structure and permissions
+
+**Root cause finding:** Recurring auth failures were Anthropic API outages, not token expiry. The old auth-check couldn't distinguish "API down" from "token bad." Now fixed with API reachability check (curl to api.anthropic.com — 401 = up, timeout/5xx = down). Daily retro moved from 3 AM to 8 PM to avoid the 8-9 AM UTC outage window.
 
 **Where creds live inside the container:**
-- All secrets: `/tmp/agent-secrets.env` (cache file, persists for container lifetime)
-- Claude auth: `~/.claude/.credentials.json`
+- All secrets: `/tmp/agent-secrets.env` (cache file, persists for container lifetime; wiped on restart)
+- Secret backups: `/tmp/agent-secrets.env.bak`, `/tmp/agent-credentials.json.bak` (written by entrypoint + refresh-secrets on success)
+- Claude auth: `~/.claude/.credentials.json` (mode **444** — read-only to block `claude login` overwrites)
+- Token write date: `~/.claude/job-state/token-written-date` (for 1-year expiry tracking)
 - Everything else: process environment (inherited by children)
+
+**`chattr +i` does NOT work in Docker — use `chmod 444` instead.**
+Docker containers don't have `CAP_LINUX_IMMUTABLE`. `chattr +i` exits 0 but has no effect — the file is still fully writable. We use `chmod 444` (read-only for all users) to protect `credentials.json`. Before rewriting it, scripts do `chmod 644` first. Never add `chattr` calls back — they create false confidence without actual protection.
+
+**X/Twitter credential lookup (inside container):**
+- Posting (OAuth 1.0a): `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_SECRET` — all in env
+- Searching (Bearer): `X_BEARER_TOKEN` — in env (added to `.env.template`)
+- Scripts should use `os.environ.get("X_BEARER_TOKEN")` etc. directly — no 1Password CLI needed inside the container
+
+**Mac-side scripts** (`x-post.sh`, `x-search-faq.sh`) use a different auth path: they call `op item get "X" --vault "Your-Vault"` directly with biometric unlock. Two separate vaults — "Your-Vault" (service account) and "Your-Vault" (Mac). If X creds change, update both.
 
 **No live refresh.** Creds are fetched once at startup. Adding a new 1Password item after the container is running requires a restart:
 ```bash
@@ -153,7 +182,9 @@ The rebuild bakes the patched file into the image, breaking the crash loop.
 
 ### VPS SSH Config and Deploy Keys
 
-The VPS has its own `~/.ssh/config` with host aliases mapping to repo-scoped deploy keys. Configure these for your GitHub repos.
+The VPS has its own `~/.ssh/config` with host aliases mapping to repo-scoped deploy keys. Configure host aliases to map specific SSH keys to specific GitHub repos.
+
+The `origin` remote for `~/workspace` on the VPS should use the appropriate host alias. Standard `git pull origin main` works.
 
 **If SSH auth fails on the VPS:** Check `~/.ssh/config` exists and maps the right key to the right alias. Deploy keys are repo-scoped on GitHub, so using the wrong key gives "Repository not found" (not "permission denied").
 

@@ -6,7 +6,8 @@
     "CLAUDE_CODE_ENABLE_TASKS": "1",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
     "BASH_DEFAULT_TIMEOUT_MS": "120000",
-    "BASH_MAX_TIMEOUT_MS": "600000"
+    "BASH_MAX_TIMEOUT_MS": "600000",
+    "CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS": "10000"
   },
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
@@ -126,6 +127,28 @@
           {
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-commit-verify.sh"
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/sensitive-outbound-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/x-webfetch-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*slack.*(send_message|schedule_message|create_canvas)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/sensitive-outbound-guard.sh"
           }
         ]
       },
@@ -149,6 +172,15 @@
       }
     ],
     "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/sensitive-session-tracker.sh"
+          }
+        ]
+      },
       {
         "matcher": "Write|Edit",
         "hooks": [

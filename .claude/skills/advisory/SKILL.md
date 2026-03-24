@@ -22,7 +22,7 @@ Before asking questions or doing web research, search [Your Name]'s workspace fo
 | Past decisions | `~/workspace/Documents/Field-Notes/Decision-Log.md` |
 | Current priorities | `~/workspace/Terrain.md` |
 | Past research/plans | `~/.claude/plans/`, documents with "Research" or "Plan" in name |
-| Legal, policies | `~/workspace/Documents/Open Door Learning LLC/Legal/` |
+| Legal, policies | `~/workspace/Documents/[Your Business]/Legal/` |
 | Marketing, content | `~/workspace/Documents/Content-Pipeline/` |
 | Personal/relationships | `~/workspace/Documents/Personal/` |
 | Market research, positioning, competitors | `.claude/skills/advisory/references/market-research-framework.md` |
