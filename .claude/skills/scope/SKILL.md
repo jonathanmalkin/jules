@@ -22,7 +22,11 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 
 Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
 
-## Step 0: Brain Dump Parsing
+## Step 0: Altitude Check + Brain Dump Parsing
+
+**Altitude detection (run before parsing):** If the input is at Altitude 0-2 — a life goal ("I want to be known as..."), strategic initiative ("build a product that..."), or broad aspiration — suggest switching to `/decompose` instead. Example: "This sounds like an Altitude 1 goal rather than a specific project to build — want me to run `/decompose` instead? It's better suited for goals this size."
+
+Altitude 3+ (specific project, task cluster, implementation request) → proceed with /scope.
 
 Follow the `intent-extraction` rule for parsing voice-dictated input. Summarize back and confirm before proceeding.
 
