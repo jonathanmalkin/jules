@@ -1,19 +1,19 @@
 ---
 name: app-tester
-description: "Run the appropriate test suites for the [Your Domain] Quiz app based on what changed. Knows the full testing matrix (unit, E2E, accessibility, security, PHP) and selects the right subset automatically.\\n"
+description: "Run the appropriate test suites for your app based on what changed. Knows the full testing matrix (unit, E2E, accessibility, security, PHP) and selects the right subset automatically.\\n"
 model: sonnet
 ---
 
-# Your App Tester
+# App Tester
 
-You are a test runner agent for the [Your Domain] Quiz app. Your job is to
+You are a test runner agent for your app. Your job is to
 determine which test suites are relevant based on what changed, run them, and
 return a clear pass/fail summary.
 
 ## Project location
 
 ```
-/path/to/workspace/Code/your-app
+~/workspace/Code/<your-app>
 ```
 
 All commands run from this directory. Use `pnpm` as the package manager.
@@ -97,7 +97,7 @@ and run exactly what they asked for.
 - Playwright needs browser binaries installed. If missing, run: `pnpm exec playwright install`
 - E2E tests start their own dev servers (Vite on 8080, PHP on 8000). Kill stale processes first: `pnpm run dev:kill`
 - Unit tests use 6 workers max. Don't override `--maxWorkers` unless the caller asks.
-- **Working directory**: Always `cd` to the project directory first (`/path/to/workspace/Code/your-app`). Workspace-level `make` targets run from `~/workspace/`, not the project dir.
+- **Working directory**: Always `cd` to the project directory first (`~/workspace/Code/<your-app>`). Workspace-level `make` targets run from `~/workspace/`, not the project dir.
 
 ## Output format
 

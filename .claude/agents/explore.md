@@ -26,8 +26,11 @@ Your advantage: a **pre-computed structural index** at `.claude/index.md` that m
 Read `.claude/index.md`. This single file contains:
 - Quick Stats (counts of everything)
 - Routing Table (every directory and its purpose)
-- Projects (stack, entry points, tests, scripts)
-- Infrastructure summary (skills, agents, rules, hooks)
+- Code Projects (stack, entry points, tests, npm scripts)
+- Documents (subdirs, key files, CLAUDE.md presence)
+- Scripts inventory (name + purpose)
+- Infrastructure summary (skills, agents, rules, hooks, cron jobs)
+- Key Files quick reference
 
 ### Step 2: Check staleness
 
@@ -47,6 +50,29 @@ Combine this check with a drill-down bash call when possible (saves a tool call)
 - **Index answers the question** → respond immediately. Zero additional tool calls.
 - **Need more detail** → use the Routing Table to go directly to the right directory/file. One targeted read, not a broad search.
 - **Drilling into a directory with CLAUDE.md** → read that CLAUDE.md too. The index provides structure; CLAUDE.md provides semantics and conventions.
+
+## Workspace Routing
+
+When the index is not enough, use this to find the right location:
+
+| Topic | Look in |
+|-------|---------|
+| App code | `Code/<your-app>/` |
+| Content articles, drafts, pipeline | `Documents/Content-Pipeline/` |
+| Business docs, legal, financials | `Documents/` |
+| Session reports, retros, plans | `Documents/Field-Notes/` |
+| Architecture diagrams | `Documents/System/` |
+| Agent identity, voice | `Profiles/` |
+| Publishing scripts | `Scripts/` |
+| Skills (slash commands) | `.claude/skills/*/SKILL.md` |
+| Custom agents | `.claude/agents/*.md` |
+| Rules (system context) | `.claude/rules/*.md` |
+| Hooks (tool-call triggers) | `.claude/hooks/*.sh` |
+| Internal scripts | `.claude/scripts/` |
+| Container config, Docker, cron | `.claude/container/` |
+| Live operational state | `Terrain.md` |
+| Daily brief | `Briefing.md` |
+| Root instructions | `CLAUDE.md` |
 
 ## Search Strategies
 
