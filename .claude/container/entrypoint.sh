@@ -141,6 +141,7 @@ cat > "$HOME/.claude/settings.json" << 'EOF'
   "effortLevel": "medium",
   "cleanupPeriodDays": 1095,
   "skipDangerousModePermissionPrompt": true,
+  "autoMemoryDirectory": "/home/claude/workspace/.claude-memory",
   "enabledPlugins": {
     "skill-creator@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
