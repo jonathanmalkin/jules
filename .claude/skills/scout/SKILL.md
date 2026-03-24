@@ -156,6 +156,21 @@ When `Documents/Engagement/feedback.md` contains entries like:
 **Score 0 (skip):**
 - Pricing/billing, pure ML research, "Claude vs GPT" debates, crypto/web3
 
+### Research Topic Queue Feed
+
+After scoring, check for posts that could seed a `/research` deep dive. Criteria:
+- Score 8+ on Relevance + Discussion Potential combined (i.e., both at max or near-max)
+- Post is a "how does X work" or "why does X happen" question (not a support request or complaint)
+- Topic maps to one of the three brand stories
+
+For qualifying posts, append to `Documents/Research/topic-queue.md` under `## Queue`:
+
+```
+- [Topic distilled from the post] — source: r/[subreddit] [post URL] — added: YYYY-MM-DD
+```
+
+Skip if the topic (or a very similar one) is already in the queue. This is a lightweight append, not a scoring system.
+
 ## Default Mode: Generate Report
 
 Present results inline (interactive). Format:
@@ -289,7 +304,7 @@ Update `Documents/Engagement/reply-queue.md`:
 
 Every link to a [Your Brand] property in drafted replies must include UTM parameters.
 
-Format: `https://quiz.app.example.com/?utm_source={platform}&utm_medium={type}&utm_campaign={identifier}`
+Format: `https://<your-app-domain>/?utm_source={platform}&utm_medium={type}&utm_campaign={identifier}`
 
 - `utm_source`: `reddit`, `x`
 - `utm_medium`: `comment`, `reply`, `post`

@@ -9,7 +9,7 @@ description: >
   against current config. Use when user says "scout techniques", "what are people doing with
   claude code", "reddit techniques", "cc intel", "insights report", or invokes /scout-techniques.
   Also runs daily during morning briefing. Do NOT use for engagement opportunities
-  (use /engage for that).
+  (use /scout for that).
 user_invocable: true
 ---
 
@@ -19,7 +19,7 @@ Scout multiple sources for Claude Code technical insights, compare against your 
 
 ## Important: This Is Intelligence, Not Engagement
 
-Different from `/engage`. Engage optimizes for **reply-worthiness** (what should you respond to). This optimizes for **adoptability** (what should you steal). Different scoring, different output, different value.
+Different from `/scout`. Scout optimizes for **reply-worthiness** (what should [Your Name] respond to). This optimizes for **adoptability** (what should we steal). Different scoring, different output, different value.
 
 ## Execution Flow
 
@@ -36,7 +36,7 @@ ls "$INTEL_DIR/report-$TODAY.md" 2>/dev/null && echo "TODAY_EXISTS" || echo "NO_
 
 Load the seen-posts tracker:
 ```bash
-bash ~/your-workspace/.claude/scripts/scout-seen-posts.sh list
+bash ~/workspace/.claude/scripts/scout-seen-posts.sh list
 ```
 
 ### Phase 2: Discovery
@@ -249,8 +249,24 @@ how to implement, which existing files it touches, effort estimate]
 
 Update seen-posts tracker — add each analyzed post:
 ```bash
-bash ~/your-workspace/.claude/scripts/scout-seen-posts.sh add <post_id> "<title>"
+bash ~/workspace/.claude/scripts/scout-seen-posts.sh add <post_id> "<title>"
 ```
+
+Set unread marker:
+```bash
+echo "Scout: [N] techniques found, [M] worth adopting ($(date '+%b %d'))" \
+  > "$INTEL_DIR/unread"
+```
+
+### Research Topic Queue Feed
+
+After generating the report, check "Worth Adopting" and "Could Improve" findings for content potential. If a finding reveals something worth a deep `/research` report (not just a config tweak), append to `Documents/Research/topic-queue.md`:
+
+```
+- [Topic distilled from finding] — source: scout-techniques report YYYY-MM-DD — added: YYYY-MM-DD
+```
+
+Skip if the topic is already in the queue. Most scout-techniques findings are implementation tasks, not research topics. Only append when the finding surfaces a broader question worth investigating.
 
 ### Phase 7: Evaluate /insights Report (if available)
 

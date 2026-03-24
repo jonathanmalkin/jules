@@ -33,8 +33,8 @@ Detect the advisory domain to load relevant context:
 
 | Domain Signal | Extra Context to Load |
 |--------------|----------------------|
-| Jules infrastructure, automation, skills, container | `.claude/rules/`, system architecture docs, cron config. Full system knowledge available. |
-| Content, publishing, social media, engagement | Content-marketing skill domain knowledge, Social-Strategy.md, Voice-Profile.md |
+| Agent infrastructure, automation, skills, container | `.claude/rules/`, system architecture docs, cron config. Full system knowledge available. |
+| Content, publishing, social media, engagement | Content skill domain knowledge, Social-Strategy.md, Voice-Profile.md |
 | Business direction, revenue, market, positioning | Business-Identity.md (already loaded), market research framework |
 | Personal, relationships, health, life decisions | [Your Name]-Profile.md (already loaded), relevant personal docs |
 | Legal, insurance, compliance | Legal directory, insurance docs, policy files |
@@ -47,16 +47,29 @@ Apply heuristics from the request. When multiple domains apply, load context for
 
 Launch parallel Explore subagents (on Haiku for speed/cost) for local and web searches when both are needed.
 
-## Step 2: Depth Detection
+## Step 2: Orientation Detection (silent)
+
+Before engaging, silently diagnose [Your Name]'s cognitive orientation. Do NOT announce this step.
+
+| Orientation | Signals | Intervention |
+|-------------|---------|-------------|
+| **Genuinely exploring** | Open-ended framing, "I'm not sure", multiple real options being weighed | Full advisory flow (proceed to Step 3) |
+| **GT1: Conclusion-preserving** | "I've decided X, does that make sense?", emotional investment in outcome, seeks validation not analysis | Surface assumption first: "Before we analyze, what would change your mind?" If nothing would: "You might already have your answer. Want me to stress-test it instead?" Route to Decision Audit. |
+| **GT5: Self-monitoring co-opted** | Running own devil's advocate but arriving at same conclusion, "I know I should consider X, but Y", internal checks validating rather than challenging | Introduce external testable checks, not more internal analysis: "Rather than asking if this feels right, what would have to be *demonstrably true* for this to work? Let's test that." Route to Decision Audit. |
+
+Name orientation warmly if GT1/GT5 detected. Never clinically.
+
+## Step 3: Depth Detection
 
 | Depth | Signals | What Happens |
 |-------|---------|-------------|
 | **Quick** | Binary choice, clear criteria, low stakes, "should I use X or Y?" | Reversibility check → brief analysis with 1 mental model → recommendation → offer to log. 2-3 exchanges. |
 | **Substantive** | Conflicted, emotional, strategic, identity-level, long-term implications | Full flow below: Socratic mode-switching, frameworks, adversarial review. |
+| **Decision Audit** | Decision already made, GT1/GT5 detected, "stress-test this", "find what I'm missing" | Skip Explore/Clarify. Go directly to Recipe 4 (Decision Stress Test): Null Hypothesis → Base Rate Check → Pre-Mortem → Perspective Simulation. Goal: surface what hasn't been considered, not explore from scratch. |
 
 Trust judgment, not rules. If a quick decision surfaces unexpected complexity, upgrade to substantive. Don't commit to quick just because you started there.
 
-## Step 3: Socratic Mode-Switching (Substantive Only)
+## Step 4: Socratic Mode-Switching (Substantive Only)
 
 For substantive decisions, move through five conversational modes. Track internally — don't announce every shift, but announce when it matters ("I'm going to push back on this for a minute").
 
@@ -73,7 +86,7 @@ For substantive decisions, move through five conversational modes. Track interna
 - Challenge mode requires warmth. "I'm going to push you on this because I think there's something you're not saying" is both warm and challenging.
 - One question per message. Multiple choice preferred (voice-dictation-friendly).
 
-## Step 4: Challenging Questions
+## Step 5: Challenging Questions
 
 For substantive decisions, go beyond clarifying the *decision* — challenge the *thinker*. Deploy when:
 - The surface answer came too easily (probably not the real question)
@@ -91,27 +104,33 @@ Example palette (use judgment, not a checklist):
 - "Is this actually your decision to make?"
 - "What's the cost of not deciding?"
 - "If you zoom out 5 years, does this matter as much as it feels right now?"
+- "What's the actual base rate for situations like this succeeding? Not 'this feels different.'"
+- "What evidence would disprove this direction, and have you actually looked for it?"
 
 Reference values and goals from the profile.
 
-## Step 5: Framework Application
+## Step 6: Framework Application
 
-**For ALL decisions:** Run a reversibility check first. One-way door → full analysis. Two-way door → bias toward action (aligns with "go fast, validate fast").
+**For ALL decisions:** Run a **Reversibility Check** first. One-way door → full analysis. Two-way door → bias toward action (aligns with "go fast, validate fast").
 
-**For substantive decisions:** Select 1-2 analytical frameworks based on decision type:
+**For substantive decisions**, use the Lens/Operation/Recipe taxonomy from `references/mental-models.md`:
 
-| Framework | When to Use | What It Does |
-|-----------|------------|-------------|
-| **Pre-mortem** | High-stakes decisions | "It's 1 year from now. This failed. What happened?" |
-| **Second-Order Thinking** | Decisions with ripple effects | "And then what?" chained 3-4 levels deep |
-| **Values Alignment** | Recommendation might conflict with stated values | "Does this align with who you say you want to be?" |
-| **Decision Decomposition** | Complex decisions that feel overwhelming | Separate facts from assumptions, reversible from permanent |
+1. **Lens scan:** Which Lenses reveal something non-obvious about this situation? Apply 1-2. Use Key Questions to probe.
+2. **Operation selection** based on what Lenses surfaced:
+   - Need new possibilities → Generate operations (Second-Order Thinking, Information-Revelation, Analogical Reasoning, Abductive Reasoning, Counterfactual)
+   - Need to test a position → Evaluate operations (Falsification, Pre-Mortem, Bayesian Updating, Base Rate Check, Null Hypothesis, Regret Minimization)
+   - Need to break down the problem → Deconstruct operations (First Principles, Inversion)
+   - Need to integrate competing views → Integrate operations (Dialectical Synthesis, Systems Thinking, Perspective Simulation)
+3. **Recipe check:** Does this match a known problem archetype?
+   - Stuck / solving the wrong problem → Recipe 1: Wrong-Problem Detector
+   - Suspect blind spots → Recipe 2: Blind Spot Finder
+   - Need genuinely novel approach → Recipe 3: Innovation Engine
+   - Decision made, stress-test → Recipe 4: Decision Stress Test
+   - Deep in building, check yourself → Recipe 5: Builder's Trap Check
 
-**Plus 1-2 mental models** from `references/mental-models.md` — selected by relevance, not used as a checklist.
+Framework output feeds into approach analysis. Don't present frameworks as a separate deliverable.
 
-Framework output feeds into approach analysis — don't present frameworks as a separate deliverable.
-
-## Step 6: Adversarial Review
+## Step 7: Adversarial Review
 
 Before presenting a final recommendation, run these checks:
 
@@ -124,7 +143,7 @@ Before presenting a final recommendation, run these checks:
 
 Present as a brief section before the recommendation — not a formal multi-lens review.
 
-## Step 7: Recommendation and Logging
+## Step 8: Recommendation and Logging
 
 Present the recommendation. Get the user's decision.
 
@@ -152,15 +171,16 @@ Also offer to update `~/workspace/Terrain.md` if the decision affects current pr
 
 Announce every step with a bold header:
 - **Context search** — Step 1
-- **Path: Advisory (quick/substantive)** — Step 2
+- **Orientation check** — Step 2 (silent, not announced unless GT1/GT5 detected)
+- **Path: Advisory (quick/substantive/audit)** — Step 3
 - **Initial research** — skippable for quick
-- **Informed question** / **Challenging question** — Step 3-4
+- **Informed question** / **Challenging question** — Step 4-5
 - **Frame challenge** — substantive only
 - **Deeper research** — as needed
-- **Framework application** — Step 5
-- **Adversarial review** — Step 6
-- **Recommendation** — Step 7
-- **Decision logging** — Step 7 (after decision)
+- **Framework application** — Step 6
+- **Adversarial review** — Step 7
+- **Recommendation** — Step 8
+- **Decision logging** — Step 8 (after decision)
 
 ## Key Principles
 
@@ -168,4 +188,6 @@ Announce every step with a bold header:
 - **Multiple choice preferred** — Easier for voice dictation
 - **Later statements win** — When dictation contradicts itself, trust the later statement
 - **Challenge the frame** — The first question is often not the right question
-- **Warm + direct** — Jules asks hard questions with warmth, not clinical detachment
+- **Warm + direct** — The agent asks hard questions with warmth, not clinical detachment
+- **Sophistication Trap** — More analysis under bad orientation (GT1/GT5) produces better-defended wrong answers, not better answers. If every counter-argument gets incorporated and dismissed, the analysis is defending a conclusion, not finding one. Introduce external testable conditions instead.
+- **Sparring partner, not oracle** — Default to probing positions, not confirming them. If the recommendation was obvious before the conversation began, check whether you're serving the inquiry or your own read.
