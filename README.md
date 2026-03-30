@@ -280,19 +280,13 @@ A unified `safety-guard.sh` hook fires on every Bash, WebFetch, Write, and Edit 
 
 This system was built on top of, adapted from, and influenced by the work of others.
 
-**[Superpowers][superpowers-url]** by [Jesse Vincent](https://x.com/obra) (MIT). The scoping, plan-writing, plan-execution, subagent-driven development, and systematic debugging methodologies that form the core of `/build` and `/debug` originated here. Heavily customized and consolidated, but the foundations are Jesse's.
-
-**[RTK][rtk-url]** by [Patrick Szymkowiak](https://www.linkedin.com/in/patrick-szymkowiak/) (MIT). Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
-
-**[Context Mode MCP][context-mode-url]** by [Mert Köseoğlu](https://x.com/mksglu) ([LinkedIn](https://www.linkedin.com/in/mksglu/)). Context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
-
-**OWASP** and community security patterns. Secret scanning fingerprints (AWS keys, GitHub PATs, PEM detection) draw from well-established credential detection patterns. The two-gate financial data guard and defense-in-depth layers were developed through operational experience but informed by OWASP principles.
-
-Community research that shaped specific patterns:
-
-- [Thariq Shihipar](https://x.com/trq212) ([LinkedIn](https://www.linkedin.com/in/thariqshihipar/)), Anthropic — [Claude Code thread](https://x.com/trq212/status/2035372716820218141) on agent loop design, bash-first search, and verification patterns
-- [Daniil Okhlopkov](https://x.com/danokhlopkov) ([LinkedIn](https://www.linkedin.com/in/danokhlopkov/)), TON Foundation — [Claude Code setup guide](https://okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/) on multi-MCP architecture, git worktrees, and self-improving CLAUDE.md
-- [Shrivu Shankar](https://x.com/ShrivuShankar) — [How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature) on hook placement strategy and `/catchup` workflow
+- **[Superpowers][superpowers-url]** by [Jesse Vincent](https://x.com/obra) (MIT) — Scoping, plan-writing, plan-execution, subagent-driven development, and systematic debugging methodologies that form the core of `/build` and `/debug`. Heavily customized and consolidated, but the foundations are Jesse's.
+- **[RTK][rtk-url]** by [Patrick Szymkowiak](https://www.linkedin.com/in/patrick-szymkowiak/) (MIT) — Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
+- **[Context Mode MCP][context-mode-url]** by [Mert Köseoğlu](https://x.com/mksglu) ([LinkedIn](https://www.linkedin.com/in/mksglu/)) — Context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
+- **[OWASP Top 10](https://owasp.org/www-project-top-ten/)** — Secret scanning fingerprints (AWS keys, GitHub PATs, PEM detection) draw from well-established credential detection patterns. The two-gate financial data guard and defense-in-depth layers were informed by OWASP principles.
+- **[Claude Code is All You Need](https://x.com/trq212/status/2035372716820218141)** by [Thariq Shihipar](https://x.com/trq212) ([LinkedIn](https://www.linkedin.com/in/thariqshihipar/)), Anthropic — Agent loop design, bash-first search, and verification patterns.
+- **[Claude Code Setup Guide](https://okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/)** by [Daniil Okhlopkov](https://x.com/danokhlopkov) ([LinkedIn](https://www.linkedin.com/in/danokhlopkov/)), TON Foundation — Multi-MCP architecture, git worktrees, and self-improving CLAUDE.md.
+- **[How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature)** by [Shrivu Shankar](https://x.com/ShrivuShankar) — Hook placement strategy and `/catchup` workflow.
 
 ### Claude Code
 
