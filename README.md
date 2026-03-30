@@ -1,123 +1,89 @@
-# Jules: A Claude Code Reference Implementation
+# Strategic Thinking + Execution
 
-A reference implementation of a personal AI collaborator built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). This repo documents the architecture, patterns, and configuration that turns Claude Code from a coding assistant into a full strategic collaborator with autonomous scheduled operations.
+Think through decisions strategically with AI. Execute the rest automatically.
 
-**17 skills. 5 hooks. Cloud scheduled batch. Telegram access. RTK token optimization.**
+An open source reference implementation built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). One person's real system for running a solo business — morning briefings, content pipeline, deployment automation, strategic decision-making — with a single AI collaborator that maintains context across all of it.
 
-> **v4.0** simplifies everything. 32 skills became 17. 15 hooks became 5. The VPS, Docker container, and Slack daemon are gone — replaced by Anthropic Cloud scheduled tasks and Telegram. Same capabilities, half the complexity.
+`17 skills` `5 hooks` `cloud batch` `telegram` `60-90% token savings` `<500 lines in CLAUDE.md`
 
-## What's New in v4
+[GitHub](https://github.com/jonathanmalkin/jules) &#183; [Website](https://builtwithjon.com/jules)
 
-v4 is a simplification release. The system got more powerful by getting smaller:
+---
 
-- **Consolidated skills**: `/think` replaces decompose + advisory. `/build` replaces scope + writing-plans + executing-plans + subagent-driven-development. `/write` replaces write-article. 32 skills to 17.
-- **Unified safety hook**: 6 hook scripts + 4 subscripts consolidated into 1 `safety-guard.sh` covering command blocking, secret scanning, financial data guard, and domain blocking. 15 hooks to 5.
-- **Rules absorbed into CLAUDE.md**: 20+ rule files became behavioral guidance sections in CLAUDE.md. Under 500 lines. One file, always loaded.
-- **VPS eliminated**: 9 cron jobs, Docker container, Slack daemon, auth infrastructure — all gone. Replaced by one Cloud scheduled batch task.
-- **Cloud batch**: Overnight sequential task (retro + memory, morning briefing, email fetch) runs on Anthropic Cloud. Calls APIs directly via HTTP.
-- **Telegram access**: Interactive messaging when laptop is open. Replaces 24/7 Slack daemon.
-- **RTK hook**: Rust Token Killer rewrites bash commands for 60-90% token savings. Subsumes the old bash-compress-hook.
+## The Problem
 
-<details>
-<summary>What changed in v3</summary>
+Running a business is a continuous loop across a dozen domains — strategy, code, content, ops, finance, people. AI helps you go faster, but speed on individual tasks doesn't move the ball forward.
 
-v3 added planning and research infrastructure:
+You still think alone. You lose context at every tool boundary. The strategic thread connecting Tuesday's decision to Friday's deploy lives only in your head.
 
-- **Goal decomposition**: Socratic dialogue for breaking down goals into executable scope
-- **Planning dispatch**: Triage and dispatch work. Batched decision cards, autonomous task queue
-- **Deep research**: Parallel Haiku agents gather evidence, Sonnet synthesizes
-- **Security hooks**: Sensitive outbound guard, session tracker, domain blocking
-- **Context reload**: Deterministic reload after /clear
+**The hard part isn't execution. It's thinking clearly and keeping everything connected.**
 
-</details>
+## What Jules Does
 
-<details>
-<summary>What changed in v2</summary>
+<table>
+<tr>
+<td width="50%" valign="top">
 
-v2 added container infrastructure and automation:
+### Thinks With You
 
-- **Container infrastructure**: Docker setup for an always-on automation sidecar
-- **Scheduled automation**: Daily retro, morning orchestrator, auth checks, Slack daemon
-- **Architecture documentation**: Hybrid architecture overview
+Strategy, decisions, goal decomposition, adversarial review. The cofounder you don't have.
 
-</details>
+- Socratic dialogue that sharpens thinking
+- Surfaces blind spots and second-order effects
+- Disagrees when it sees a better path
+- Connects today's work to long-term goals
 
-## What This Is
+</td>
+<td width="50%" valign="top">
 
-This is a real system, not a tutorial. It runs a solo founder's entire operation: morning briefings, content pipeline, engagement scanning, deployment automation, and strategic decision-making. The AI agent has a defined personality, decision authority framework, and knows when to act autonomously versus when to ask.
+### Then Executes
 
-This repo contains sanitized versions of the actual configuration files, with personal details replaced by framework templates. The best way to use it: **give Claude Code the URL and ask it to analyze your setup against these patterns.** It'll tell you what's worth adopting and what to skip. See [Getting Started](#getting-started) for the prompt.
+Software, content, research, deploys, analytics — one system, same context.
 
-## System Overview
+- Decisions flow directly from thinking to execution
+- No context loss between "what should we build" and "build it"
+- Ships code, publishes content, manages projects
+- Handles the details so you focus on direction
 
-```mermaid
-graph LR
-    subgraph Mac["Mac (Interactive Dev)"]
-        CLI["Claude Code CLI"]
-        VS["VS Code"]
-        Config["Skills / Hooks / CLAUDE.md"]
-    end
+</td>
+</tr>
+</table>
 
-    subgraph Cloud["Anthropic Cloud"]
-        Batch["Overnight Batch"]
-        Web["Claude Code Web"]
-    end
+## The Loop in Action
 
-    subgraph Ext["External Services"]
-        Plane["Plane.so"]
-        Reddit["Reddit API"]
-        Gmail["Gmail"]
-    end
+**Think → Build → Ship**
 
-    Phone["Phone"]
+> "We need to reposition the brand."
+> 1. `/think` — Socratic dialogue surfaces the real problem: messaging doesn't match the audience
+> 2. `/build` — Scope the website changes, plan the implementation, execute
+> 3. Deploy, verify live, report at wrap-up
 
-    CLI -- skills + hooks --> Config
-    Batch -- retro + briefing --> Cloud
-    Batch -- REST API --> Plane
-    Batch -- JSON API --> Reddit
-    Batch -- connector --> Gmail
-    Phone -- Telegram --> Mac
-    Web -- remote sessions --> Cloud
+**Think → Write → Distribute**
+
+> "That article isn't landing."
+> 1. `/think` — Identify why: too abstract, not enough practitioner detail
+> 2. `/write` — Rewrite with concrete examples, code blocks, real workflow
+> 3. Publish to site, format for Reddit, cross-post to LinkedIn
+
+## Build Your Own
+
+You don't need dozens of configurations to start. One prompt gets you a working system.
+
+### The One-Prompt Starter
+
+Open Claude Code in your project directory:
+
+```
+Read my codebase. Create a .claude/CLAUDE.md that describes the project, key
+conventions, and common workflows. Then create one skill in .claude/skills/
+for the task I do most often.
 ```
 
-## A Day with Jules
+That's it. One CLAUDE.md and one skill. Build up from there.
 
-| Time | What Happens |
-|------|-------------|
-| **Session start** | Hook pulls latest code from GitHub |
-| **Sessions** | Active collaboration: building, debugging, content, strategy. Skills route requests, hooks guard every tool call. |
-| **Anytime** | Telegram from phone when laptop is open. Cloud web sessions when laptop is closed. |
-| **Overnight** | Cloud batch: retro + memory analysis, morning briefing assembly, email fetch. Ready before the laptop opens. |
-| **Wrap-up** | Session report, commit, quality checks, flag publishable content. |
+### Go Deeper
 
-## Architecture
-
-Five layers, bottom to top. Identity is the foundation. Products are what get shipped.
-
-### Layer 1: Identity
-`profiles/` — Agent personality, user context, business identity, goals. Loaded into every session.
-
-### Layer 2: Operational State
-`Terrain.md`, `Briefing.md`, `Documents/` — Live working state. What's happening now, next, and waiting.
-
-### Layer 3: Configuration
-`CLAUDE.md` — Behavioral layer. Routing, decision authority, standing orders, absorbed rules. One file, always loaded. Skills and hooks in `.claude/`.
-
-### Layer 4: Automation
-Cloud scheduled batch — Overnight retro, morning briefing, email fetch. Session-start hook for git sync.
-
-### Layer 5: Products
-`Code/` — The applications being built. Everything above exists to make this layer ship faster.
-
-For a detailed walkthrough: [`docs/architecture.md`](docs/architecture.md)
-
-## Getting Started
-
-The fastest way to learn from this repo is to point Claude Code at it and ask for recommendations tailored to your project.
-
-### The One-Prompt Approach
-
-Open Claude Code in your project directory and paste this:
+Once you have the basics, point Claude Code at this repo for tailored recommendations:
 
 ```
 Analyze my current Claude Code setup (CLAUDE.md, .claude/ directory, and codebase) and
@@ -135,9 +101,8 @@ compare it against the reference implementation at https://github.com/jonathanma
 Don't try to replicate the whole system. Tell me what would actually help MY setup.
 ```
 
-### Manual Setup
-
-If you prefer to browse and borrow directly:
+<details>
+<summary>Manual setup</summary>
 
 1. Fork this repo
 2. Copy the `.claude/` directory structure into your project
@@ -148,51 +113,58 @@ If you prefer to browse and borrow directly:
 
 Start small. The system grew organically over weeks of daily use. Don't try to build the whole thing on day one.
 
-## Workflow
+</details>
 
-Every interaction follows this pipeline. Messy voice input goes in, shipped results come out.
+## Under the Hood
 
-```
-                 Input
-                   |
-         +--------+--------+
-         v                  v
-   Think / Research      Build / Write
-         |                  |
-    Advisory            Plan > Execute
-    Decompose           Test > Ship
-         |                  |
-         +--------+---------+
-                  v
-             Wrap-up
-     Commit . Report . Ship
-```
+| Skills | Hooks | Token Savings | CLAUDE.md | Cloud Batch | Environments |
+|:------:|:-----:|:-------------:|:---------:|:-----------:|:------------:|
+| 17 | 5 | 60-90% via RTK | <500 lines | ON (overnight) | 4 |
 
-## Directory Structure
+## Architecture
+
+### Environments
 
 ```
-.claude/
-  settings.json        # Hook wiring, permissions, env vars
-  skills/              # 17 custom skill definitions
-  hooks/               # 5 automation hooks
-  agents/              # Specialized subagent definitions
-
-docs/
-  architecture.md      # Detailed architecture overview
-
-profiles/              # Agent and user profile templates + examples
-Documents/
-  Content-Pipeline/    # Content workflow (queue, ideas, drafts, published)
-  Engagement/          # Engagement scanning (reply queue, feedback)
-  Field-Notes/         # Session retros, decision log, briefing archives
-CLAUDE.md              # The master configuration (always-loaded context)
-Terrain.md             # Operational state template
-Briefing.md            # Daily briefing template (generated by overnight batch)
+Mac (Interactive Dev)  →  Cloud (Overnight Batch)  →  Telegram (Phone Access)  →  Cloud Web (Remote Sessions)
 ```
 
-## What's Included
+No VPS, no Docker, no daemons. The Mac handles everything interactive. The Cloud handles everything scheduled.
 
-### Skills (17)
+### Five-Layer Model
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Layer 5: Products         The apps being shipped       │
+├─────────────────────────────────────────────────────────┤
+│  Layer 4: Automation       Cloud batch (retro,          │
+│                            briefing, email)             │
+├─────────────────────────────────────────────────────────┤
+│  Layer 3: Configuration    CLAUDE.md + Skills + Hooks   │
+├─────────────────────────────────────────────────────────┤
+│  Layer 2: Operational      Terrain, Briefing,           │
+│           State            Documents                    │
+├─────────────────────────────────────────────────────────┤
+│  Layer 1: Identity         Agent profile, user          │
+│                            profile, goals               │
+└─────────────────────────────────────────────────────────┘
+```
+
+Identity is the foundation. Products are what get shipped. Everything in between exists to connect them.
+
+### Classification Principle
+
+How to decide where a behavior belongs:
+
+| If the behavior is... | It's a... |
+|---|---|
+| Pattern-matchable, no judgment needed | **Hook** (deterministic, fires on tool calls) |
+| A repeatable procedure with defined inputs/outputs | **Script** (invoked by skill, hook, or Cloud task) |
+| Requires AI judgment, dialogue, or synthesis | **Skill** (structured conversation) |
+| A behavioral rule or preference | **CLAUDE.md section** (loaded every session) |
+| Stable identity or context | **Profiles/** (loaded every session) |
+
+## Skills (17)
 
 | Skill | What It Does |
 |-------|-------------|
@@ -214,7 +186,9 @@ Briefing.md            # Daily briefing template (generated by overnight batch)
 | `skill-creator` | Create and modify skills. |
 | `agent-browser` | Browser automation. |
 
-### Hooks (5)
+## Hooks (5)
+
+Hooks are deterministic. The LLM doesn't decide whether to run them — they fire on every matching tool call.
 
 | Hook | Trigger | What It Does |
 |------|---------|-------------|
@@ -223,9 +197,7 @@ Briefing.md            # Daily briefing template (generated by overnight batch)
 | `rtk-rewrite.sh` | PreToolUse: Bash | RTK token optimization rewrites (60-90% savings on dev operations) |
 | `session-start.sh` | SessionStart | Git pull on session open |
 
-**Also available:** Anthropic's built-in skills (docx, pptx, xlsx, pdf) and plugins.
-
-### Cloud Scheduled Batch
+## Cloud Batch
 
 One overnight task, three sequential phases:
 
@@ -235,26 +207,26 @@ One overnight task, three sequential phases:
 | Morning Briefing | Assemble 10-section briefing from Plane, Reddit, Gmail, git log, retro output |
 | Email Fetch | Pull and categorize inbox |
 
-## Key Design Decisions
+## Evolution
 
-**Identity persistence over memory.** Memory is lossy. Context windows reset. The CLAUDE.md hierarchy loads identity, decision rules, and behavioral patterns into every session. The agent doesn't need to remember who it is — it's told every time.
+| Version | What Changed |
+|---------|-------------|
+| **v1** — Identity + Skills | Initial release: skills, rules, hooks, agents, profile templates |
+| **v2** — Infrastructure | Container infrastructure, scheduled automation, Slack daemon |
+| **v3** — Planning + Research | Goal decomposition, deep research, security hooks, dispatch conventions |
+| **v4** — Simplification | 32→17 skills, 15→5 hooks, rules absorbed into CLAUDE.md, VPS/Docker eliminated, Cloud batch, Telegram, RTK |
+
+## Design Decisions
 
 **Deterministic over probabilistic.** When a pattern works, codify it into a script. Skills are probabilistic (the LLM might follow them). Hooks and scripts are deterministic (they execute the same way every time). Push behavior toward determinism whenever possible.
+
+**Identity persistence over memory.** Memory is lossy. Context windows reset. The CLAUDE.md hierarchy loads identity, decision rules, and behavioral patterns into every session. The agent doesn't need to remember who it is — it's told every time.
 
 **Simple over complex.** The v3 to v4 transition proved this. 15 hooks doing 15 things became 1 hook doing the same 15 things. 20 rules files became CLAUDE.md sections. A Docker container with 9 cron jobs became one Cloud scheduled task. Same capabilities, half the maintenance.
 
 **Explicit autonomy boundaries.** No ambiguity about what the agent can do on its own. The "Just Do It / Ask First" framework with standing orders eliminates the gray zone that makes autonomous agents unreliable.
 
 **Minimal engineering.** Leverage Claude Code's built-in features (plan mode, skills, hooks) before building custom infrastructure. Don't build what a config option handles. Before adding something new: can an existing feature handle this?
-
-## Version History
-
-| Version | Date | What Changed |
-|---------|------|-------------|
-| v4.0 | Mar 2026 | Simplification: 32 to 17 skills, 15 to 5 hooks, rules absorbed into CLAUDE.md, VPS/Docker eliminated, Cloud batch, Telegram, RTK |
-| [v3.0](https://github.com/jonathanmalkin/jules/releases/tag/v3.0) | Mar 2026 | Planning infrastructure, deep research, security hooks, dispatch conventions |
-| [v2.0](https://github.com/jonathanmalkin/jules/releases/tag/v2.0) | Mar 2026 | Container infrastructure, scheduled automation, Slack daemon, architecture docs |
-| [v1.0](https://github.com/jonathanmalkin/jules/releases/tag/v1.0) | Mar 2026 | Initial release: skills, rules, hooks, agents, profile templates |
 
 ## Acknowledgments
 
