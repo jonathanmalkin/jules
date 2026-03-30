@@ -230,7 +230,19 @@ One overnight task, three sequential phases:
 
 ## Acknowledgments
 
-Five skills in this system were adapted from [Superpowers](https://github.com/obra/superpowers) by Jesse Vincent (MIT License): `scope`, `writing-plans`, `executing-plans`, `subagent-driven-development`, and `systematic-debugging`. Each has been heavily customized and consolidated (all four are now part of `/build`) but the core methodologies originate from that project.
+This system was built on top of, adapted from, and influenced by the work of others.
+
+**[Superpowers](https://github.com/obra/superpowers)** by Jesse Vincent (MIT License). The scoping, plan-writing, plan-execution, subagent-driven development, and systematic debugging methodologies that form the core of `/build` and `/debug` originated here. Heavily customized and consolidated, but the foundations are Jesse's.
+
+**[skill-creator](https://github.com/anthropics/skills)** by Anthropic (Apache 2.0). The skill creation, evaluation, and iteration framework — including the eval loop, grading agents, and validation scripts — comes from Anthropic's official skills repo.
+
+**[RTK](https://github.com/rtk-ai/rtk)** (Rust Token Killer). Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
+
+**[GStack](https://github.com/garrytan/gstack)** by Garry Tan (MIT License). The structured Think → Plan → Build → Review → Ship workflow and role-based skill design influenced how Jules chains skills together.
+
+**[Context Mode MCP](https://github.com/mksglu/claude-context-mode)** by mksglu. The context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
+
+Community research that shaped specific patterns: [Thariq's Claude Code thread](https://x.com/trq212/status/2035372716820218141) (Anthropic — agent loop, bash-first search, verification patterns), Daniil Okhlopkov's multi-MCP setup (git worktrees, self-improving CLAUDE.md), and Shrivu Shankar's feature guide (hook placement strategy, `/catchup` workflow).
 
 ## License
 
