@@ -1,12 +1,43 @@
+<a id="readme-top"></a>
+
+<div align="center">
+
 # Strategic Thinking + Execution
 
-Think through decisions strategically with AI. Execute the rest automatically.
+Most AI tools do tasks. Jules thinks with you first, then does everything else.
 
-An open source reference implementation built on [Claude Code](https://docs.anthropic.com/en/docs/claude-code). One person's real system for running a solo business — morning briefings, content pipeline, deployment automation, strategic decision-making — with a single AI collaborator that maintains context across all of it.
+An open source reference implementation built on [Claude Code][claude-code-url].
 
-`17 skills` `5 hooks` `cloud batch` `telegram` `60-90% token savings` `<500 lines in CLAUDE.md`
+[![License: MIT][license-shield]][license-url]
+[![Skills: 17][skills-shield]][skills-url]
+[![Hooks: 5][hooks-shield]][hooks-url]
+[![Token Savings: 60-90%][tokens-shield]][rtk-url]
 
-[Website](https://builtwithjon.com/jules)
+[Website][website-url] · [Architecture Docs][architecture-url] · [Get Started](#build-your-own)
+
+</div>
+
+---
+
+<details>
+<summary><strong>Table of Contents</strong></summary>
+
+- [The Problem](#the-problem)
+- [What Jules Does](#what-jules-does)
+- [The Loop in Action](#the-loop-in-action)
+- [Build Your Own](#build-your-own)
+- [Under the Hood](#under-the-hood)
+- [Architecture](#architecture)
+- [Skills](#skills-17)
+- [Hooks](#hooks-5)
+- [Cloud Batch](#cloud-batch)
+- [Security & Privacy](#security--privacy)
+- [Evolution](#evolution)
+- [Design Decisions](#design-decisions)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+
+</details>
 
 ---
 
@@ -18,6 +49,8 @@ You still think alone. You lose context at every tool boundary. The strategic th
 
 **The hard part isn't execution. It's thinking clearly and keeping everything connected.**
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## What Jules Does
 
 <table>
@@ -26,9 +59,8 @@ You still think alone. You lose context at every tool boundary. The strategic th
 
 ### Thinks With You
 
-Strategy, decisions, goal decomposition, adversarial review. The cofounder you don't have.
+Strategy, decisions, challenging assumptions, decomposition. Socratic dialogue, adversarial review. The cofounder you don't have.
 
-- Socratic dialogue that sharpens thinking
 - Surfaces blind spots and second-order effects
 - Disagrees when it sees a better path
 - Connects today's work to long-term goals
@@ -38,10 +70,8 @@ Strategy, decisions, goal decomposition, adversarial review. The cofounder you d
 
 ### Then Executes
 
-Software, content, research, deploys, analytics — one system, same context.
+Software, content, research, deploys, analytics — one system, same context. Decisions flow directly from thinking to execution. No context loss between "what" and "build it."
 
-- Decisions flow directly from thinking to execution
-- No context loss between "what should we build" and "build it"
 - Ships code, publishes content, manages projects
 - Handles the details so you focus on direction
 
@@ -49,27 +79,34 @@ Software, content, research, deploys, analytics — one system, same context.
 </tr>
 </table>
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## The Loop in Action
 
 **Think → Build → Ship**
 
-> "We need to reposition the brand."
-> 1. `/think` — Socratic dialogue surfaces the real problem: messaging doesn't match the audience
-> 2. `/build` — Scope the website changes, plan the implementation, execute
-> 3. Deploy, verify live, report at wrap-up
+| Step | Prompt | What Happens |
+|:----:|--------|-------------|
+| **Think** | *"I need to figure out my brand positioning."* | Jules challenges the framing, asks one question at a time, runs adversarial review. We land on a direction together. |
+| **Build** | *"Now implement it."* | Jules writes the homepage copy, updates the meta tags, adjusts the CSS, takes screenshots, iterates until it's right. |
+| **Ship** | *"Deploy it."* | Build passes. Site goes live. Jules verifies the deployment. Session report captures what changed and why. |
 
 **Think → Write → Distribute**
 
-> "That article isn't landing."
-> 1. `/think` — Identify why: too abstract, not enough practitioner detail
-> 2. `/write` — Rewrite with concrete examples, code blocks, real workflow
-> 3. Publish to site, format for Reddit, cross-post to LinkedIn
+| Step | Prompt | What Happens |
+|:----:|--------|-------------|
+| **Think** | *"This article isn't landing. What's wrong?"* | Jules reads the draft, identifies structural problems, proposes a different angle. We debate it. |
+| **Write** | *"Rewrite it with that framing."* | New draft, same voice calibration, same style guide. Runs a slop audit to catch AI writing patterns. |
+| **Distribute** | *"Post it."* | Publishes to the site, adapts for Reddit and LinkedIn, queues the cross-posts. One command. |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Build Your Own
 
-### The One-Prompt Starter
+> [!TIP]
+> You don't need dozens of configurations to start. Try this one prompt.
 
-Open Claude Code in your project directory and paste this:
+Open Claude Code in your project directory and paste:
 
 ```
 Analyze my current Claude Code setup (CLAUDE.md, .claude/ directory, and codebase) and
@@ -89,11 +126,22 @@ Don't try to replicate the whole system. Tell me what would actually help MY set
 
 Start small. The system grew organically over weeks of daily use.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Under the Hood
 
-| Skills | Hooks | Token Savings | CLAUDE.md | Cloud Batch | Environments |
-|:------:|:-----:|:-------------:|:---------:|:-----------:|:------------:|
-| 17 | 5 | 60-90% via RTK | <500 lines | ON (overnight) | 3 |
+<sup>For the builders who want to know how it's made.</sup>
+
+| | What | Details |
+|:-:|------|---------|
+| **17** | **Skills** | `/think`, `/build`, `/write`, `/research`, `/debug`. Multi-phase workflows, not single prompts. |
+| **5** | **Hooks** | Unified safety guard, RTK token optimization, desktop notifications, session-start sync. |
+| **1** | **Cloud Batch** | Overnight: daily retro, morning briefing, email fetch. Ready before the laptop opens. |
+| **3** | **Environments** | Mac, Claude Web, Telegram. No VPS, no Docker, no daemons. |
+| **60-90%** | **Token Savings** | [RTK][rtk-url] rewrites dev commands for massive context savings. |
+| **<500** | **Lines in CLAUDE.md** | Identity, routing, authority, safety. One file, always loaded. |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Architecture
 
@@ -107,8 +155,6 @@ Start small. The system grew organically over weeks of daily use.
 │                     │     │  Batch        │   Sessions      │     │                     │
 └─────────────────────┘     └─────────────────────────────────┘     └─────────────────────┘
 ```
-
-No VPS, no Docker, no daemons.
 
 ### Five-Layer Model
 
@@ -129,7 +175,7 @@ No VPS, no Docker, no daemons.
 └─────────────────────────────────────────────────────────┘
 ```
 
-Identity is the foundation. Products are what get shipped. Everything in between exists to connect them.
+Identity is the foundation. Products are what get shipped. Everything in between connects them.
 
 ### Classification Principle
 
@@ -137,11 +183,13 @@ How to decide where a behavior belongs:
 
 | If the behavior is... | It's a... |
 |---|---|
-| Pattern-matchable, no judgment needed | **Hook** (deterministic, fires on tool calls) |
-| A repeatable procedure with defined inputs/outputs | **Script** (invoked by skill, hook, or Cloud task) |
-| Requires AI judgment, dialogue, or synthesis | **Skill** (structured conversation) |
-| A behavioral rule or preference | **CLAUDE.md section** (loaded every session) |
-| Stable identity and context | **Profiles/** (loaded every session) |
+| Pattern-matchable, no judgment needed | **Hook** — deterministic, fires on tool calls |
+| A repeatable procedure with defined inputs/outputs | **Script** — invoked by skill, hook, or Cloud task |
+| Requires AI judgment, dialogue, or synthesis | **Skill** — structured conversation |
+| A behavioral rule or preference | **CLAUDE.md section** — loaded every session |
+| Stable identity and context | **Profiles/** — loaded every session |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Skills (17)
 
@@ -186,6 +234,8 @@ One overnight task, three sequential phases:
 | Morning Briefing | Assemble 10-section briefing from Plane, Reddit, Gmail, git log, retro output |
 | Email Fetch | Pull and categorize inbox |
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Security & Privacy
 
 A unified `safety-guard.sh` hook fires on every Bash, WebFetch, Write, and Edit tool call. Four layers, all deterministic — no AI judgment involved.
@@ -202,14 +252,15 @@ A unified `safety-guard.sh` hook fires on every Bash, WebFetch, Write, and Edit 
 
 **Defense in depth.** The hook is one layer. `settings.json` maintains a redundant deny-list at the permissions level. CLAUDE.md encodes behavioral rules. The agent profile defines escalation directives. Four independent layers, any one of which catches the problem.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Evolution
 
-| Version | What Changed |
-|---------|-------------|
-| **v1** — Identity + Skills | Initial release: skills, rules, hooks, agents, profile templates |
-| **v2** — Infrastructure | Container infrastructure, scheduled automation, Slack daemon |
-| **v3** — Planning + Research | Goal decomposition, deep research, security hooks, dispatch conventions |
-| **v4** — Simplification | 32→17 skills, 15→5 hooks, rules absorbed into CLAUDE.md, VPS/Docker eliminated, Cloud batch, Telegram, RTK |
+| Version | Theme | What Changed |
+|:-------:|-------|-------------|
+| **v1** | Identity + Skills | Personality, voice registers, decision authority. CLAUDE.md and early skill workflows. |
+| **v2–v3** | Automation + Planning | Container infrastructure, scheduled jobs, planning dispatch, research agents, security hooks. |
+| **v4** | Simplification | 32 skills became 17. 15 hooks became 5. VPS eliminated. Same power, half the parts. |
 
 ## Design Decisions
 
@@ -221,42 +272,68 @@ A unified `safety-guard.sh` hook fires on every Bash, WebFetch, Write, and Edit 
 
 **Explicit autonomy boundaries.** No ambiguity about what the agent can do on its own. The "Just Do It / Ask First" framework with standing orders eliminates the gray zone that makes autonomous agents unreliable.
 
-**Minimal engineering.** Leverage Claude Code's built-in features (plan mode, skills, hooks) before building custom infrastructure. Don't build what a config option handles. Before adding something new: can an existing feature handle this?
+**Minimal engineering.** Leverage Claude Code's built-in features before building custom infrastructure. Don't build what a config option handles.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Acknowledgments
 
 This system was built on top of, adapted from, and influenced by the work of others.
 
-**[Superpowers](https://github.com/obra/superpowers)** by [Jesse Vincent](https://x.com/obra) (MIT License). The scoping, plan-writing, plan-execution, subagent-driven development, and systematic debugging methodologies that form the core of `/build` and `/debug` originated here. Heavily customized and consolidated, but the foundations are Jesse's.
+**[Superpowers][superpowers-url]** by [Jesse Vincent](https://x.com/obra) (MIT). The scoping, plan-writing, plan-execution, subagent-driven development, and systematic debugging methodologies that form the core of `/build` and `/debug` originated here. Heavily customized and consolidated, but the foundations are Jesse's.
 
-**[RTK](https://github.com/rtk-ai/rtk)** by [Patrick Szymkowiak](https://www.linkedin.com/in/patrick-szymkowiak/) (MIT License). Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
+**[RTK][rtk-url]** by [Patrick Szymkowiak](https://www.linkedin.com/in/patrick-szymkowiak/) (MIT). Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
 
-**[Context Mode MCP](https://github.com/mksglu/claude-context-mode)** by [Mert Köseoğlu](https://x.com/mksglu) ([LinkedIn](https://www.linkedin.com/in/mksglu/)). The context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
+**[Context Mode MCP][context-mode-url]** by [Mert Köseoğlu](https://x.com/mksglu) ([LinkedIn](https://www.linkedin.com/in/mksglu/)). Context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
 
-**OWASP** and community security patterns. The secret scanning regex fingerprints (AWS keys, GitHub PATs, PEM detection) draw from well-established credential detection patterns. The two-gate financial data guard and defense-in-depth validation layers were developed through operational experience but informed by OWASP principles.
+**OWASP** and community security patterns. Secret scanning fingerprints (AWS keys, GitHub PATs, PEM detection) draw from well-established credential detection patterns. The two-gate financial data guard and defense-in-depth layers were developed through operational experience but informed by OWASP principles.
 
-Research and patterns from the Claude Code community that shaped specific parts of this system:
+Community research that shaped specific patterns:
 
 - [Thariq Shihipar](https://x.com/trq212) ([LinkedIn](https://www.linkedin.com/in/thariqshihipar/)), Anthropic — [Claude Code thread](https://x.com/trq212/status/2035372716820218141) on agent loop design, bash-first search, and verification patterns
-- [Daniil Okhlopkov](https://x.com/danokhlopkov) ([LinkedIn](https://www.linkedin.com/in/danokhlopkov/)), TON Foundation — [Claude Code setup guide](https://okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/) covering multi-MCP architecture, git worktrees, and self-improving CLAUDE.md
+- [Daniil Okhlopkov](https://x.com/danokhlopkov) ([LinkedIn](https://www.linkedin.com/in/danokhlopkov/)), TON Foundation — [Claude Code setup guide](https://okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/) on multi-MCP architecture, git worktrees, and self-improving CLAUDE.md
 - [Shrivu Shankar](https://x.com/ShrivuShankar) — [How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature) on hook placement strategy and `/catchup` workflow
 
 ### Claude Code
 
-v4's simplification was possible because Anthropic shipped features that replaced custom infrastructure. These capabilities, plus the [skill-creator](https://github.com/anthropics/skills) framework (Apache 2.0), are the foundation everything else builds on.
+v4's simplification was possible because Anthropic shipped features that replaced custom infrastructure. These capabilities, plus the [skill-creator][anthropic-skills-url] framework (Apache 2.0), are the foundation everything else builds on.
 
 | Capability | What It Replaced | Docs |
 |---|---|---|
-| [Claude Web](https://docs.anthropic.com/en/docs/claude-code/overview) | VPS for remote sessions | Scheduled batch + interactive sessions from any browser |
-| [Scheduled Triggers](https://docs.anthropic.com/en/docs/claude-code/overview) | 9 cron jobs + Docker container | Overnight retro, morning briefing, email fetch — one config |
-| [Channels](https://docs.anthropic.com/en/docs/claude-code/mcp) | Slack daemon (always-on, auth overhead) | Telegram push into sessions via MCP channel capability |
-| [Dispatch](https://docs.anthropic.com/en/docs/claude-code/overview) | Manual task handoff | Kick off tasks from phone, pick up in desktop session |
-| [Remote Control](https://docs.anthropic.com/en/docs/claude-code/overview) | SSH to VPS | Step away from desk, keep working from phone or browser |
-| [Claude in Chrome](https://docs.anthropic.com/en/docs/claude-code/ide-integrations) | Custom browser automation scripts | Browser automation via extension, scheduled browser tasks |
-| [Skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) | Prompt files + manual routing | Structured workflows with frontmatter, scoped hooks, tool permissions |
-| [Hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) | Scattered guard scripts | Deterministic lifecycle events with unified configuration |
-| [skill-creator](https://github.com/anthropics/skills) | Manual skill scaffolding | Eval loop, grading agents, validation scripts (Apache 2.0) |
+| [Claude Web][claude-web-url] | VPS for remote sessions | Scheduled batch + interactive sessions from any browser |
+| [Scheduled Triggers][claude-web-url] | 9 cron jobs + Docker container | Overnight retro, morning briefing, email fetch — one config |
+| [Channels][channels-url] | Slack daemon (always-on, auth overhead) | Telegram push into sessions via MCP channel capability |
+| [Dispatch][claude-web-url] | Manual task handoff | Kick off tasks from phone, pick up in desktop session |
+| [Remote Control][claude-web-url] | SSH to VPS | Step away from desk, keep working from phone or browser |
+| [Claude in Chrome][chrome-url] | Custom browser automation scripts | Browser automation via extension, scheduled browser tasks |
+| [Skills][skills-url] | Prompt files + manual routing | Structured workflows with frontmatter, scoped hooks, tool permissions |
+| [Hooks][hooks-url] | Scattered guard scripts | Deterministic lifecycle events with unified configuration |
+| [skill-creator][anthropic-skills-url] | Manual skill scaffolding | Eval loop, grading agents, validation scripts (Apache 2.0) |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## License
 
-MIT. Use it, adapt it, build on it.
+[MIT](LICENSE). Use it, adapt it, build on it.
+
+---
+
+<!-- REFERENCE LINKS -->
+
+[license-shield]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
+[license-url]: LICENSE
+[skills-shield]: https://img.shields.io/badge/skills-17-8A2BE2?style=flat-square
+[skills-url]: https://docs.anthropic.com/en/docs/claude-code/slash-commands
+[hooks-shield]: https://img.shields.io/badge/hooks-5-orange?style=flat-square
+[hooks-url]: https://docs.anthropic.com/en/docs/claude-code/hooks
+[tokens-shield]: https://img.shields.io/badge/token_savings-60--90%25-brightgreen?style=flat-square
+[rtk-url]: https://github.com/rtk-ai/rtk
+[website-url]: https://builtwithjon.com/jules
+[architecture-url]: docs/architecture.md
+[claude-code-url]: https://docs.anthropic.com/en/docs/claude-code/overview
+[claude-web-url]: https://docs.anthropic.com/en/docs/claude-code/overview
+[channels-url]: https://docs.anthropic.com/en/docs/claude-code/mcp
+[chrome-url]: https://docs.anthropic.com/en/docs/claude-code/ide-integrations
+[superpowers-url]: https://github.com/obra/superpowers
+[context-mode-url]: https://github.com/mksglu/claude-context-mode
+[anthropic-skills-url]: https://github.com/anthropics/skills
