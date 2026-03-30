@@ -202,21 +202,6 @@ A unified `safety-guard.sh` hook fires on every Bash, WebFetch, Write, and Edit 
 
 **Defense in depth.** The hook is one layer. `settings.json` maintains a redundant deny-list at the permissions level. CLAUDE.md encodes behavioral rules. The agent profile defines escalation directives. Four independent layers, any one of which catches the problem.
 
-## Claude Code Capabilities
-
-v4's simplification was possible because Claude Code shipped features that replaced custom infrastructure. A VPS with Docker, 9 cron jobs, and a Slack daemon became configuration pointing at built-in capabilities.
-
-| Capability | What It Replaced | Docs |
-|---|---|---|
-| [Claude Web](https://docs.anthropic.com/en/docs/claude-code/overview) | VPS for remote sessions | Scheduled batch + interactive sessions from any browser |
-| [Scheduled Triggers](https://docs.anthropic.com/en/docs/claude-code/overview) | 9 cron jobs + Docker container | Overnight retro, morning briefing, email fetch — one config |
-| [Channels](https://docs.anthropic.com/en/docs/claude-code/mcp) | Slack daemon (always-on, auth overhead) | Telegram push into sessions via MCP channel capability |
-| [Dispatch](https://docs.anthropic.com/en/docs/claude-code/overview) | Manual task handoff | Kick off tasks from phone, pick up in desktop session |
-| [Remote Control](https://docs.anthropic.com/en/docs/claude-code/overview) | SSH to VPS | Step away from desk, keep working from phone or browser |
-| [Claude in Chrome](https://docs.anthropic.com/en/docs/claude-code/ide-integrations) | Custom browser automation scripts | Browser automation via extension, scheduled browser tasks |
-| [Skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) | Prompt files + manual routing | Structured workflows with frontmatter, scoped hooks, tool permissions |
-| [Hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) | Scattered guard scripts | Deterministic lifecycle events with unified configuration |
-
 ## Evolution
 
 | Version | What Changed |
@@ -242,17 +227,37 @@ v4's simplification was possible because Claude Code shipped features that repla
 
 This system was built on top of, adapted from, and influenced by the work of others.
 
-**[Superpowers](https://github.com/obra/superpowers)** by Jesse Vincent (MIT License). The scoping, plan-writing, plan-execution, subagent-driven development, and systematic debugging methodologies that form the core of `/build` and `/debug` originated here. Heavily customized and consolidated, but the foundations are Jesse's.
+**[Superpowers](https://github.com/obra/superpowers)** by [Jesse Vincent](https://x.com/obra) (MIT License). The scoping, plan-writing, plan-execution, subagent-driven development, and systematic debugging methodologies that form the core of `/build` and `/debug` originated here. Heavily customized and consolidated, but the foundations are Jesse's.
 
-**[skill-creator](https://github.com/anthropics/skills)** by Anthropic (Apache 2.0). The skill creation, evaluation, and iteration framework — including the eval loop, grading agents, and validation scripts — comes from Anthropic's official skills repo.
+**[RTK](https://github.com/rtk-ai/rtk)** by [Patrick Szymkowiak](https://www.linkedin.com/in/patrick-szymkowiak/) (MIT License). Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
 
-**[RTK](https://github.com/rtk-ai/rtk)** (Rust Token Killer). Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
-
-**[Context Mode MCP](https://github.com/mksglu/claude-context-mode)** by mksglu. The context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
+**[Context Mode MCP](https://github.com/mksglu/claude-context-mode)** by [Mert Köseoğlu](https://x.com/mksglu) ([LinkedIn](https://www.linkedin.com/in/mksglu/)). The context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
 
 **OWASP** and community security patterns. The secret scanning regex fingerprints (AWS keys, GitHub PATs, PEM detection) draw from well-established credential detection patterns. The two-gate financial data guard and defense-in-depth validation layers were developed through operational experience but informed by OWASP principles.
 
-Community research that shaped specific patterns: [Thariq's Claude Code thread](https://x.com/trq212/status/2035372716820218141) (Anthropic — agent loop, bash-first search, verification patterns), Daniil Okhlopkov's multi-MCP setup (git worktrees, self-improving CLAUDE.md), and Shrivu Shankar's feature guide (hook placement strategy, `/catchup` workflow).
+### Claude Code
+
+v4's simplification was possible because Anthropic shipped features that replaced custom infrastructure. These capabilities, plus the [skill-creator](https://github.com/anthropics/skills) framework (Apache 2.0), are the foundation everything else builds on.
+
+| Capability | What It Replaced | Docs |
+|---|---|---|
+| [Claude Web](https://docs.anthropic.com/en/docs/claude-code/overview) | VPS for remote sessions | Scheduled batch + interactive sessions from any browser |
+| [Scheduled Triggers](https://docs.anthropic.com/en/docs/claude-code/overview) | 9 cron jobs + Docker container | Overnight retro, morning briefing, email fetch — one config |
+| [Channels](https://docs.anthropic.com/en/docs/claude-code/mcp) | Slack daemon (always-on, auth overhead) | Telegram push into sessions via MCP channel capability |
+| [Dispatch](https://docs.anthropic.com/en/docs/claude-code/overview) | Manual task handoff | Kick off tasks from phone, pick up in desktop session |
+| [Remote Control](https://docs.anthropic.com/en/docs/claude-code/overview) | SSH to VPS | Step away from desk, keep working from phone or browser |
+| [Claude in Chrome](https://docs.anthropic.com/en/docs/claude-code/ide-integrations) | Custom browser automation scripts | Browser automation via extension, scheduled browser tasks |
+| [Skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) | Prompt files + manual routing | Structured workflows with frontmatter, scoped hooks, tool permissions |
+| [Hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) | Scattered guard scripts | Deterministic lifecycle events with unified configuration |
+| [skill-creator](https://github.com/anthropics/skills) | Manual skill scaffolding | Eval loop, grading agents, validation scripts (Apache 2.0) |
+
+### Community
+
+Research and patterns from the Claude Code community that shaped specific parts of this system:
+
+- [Thariq Shihipar](https://x.com/trq212) ([LinkedIn](https://www.linkedin.com/in/thariqshihipar/)), Anthropic — [Claude Code thread](https://x.com/trq212/status/2035372716820218141) on agent loop design, bash-first search, and verification patterns
+- [Daniil Okhlopkov](https://x.com/danokhlopkov) ([LinkedIn](https://www.linkedin.com/in/danokhlopkov/)), TON Foundation — [Claude Code setup guide](https://okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/) covering multi-MCP architecture, git worktrees, and self-improving CLAUDE.md
+- [Shrivu Shankar](https://x.com/ShrivuShankar) — [How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature) on hook placement strategy and `/catchup` workflow
 
 ## License
 
