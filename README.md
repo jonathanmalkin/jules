@@ -235,6 +235,12 @@ This system was built on top of, adapted from, and influenced by the work of oth
 
 **OWASP** and community security patterns. The secret scanning regex fingerprints (AWS keys, GitHub PATs, PEM detection) draw from well-established credential detection patterns. The two-gate financial data guard and defense-in-depth validation layers were developed through operational experience but informed by OWASP principles.
 
+Research and patterns from the Claude Code community that shaped specific parts of this system:
+
+- [Thariq Shihipar](https://x.com/trq212) ([LinkedIn](https://www.linkedin.com/in/thariqshihipar/)), Anthropic — [Claude Code thread](https://x.com/trq212/status/2035372716820218141) on agent loop design, bash-first search, and verification patterns
+- [Daniil Okhlopkov](https://x.com/danokhlopkov) ([LinkedIn](https://www.linkedin.com/in/danokhlopkov/)), TON Foundation — [Claude Code setup guide](https://okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/) covering multi-MCP architecture, git worktrees, and self-improving CLAUDE.md
+- [Shrivu Shankar](https://x.com/ShrivuShankar) — [How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature) on hook placement strategy and `/catchup` workflow
+
 ### Claude Code
 
 v4's simplification was possible because Anthropic shipped features that replaced custom infrastructure. These capabilities, plus the [skill-creator](https://github.com/anthropics/skills) framework (Apache 2.0), are the foundation everything else builds on.
@@ -250,14 +256,6 @@ v4's simplification was possible because Anthropic shipped features that replace
 | [Skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) | Prompt files + manual routing | Structured workflows with frontmatter, scoped hooks, tool permissions |
 | [Hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) | Scattered guard scripts | Deterministic lifecycle events with unified configuration |
 | [skill-creator](https://github.com/anthropics/skills) | Manual skill scaffolding | Eval loop, grading agents, validation scripts (Apache 2.0) |
-
-### Community
-
-Research and patterns from the Claude Code community that shaped specific parts of this system:
-
-- [Thariq Shihipar](https://x.com/trq212) ([LinkedIn](https://www.linkedin.com/in/thariqshihipar/)), Anthropic — [Claude Code thread](https://x.com/trq212/status/2035372716820218141) on agent loop design, bash-first search, and verification patterns
-- [Daniil Okhlopkov](https://x.com/danokhlopkov) ([LinkedIn](https://www.linkedin.com/in/danokhlopkov/)), TON Foundation — [Claude Code setup guide](https://okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/) covering multi-MCP architecture, git worktrees, and self-improving CLAUDE.md
-- [Shrivu Shankar](https://x.com/ShrivuShankar) — [How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature) on hook placement strategy and `/catchup` workflow
 
 ## License
 
