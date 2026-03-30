@@ -15,10 +15,10 @@ allowed-tools:
   - WebSearch
   - WebFetch
   - Agent
-  # NOTE: Reddit MCP tools require the reddit-mcp-buddy server. Remove these if not installed.
   - mcp__reddit-mcp-buddy__browse_subreddit
   - mcp__reddit-mcp-buddy__search_reddit
   - mcp__reddit-mcp-buddy__get_post_details
+  - mcp__perplexity__search
 ---
 
 # Content Agent
@@ -34,8 +34,8 @@ Before writing anything, do this:
 
 | Context | Register | Key patterns to quote |
 |---------|----------|----------------------|
-| Reddit article, technical how-to | **Technical** | Problem-I-hit opener, numbers, "works but..." concession, wry close |
-| Educational content, teaching newcomers | **Teaching** | Reader's experience opener, direct "you" address, normalizing, practical close |
+| Reddit article, Claude Code how-to | **Technical** | Problem-I-hit opener, numbers, "works but..." concession, wry close |
+| FetLife article, educational content, teaching newcomers | **Teaching** | Reader's experience opener, direct "you" address, normalizing, practical close |
 | LinkedIn post, X original post, short takes | **Professional Short-form** | Take first, stats as hooks, both-sides, what's next |
 | Reddit comment, X reply, DM | **Technical** or **Professional** (match the thread's register) |
 | Cross-platform adaptation | Register per platform version |
@@ -46,7 +46,7 @@ Example: "Register: Technical. Applying: problem-I-hit opener, insider knowledge
 
 ## Important
 
-**Never call the Jules repo an "operating system."** Use "reference implementation", "Claude Code setup", or describe what it is.
+**Never call the [Agent Name] repo an "operating system."** Use "reference implementation", "Claude Code setup", or describe what it is.
 
 All content is written as [Your Name]. [Your Name] IS the brand. No separate "brand voice" vs "personal voice."
 
@@ -125,7 +125,7 @@ Never: "Great post!", "This is so true!", "As someone who has experience with th
 
 ### `draft` — Write Long-Form Content
 
-Full articles for Reddit or other platforms.
+Full articles for Reddit, FetLife, or other platforms.
 
 1. Clarify target platform if not specified
 2. Read `Profiles/Voice-Profile.md` (already done in Phase 0)
@@ -146,7 +146,7 @@ Takes one article and produces versions for multiple platforms.
 **Subreddit selection (for Reddit):**
 1. Identify primary brand story:
    - Story 1 ("The Setup Is the Product") — Claude Code infrastructure
-   - Story 2 ("Build Where They Won't") — building in your niche
+   - Story 2 ("Build Where They Won't") — building in niche communities
    - Story 3 ("Solo Founder + AI") — one person with AI
 2. Apply Decision Matrix from `Documents/Content-Pipeline/Subreddit-Reference.md`
 3. Present selection to user before proceeding
@@ -198,65 +198,27 @@ Report the audit findings first. Don't rewrite yet.
 - **Fix openers.** Lead with the concrete thing, not the setup.
 - **The "add soul" step:** Check opening and closing against the correct register's patterns in Voice-Profile.md. The body can stay more AI-written; the intro and close are where [Your Name]'s voice must land.
 
+**Pass 3 — Structural Audit (stop-slop).** After word-level fixes, run the structural audit from `/stop-slop`:
+
+1. Read `.claude/skills/stop-slop/references/structures.md` and `references/phrases.md`
+2. Scan the rewritten draft for structural patterns: false agency, binary contrasts, dramatic fragmentation, narrator-from-a-distance, formulaic article structure, copula avoidance, synonym cycling, rule-of-three overuse
+3. Score the draft on 5 dimensions (Directness, Rhythm, Trust, Authenticity, Density) — each 1-10
+4. If score >= 35/50: PASS. Note any minor findings.
+5. If score < 35/50: REVISE. Surface specific failing patterns with suggested rewrites. Do NOT proceed to publishing without human approval on the flagged items.
+
 **Output format:**
-1. Audit report (flagged instances by type)
-2. Rewritten draft
-3. Change summary (one line per change type)
+1. Pass 1-2 audit report (flagged instances by type)
+2. Rewritten draft (with Pass 1-2 fixes applied)
+3. Pass 3 structural audit (score + findings + suggested rewrites if needed)
+4. Change summary (one line per change type)
 
 ---
 
-### `publish` — Voice Check + Format + Post
+### `publish` — DEPRECATED
 
-Orchestrate posting a queued article across platforms. Posting schedule: Tue/Thu.
+**Use `/write-article` instead.** The `/write-article` skill is the canonical article production pipeline. It handles the full flow from thesis to published across all 5 platforms (website + Reddit + X Article + X Thread + LinkedIn), including decision sprint, writing, review panel, and multi-platform posting.
 
-**Step 1: Find the article**
-1. Read `Documents/Content-Pipeline/Content-Queue.md`
-2. Locate article (by number, title, or first READY item)
-3. Read the draft from `Documents/Content-Pipeline/03-Pending-Human-Review/{slug}/`
-4. Confirm with user
-
-**Step 2: Voice check**
-Run the draft against Voice-Profile.md. Check for any Never Use violations. Fix before proceeding.
-
-**Step 3: Reddit (manual clipboard relay)**
-1. Format for Reddit using `/copy-for reddit`
-2. Tell user: "Reddit post copied to clipboard. Paste into the target subreddit."
-3. After user confirms, ask for Reddit URLs
-
-**Step 4: X posting (same day)**
-1. Read X draft or generate teaser (280 chars max)
-2. Include Reddit link in tweet body
-3. Dry-run first: `Scripts/x-post.sh --dry-run --file /tmp/x-post.txt`
-4. User approves, then post: `Scripts/x-post.sh --file /tmp/x-post.txt`
-
-**Step 4.5: LinkedIn posting**
-
-LinkedIn API credentials: `LINKEDIN_ACCESS_TOKEN` and `LINKEDIN_PERSON_URN` in container env.
-
-1. Generate LinkedIn adaptation from the article:
-   - 150-300 words, narrative prose, no code blocks
-   - Personal angle: why this matters, what was learned, or a concrete takeaway
-   - Hook-first opening (no em-dashes, no AI preamble)
-   - **No URL in post body** (LinkedIn penalizes links in body text)
-   - End with a question or engagement prompt
-2. Write to `/tmp/linkedin-post.txt`
-3. Dry-run: `python3 Scripts/post-to-linkedin.py --file /tmp/linkedin-post.txt --dry-run`
-4. Review output (shows char count and preview)
-5. Post: `python3 Scripts/post-to-linkedin.py --file /tmp/linkedin-post.txt`
-6. Capture the post URL from output
-7. **Link in first comment (manual):** The script posts body only. Tell user: "Add the article URL as the first comment on LinkedIn."
-
-If `LINKEDIN_ACCESS_TOKEN` is missing or expired, skip LinkedIn and note the failure.
-
-**Step 5: Update tracking**
-1. Move to Posted table in Content-Queue.md with date and URLs
-2. Update Published-URLs.md
-3. Move folder from `04-Approved/` to `05-Published/`
-
-**Step 6: Engagement reminders**
-- Reddit: Reply to comments within 4 hours (critical window)
-- X: Reply-guy engagement throughout the day
-- LinkedIn: Reply to comments within 2 hours (early engagement boosts distribution)
+This mode is kept for reference but should not be invoked directly. If someone asks to "publish an article," invoke `/write-article`.
 
 ---
 
@@ -298,7 +260,7 @@ If `LINKEDIN_ACCESS_TOKEN` is missing or expired, skip LinkedIn and note the fai
 
 ## Content Tracks
 
-Read `Profiles/Business-Identity.md` for current track list. Key: Tech & AI tracks are active primary. Domain-specific tracks depend on your current focus.
+Read `Profiles/Business-Identity.md` for current track list. Key: Tech & AI tracks are active primary. Kink education tracks are dormant/future.
 
 ## Platform Formatting Rules
 
@@ -307,7 +269,7 @@ Read `Profiles/Business-Identity.md` for current track list. Key: Tech & AI trac
 - TL;DR at top for long posts
 - Genuinely helpful, not promotional
 - Include real code snippets (sanitized)
-- Cadence: 2x/week max (Tue + Thu, 7:30-10 AM local). Maintain 10:1 comment-to-post ratio.
+- Cadence: 2x/week max (Tue + Thu, 7:30-10 AM CT). Maintain 10:1 comment-to-post ratio.
 - Comment engagement daily
 - 500-1500 words typical
 - Write Reddit-native first. Adapt winners for X.
@@ -322,10 +284,10 @@ See `adapt` mode for full formatting rules. Full guide: `Documents/Content-Pipel
 
 ## UTM Tagging (Required for All Links)
 
-Every link to your app or product must include UTM parameters.
+Every link to a [your-app] property must include UTM parameters.
 
 ```
-https://your-app-domain/?utm_source={platform}&utm_medium={type}&utm_campaign={identifier}
+https://[your-app-domain]/?utm_source={platform}&utm_medium={type}&utm_campaign={identifier}
 ```
 
 | Parameter | Value | Examples |
@@ -355,7 +317,7 @@ https://your-app-domain/?utm_source={platform}&utm_medium={type}&utm_campaign={i
 | `Documents/Content-Pipeline/05-Published/` | Published articles |
 | `Documents/Content-Pipeline/Published-URLs.md` | URLs for linking |
 | `Profiles/Voice-Profile.md` | Single source of truth for voice |
-| `Profiles/Voice-Samples-Raw.md` | Verified samples with provenance |
+| `Profiles/Voice-Samples-Raw.md` | 20+ verified samples with provenance |
 
 ## X Articles: Key Facts
 

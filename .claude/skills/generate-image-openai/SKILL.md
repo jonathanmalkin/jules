@@ -1,6 +1,8 @@
 ---
 name: generate-image-openai
-description: Use when the user wants to generate, create, or make images using OpenAI/DALL-E/GPT image models. Triggers on requests like "generate an image", "create a picture", "make me an illustration", or any image creation task.
+model: haiku
+effort: medium
+description: "Generates images using OpenAI/DALL-E/GPT image models with an iterative two-phase workflow: fast drafts for iteration, high-quality final render on approval. Triggers on 'generate an image', 'create a picture', 'make me an illustration', 'DALL-E', or any image creation task. Do NOT use for diagrams or flowcharts (use /diagram or /excalidraw-diagram)."
 ---
 
 # OpenAI Image Generation — Iterative Workflow

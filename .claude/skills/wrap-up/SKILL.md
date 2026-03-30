@@ -1,13 +1,16 @@
 ---
 name: wrap-up
-description: Use when user says "wrap up", "close session", "end session", "wrap things up", "close out this task", or invokes /wrap-up — runs end-of-session checklist for shipping, memory, and self-improvement
+model: sonnet
+effort: high
+description: "End-of-session checklist: issue capture, session report, ship. Triggers on 'wrap up', 'close session', 'end session', 'wrap things up', or /wrap-up. Do NOT use mid-session or for task completion without ending the session."
+user-invocable: true
 ---
 
 # Session Wrap-Up
 
-Run four phases in order. All phases auto-apply without asking; present a consolidated report at the end.
+Run three phases in order. All phases auto-apply without asking; present a consolidated report at the end.
 
-## Phase 1: Quick Issue Capture (Conditional)
+## Phase 1: Issue Capture (Conditional)
 
 Do a **quick session health check** (inline, no subagents):
 
@@ -16,7 +19,7 @@ Do a **quick session health check** (inline, no subagents):
 3. Were there workarounds or hacky fixes?
 4. Was there confusion, misunderstanding, or significant course corrections?
 
-**If YES to any:** Extract issues and save a structured issue file. Do NOT run `/retro-deep` or spawn subagents. The heavy analysis runs in the daily morning batch.
+**If YES to any:** Extract issues and save a structured issue file.
 
 Scan the **entire conversation** for issues across these categories:
 - **Repeated errors** — Same root cause 2+ times
@@ -35,7 +38,7 @@ Save to `Documents/Field-Notes/Logs/YYYY-MM-DD-Session-Issues.md` (append if fil
 ### 1. [Category] Brief description
 - **Severity:** high/medium/low
 - **Occurrences:** N
-- **Context:** What happened — include error messages, file paths, sequence of attempts. Rich enough for someone with no conversation context to understand the issue and cross-reference against config files.
+- **Context:** What happened — include error messages, file paths, sequence of attempts. Rich enough for someone with no conversation context to understand the issue.
 - **What was tried:** Solutions attempted, in order
 - **What worked:** Final resolution (if any)
 
@@ -45,73 +48,16 @@ Save to `Documents/Field-Notes/Logs/YYYY-MM-DD-Session-Issues.md` (append if fil
 - [description of mechanical instruction that should be a script]
 ```
 
-**IMPORTANT:** Write rich context for each issue. Error messages, file paths, what was tried and in what order, why workarounds were needed. This is the only record the daily batch job will have — thin descriptions produce thin analysis.
+**Write rich context for each issue.** Error messages, file paths, what was tried and in what order, why workarounds were needed. This is the only record available for later analysis.
 
-**If high-severity issues found** (compliance failures, blocked progress): note in the session report "Recommend running `/retro-deep` for immediate analysis" so [Your Name] can trigger it manually if needed.
-
-**If NO to all (clean session):** Skip issue capture. Note "Clean session — no issues" in the session report. Still run the determinism scan below.
-
-After issue capture (or skip), run the **determinism scan** on this session:
-
-Were any new instructions written to skills, rules, or CLAUDE.md? For each: is it mechanical (same input, same output, no judgment)? If yes, flag it as a script candidate. Apply the test: "If 10 different LLMs got this instruction, would they all do exactly the same thing?" If yes, create the script in `.claude/scripts/` and update the instruction to call it. Also add determinism candidates to the issue file if one was created.
-
-## Phase 1.5: Content Seed Capture
-
-Scan the session for content-worthy moments. This should take ~60 seconds. No drafting, no voice checking, no agent delegation.
-
-**What qualifies as content-worthy:**
-- A problem solved that other builders would hit
-- A pattern or technique discovered during the session
-- A tool, script, or workflow built that's generalizable
-- A decision made with interesting reasoning
-- A surprising finding or counterintuitive result
-
-**If seeds found:** Write to `Documents/Content-Pipeline/01-Drafts/Seeds/YYYY-MM-DD-Session-Mining.md`. Append if the file already exists from an earlier session today.
-
-**Seed format:**
-
-```markdown
-### [Action-oriented title]
-**Platform:** [target subreddit or X, with brief reasoning]
-**Hook:** [2-3 sentences. The "why this matters" angle.]
-**Context:** [1 paragraph. What happened in the session, what the struggle was, what made this interesting. This is the material the overnight expansion job needs to write a real story, not a summary.]
-**Key detail:** [The specific technical detail, command, error message, or insight that makes this post concrete rather than generic.]
-```
-
-The Context and Key Detail fields carry the session knowledge that won't exist overnight. Write them rich.
-
-**If nothing content-worthy:** Skip. Note "No content seeds" in the session report. Most debugging or maintenance sessions won't produce seeds.
-
-## Phase 1.75: Build Log Tweet (Conditional)
-
-If the session produced concrete outcomes (code shipped, features built, decisions made, content published), draft a build log tweet.
-
-**Skip if:** Session was purely conversational, research-only, or maintenance with no visible outcome.
-
-**Format:**
-```
-What I built today with Claude Code:
-
-[1-2 sentence summary of the main outcome]
-
-[Optional: one specific detail that makes it interesting]
-
-#BuildInPublic #ClaudeCode #AI
-```
-
-**Process:**
-1. Draft the tweet (max 280 chars)
-2. Include in the session report under "## Build Log Tweet"
-3. The tweet is a DRAFT — it gets posted via the tweet scheduler after [Your Name] reviews, or auto-posted if standing order is earned
-
-**Tone:** Casual, concrete, no hype. "Here's what got done" energy. The tweet should make another builder think "oh that's cool" or "I should try that."
+**If NO to all (clean session):** Skip issue capture. Note "Clean session — no issues" in the session report.
 
 ## Phase 2: Session Report
 
 Create the session report:
 
 ```bash
-bash ~/workspace/.claude/scripts/session-report-scaffold.sh
+bash .claude/scripts/session-report-scaffold.sh
 ```
 
 Fill in the sections based on the conversation:
@@ -123,10 +69,9 @@ Fill in the sections based on the conversation:
 
 ## What Got Done
 - [Concrete outcomes — shipped code, created files, decisions made]
-- **Signal check:** [Did this session move something toward a real person? Deployed, published, emailed — or internal-only?]
 
 ## Decisions Made
-- [Brief — full rationale lives in Decision-Log.md]
+- [Brief — log significant decisions to Decision-Log.md if applicable]
 
 ## Open Items
 - [Unfinished, blocked, or needs attention next session]
@@ -137,32 +82,40 @@ Fill in the sections based on the conversation:
 ## Context for Next Session
 - [WIP state, gotchas, things to watch for]
 
-## Compaction Health
-[Output from: bash .claude/scripts/compaction-stats.sh --recent 1]
+## Handoff
+**Status: Complete** — No additional work needed.
 ```
 
-Run `bash .claude/scripts/compaction-stats.sh --recent 1` and include its output in the report. Skip empty sections. Include the autonomy report (Goal 4) — decisions made autonomously, standing orders exercised. Skip the autonomy section if nothing to report.
+**OR** if the session's stated focus has unfinished work:
 
-## Phase 3: Update Terrain
+```markdown
+## Handoff
+**Status: Continues**
+**Resume prompt:** `<exact prompt to paste into a fresh session>`
+**What's left:** [brief list of remaining items]
+**Blockers:** [anything that must happen before resumption, or "None"]
+```
 
-Re-read `Terrain.md` before editing (Syncthing may have modified it).
+**Handoff rules:**
+- **Always present.** Every session report gets a Handoff section.
+- **Binary:** Complete or Continues. No ambiguity.
+- **Complete** = the session's stated focus is resolved. Follow-on work in Open Items is normal and doesn't change the status.
+- **Continues** = the session's stated focus has unfinished work. The resume prompt must be specific enough for a fresh session with no prior context. Reference specific files (plans, research docs, specs) — don't rely on "read the session report."
 
-1. Remove completed items — don't log them (session report already did)
-2. Update project statuses and task items
-3. Resolve answered questions, add new ones
-4. Log significant decisions to `Documents/Field-Notes/Decision-Log.md` with `**Status:** revisit-by-YYYY-MM-DD` where applicable
+Skip empty sections (except Handoff — always include it).
 
-Only touch sections affected by the session. If nothing changed, say "Terrain is current."
-
-5. Update Jules Queue:
-   - Check off any queue items completed during this session
-   - Add identified follow-on items with `auto` or `propose` tags
-   - Format: `- [ ] **Item** — context | auto | est:Xm *(queued YYYY-MM-DD)*`
-   - If marking items `propose`, briefly note why ("needs browser" / "might be strategic pivot" / etc.)
-   - Items default to `propose` unless clearly within authorized categories
-
-## Phase 4: Ship
+## Phase 3: Ship
 
 ```bash
-bash ~/workspace/.claude/scripts/wrap-up-ship.sh "Wrap-up: <brief description of session>"
+bash .claude/scripts/wrap-up-ship.sh "Wrap-up: <brief description of session>"
 ```
+
+After shipping, always end with the Handoff status stated directly in the conversation:
+
+> **Handoff: Complete** — No additional work needed.
+
+or
+
+> **Handoff: Continues** — [what's left + resume prompt]
+
+This is the last thing [Your Name] sees. Don't skip it.

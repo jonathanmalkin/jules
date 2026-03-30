@@ -1,0 +1,55 @@
+{
+  "skill": "send-email",
+  "note": "Eval runner not yet implemented. These test cases define expected behavior for manual verification and future automation.",
+  "test_cases": [
+    {
+      "id": "structured-content",
+      "prompt": "Email me a summary of what we discussed about the [your-app] migration",
+      "should_trigger": true,
+      "expected_behavior": [
+        "Uses build-digest-email.sh piped into jules-send-email.sh (HTML path)",
+        "Subject line is specific (mentions [your-app] migration, not generic 'Update')",
+        "Content is formatted as markdown with headers and structure",
+        "Checks rate limit before sending"
+      ]
+    },
+    {
+      "id": "simple-notification",
+      "prompt": "Email me a reminder to follow up with Michael from AITX this week",
+      "should_trigger": true,
+      "expected_behavior": [
+        "Uses jules-send-email.sh with --body flag (plain text path)",
+        "Does NOT use build-digest-email.sh for a one-liner",
+        "Subject line is descriptive (e.g. 'Reminder: Follow Up with Michael')",
+        "Checks rate limit before sending"
+      ]
+    },
+    {
+      "id": "dry-run-preview",
+      "prompt": "What would the email look like if I asked you to send me today's session notes?",
+      "should_trigger": true,
+      "expected_behavior": [
+        "Uses --dry-run flag to preview without sending",
+        "Shows recipient, from address, subject, and send count",
+        "Does NOT consume a send from the daily limit"
+      ]
+    },
+    {
+      "id": "should-not-trigger-slack",
+      "prompt": "Send this summary to Slack",
+      "should_trigger": false,
+      "expected_behavior": [
+        "Does NOT invoke send-email skill",
+        "Routes to Slack messaging instead"
+      ]
+    },
+    {
+      "id": "should-not-trigger-dm",
+      "prompt": "DM me about this",
+      "should_trigger": false,
+      "expected_behavior": [
+        "Does NOT invoke send-email skill"
+      ]
+    }
+  ]
+}

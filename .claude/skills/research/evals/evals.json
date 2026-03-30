@@ -1,0 +1,51 @@
+[
+  {
+    "query": "Do a deep dive on WebSocket alternatives for real-time communication",
+    "expected_behavior": [
+      "Triggers research skill",
+      "Dispatches parallel research agents",
+      "Synthesizes multiple sources into a structured report",
+      "Creates a research doc in Documents/Field-Notes/Research/"
+    ],
+    "should_not": [
+      "Answer as Quick tier with a one-paragraph summary",
+      "Trigger scope skill (no implementation requested)"
+    ]
+  },
+  {
+    "query": "Research report on Claude Code hook patterns in the community",
+    "expected_behavior": [
+      "Triggers research skill",
+      "Searches Reddit, GitHub, and community sources",
+      "Compares findings to current setup"
+    ],
+    "should_not": [
+      "Trigger scout-techniques skill (this is a formal report, not a scan)",
+      "Skip source citation"
+    ]
+  },
+  {
+    "query": "Investigate how other solo founders handle content distribution",
+    "expected_behavior": [
+      "Triggers research skill",
+      "Searches across multiple platforms and sources",
+      "Produces a structured findings document"
+    ],
+    "should_not": [
+      "Trigger advisory skill (research first, decision later)",
+      "Answer with training data only without live searches"
+    ]
+  },
+  {
+    "query": "Look into this: https://example.com/interesting-article",
+    "expected_behavior": [
+      "Triggers research skill (URL drop with synthesis needed)",
+      "Fetches and reads the URL content",
+      "Summarizes and contextualizes findings"
+    ],
+    "should_not": [
+      "Treat as Quick tier (URL analysis needs synthesis)",
+      "Trigger scout skill (not an engagement opportunity)"
+    ]
+  }
+]

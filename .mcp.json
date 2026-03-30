@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "reddit-mcp-buddy": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp"
+    },
+    "plane": {
+      "command": "bash",
+      "args": [".claude/skills/plane/scripts/start-plane-mcp.sh"]
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "env": {}
+    },
+    "perplexity": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "perplexity-mcp"],
+      "env": {
+        "PERPLEXITY_API_KEY": "[YOUR_PERPLEXITY_API_KEY]"
+      }
+    }
+  }
+}

@@ -18,12 +18,12 @@ Compact element references that reduce context usage dramatically for AI agents.
 
 Traditional approach:
 ```
-Full DOM/HTML -> AI parses -> CSS selector -> Action (~3000-5000 tokens)
+Full DOM/HTML → AI parses → CSS selector → Action (~3000-5000 tokens)
 ```
 
 agent-browser approach:
 ```
-Compact snapshot -> @refs assigned -> Direct interaction (~200-400 tokens)
+Compact snapshot → @refs assigned → Direct interaction (~200-400 tokens)
 ```
 
 ## The Snapshot Command
@@ -92,7 +92,7 @@ agent-browser click @e1
 
 # MUST re-snapshot to get new refs!
 agent-browser snapshot -i
-# @e1 [h1] "Page 2"  <- Different element now!
+# @e1 [h1] "Page 2"  ← Different element now!
 ```
 
 ## Best Practices
@@ -139,12 +139,12 @@ agent-browser snapshot @e9
 
 ```
 @e1 [tag type="value"] "text content" placeholder="hint"
-|    |   |             |               |
-|    |   |             |               +- Additional attributes
-|    |   |             +- Visible text
-|    |   +- Key attributes shown
-|    +- HTML tag name
-+- Unique ref ID
+│    │   │             │               │
+│    │   │             │               └─ Additional attributes
+│    │   │             └─ Visible text
+│    │   └─ Key attributes shown
+│    └─ HTML tag name
+└─ Unique ref ID
 ```
 
 ### Common Patterns

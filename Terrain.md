@@ -12,13 +12,13 @@ Last updated: [date] (Session # -- [description])
 ## Now
 
 **Today ([Day] [Date]):**
-- [emoji] [Task with context]
+- [Task with context]
 
 **Tomorrow ([Day] [Date]):**
-- [emoji] [Task with context]
+- [Task with context]
 
 **This week:**
-- [emoji] [Task with context]
+- [Task with context]
 
 ## Next
 

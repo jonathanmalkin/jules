@@ -1,0 +1,51 @@
+[
+  {
+    "query": "The tests are failing after my last commit",
+    "expected_behavior": [
+      "Triggers systematic-debugging skill",
+      "Reads error output before proposing fixes",
+      "Checks recent git changes for root cause",
+      "Forms hypothesis and tests one variable at a time"
+    ],
+    "should_not": [
+      "Trigger scope skill (this is a bug, not a feature request)",
+      "Propose a fix without reproducing the issue first"
+    ]
+  },
+  {
+    "query": "Getting a 500 error on the /api/users endpoint",
+    "expected_behavior": [
+      "Triggers systematic-debugging skill",
+      "Traces the request through the code path",
+      "Checks logs and error messages"
+    ],
+    "should_not": [
+      "Trigger advisory skill",
+      "Rewrite the endpoint from scratch without understanding the failure"
+    ]
+  },
+  {
+    "query": "This function returns undefined when it should return an array",
+    "expected_behavior": [
+      "Triggers systematic-debugging skill",
+      "Reads the function code",
+      "Traces data flow to find where the return value is lost"
+    ],
+    "should_not": [
+      "Treat as Quick tier and immediately rewrite the function",
+      "Trigger scope skill"
+    ]
+  },
+  {
+    "query": "The app crashes with a segfault when processing large files",
+    "expected_behavior": [
+      "Triggers systematic-debugging skill",
+      "Attempts to reproduce with a test case",
+      "Checks memory allocation and buffer sizes"
+    ],
+    "should_not": [
+      "Trigger scope skill (this is a bug, not a feature)",
+      "Skip reproduction and guess at a fix"
+    ]
+  }
+]
