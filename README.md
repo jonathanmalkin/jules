@@ -6,7 +6,7 @@ An open source reference implementation built on [Claude Code](https://docs.anth
 
 `17 skills` `5 hooks` `cloud batch` `telegram` `60-90% token savings` `<500 lines in CLAUDE.md`
 
-[GitHub](https://github.com/jonathanmalkin/jules) &#183; [Website](https://builtwithjon.com/jules)
+[Website](https://builtwithjon.com/jules)
 
 ---
 
@@ -67,23 +67,9 @@ Software, content, research, deploys, analytics — one system, same context.
 
 ## Build Your Own
 
-You don't need dozens of configurations to start. One prompt gets you a working system.
-
 ### The One-Prompt Starter
 
-Open Claude Code in your project directory:
-
-```
-Read my codebase. Create a .claude/CLAUDE.md that describes the project, key
-conventions, and common workflows. Then create one skill in .claude/skills/
-for the task I do most often.
-```
-
-That's it. One CLAUDE.md and one skill. Build up from there.
-
-### Go Deeper
-
-Once you have the basics, point Claude Code at this repo for tailored recommendations:
+Open Claude Code in your project directory and paste this:
 
 ```
 Analyze my current Claude Code setup (CLAUDE.md, .claude/ directory, and codebase) and
@@ -101,35 +87,28 @@ compare it against the reference implementation at https://github.com/jonathanma
 Don't try to replicate the whole system. Tell me what would actually help MY setup.
 ```
 
-<details>
-<summary>Manual setup</summary>
-
-1. Fork this repo
-2. Copy the `.claude/` directory structure into your project
-3. Edit `CLAUDE.md` with your agent's identity and your working style
-4. Fill in the profile templates in `profiles/`
-5. Start with 2-3 skills and expand based on what you actually need
-6. Add hooks for safety only when the probabilistic version isn't reliable enough
-
-Start small. The system grew organically over weeks of daily use. Don't try to build the whole thing on day one.
-
-</details>
+Start small. The system grew organically over weeks of daily use.
 
 ## Under the Hood
 
 | Skills | Hooks | Token Savings | CLAUDE.md | Cloud Batch | Environments |
 |:------:|:-----:|:-------------:|:---------:|:-----------:|:------------:|
-| 17 | 5 | 60-90% via RTK | <500 lines | ON (overnight) | 4 |
+| 17 | 5 | 60-90% via RTK | <500 lines | ON (overnight) | 3 |
 
 ## Architecture
 
 ### Environments
 
 ```
-Mac (Interactive Dev)  →  Cloud (Overnight Batch)  →  Telegram (Phone Access)  →  Cloud Web (Remote Sessions)
+┌─────────────────────┐     ┌─────────────────────────────────┐     ┌─────────────────────┐
+│                     │     │          Claude Web              │     │                     │
+│   Mac               │     │                                 │     │   Telegram           │
+│   Interactive Dev   │     │  Scheduled    │   Interactive   │     │   Phone Access       │
+│                     │     │  Batch        │   Sessions      │     │                     │
+└─────────────────────┘     └─────────────────────────────────┘     └─────────────────────┘
 ```
 
-No VPS, no Docker, no daemons. The Mac handles everything interactive. The Cloud handles everything scheduled.
+No VPS, no Docker, no daemons.
 
 ### Five-Layer Model
 
@@ -207,6 +186,37 @@ One overnight task, three sequential phases:
 | Morning Briefing | Assemble 10-section briefing from Plane, Reddit, Gmail, git log, retro output |
 | Email Fetch | Pull and categorize inbox |
 
+## Security & Privacy
+
+A unified `safety-guard.sh` hook fires on every Bash, WebFetch, Write, and Edit tool call. Four layers, all deterministic — no AI judgment involved.
+
+**Command blocking.** 16 patterns: `rm`, `sudo`, force-push, broad git staging (`git add .`), piping remote code to shell (`curl | bash`), system directory writes, `.env` overwrites via redirect, destructive git operations, and more.
+
+**Secret scanning.** Regex detection for hardcoded credentials before any command executes — AWS keys, GitHub PATs, Anthropic/OpenAI API keys, private key material. Blocks the command and surfaces the match.
+
+**Financial data guard.** Two-gate system. Gate 1 detects when sensitive financial files are read in the current session. Gate 2 blocks outbound actions (clipboard, curl POST, social posting scripts) that contain dollar amounts, account numbers, or financial terms. Both gates must fire — no false positives on normal work.
+
+**Domain blocking.** WebFetch blocked on domains that return login walls (x.com, twitter.com) with workaround routing to API scripts.
+
+**Autonomy boundaries.** Explicit "Just Do It / Ask First" framework in CLAUDE.md. Every action has clear criteria — reversible + within scope + no external impact = autonomous. Anything else gets a Decision Card. Standing orders expand the boundary over time through a proposal → approval flow.
+
+**Defense in depth.** The hook is one layer. `settings.json` maintains a redundant deny-list at the permissions level. CLAUDE.md encodes behavioral rules. The agent profile defines escalation directives. Four independent layers, any one of which catches the problem.
+
+## Claude Code Capabilities
+
+v4's simplification was possible because Claude Code shipped features that replaced custom infrastructure. A VPS with Docker, 9 cron jobs, and a Slack daemon became configuration pointing at built-in capabilities.
+
+| Capability | What It Replaced | Docs |
+|---|---|---|
+| [Claude Web](https://docs.anthropic.com/en/docs/claude-code/overview) | VPS for remote sessions | Scheduled batch + interactive sessions from any browser |
+| [Scheduled Triggers](https://docs.anthropic.com/en/docs/claude-code/overview) | 9 cron jobs + Docker container | Overnight retro, morning briefing, email fetch — one config |
+| [Channels](https://docs.anthropic.com/en/docs/claude-code/mcp) | Slack daemon (always-on, auth overhead) | Telegram push into sessions via MCP channel capability |
+| [Dispatch](https://docs.anthropic.com/en/docs/claude-code/overview) | Manual task handoff | Kick off tasks from phone, pick up in desktop session |
+| [Remote Control](https://docs.anthropic.com/en/docs/claude-code/overview) | SSH to VPS | Step away from desk, keep working from phone or browser |
+| [Claude in Chrome](https://docs.anthropic.com/en/docs/claude-code/ide-integrations) | Custom browser automation scripts | Browser automation via extension, scheduled browser tasks |
+| [Skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) | Prompt files + manual routing | Structured workflows with frontmatter, scoped hooks, tool permissions |
+| [Hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) | Scattered guard scripts | Deterministic lifecycle events with unified configuration |
+
 ## Evolution
 
 | Version | What Changed |
@@ -238,9 +248,9 @@ This system was built on top of, adapted from, and influenced by the work of oth
 
 **[RTK](https://github.com/rtk-ai/rtk)** (Rust Token Killer). Token optimization for CLI operations, integrated as a hook. 60-90% savings on dev tool output.
 
-**[GStack](https://github.com/garrytan/gstack)** by Garry Tan (MIT License). The structured Think → Plan → Build → Review → Ship workflow and role-based skill design influenced how Jules chains skills together.
-
 **[Context Mode MCP](https://github.com/mksglu/claude-context-mode)** by mksglu. The context compression and FTS5 knowledge base patterns informed our approach to token management, even where we took a different path.
+
+**OWASP** and community security patterns. The secret scanning regex fingerprints (AWS keys, GitHub PATs, PEM detection) draw from well-established credential detection patterns. The two-gate financial data guard and defense-in-depth validation layers were developed through operational experience but informed by OWASP principles.
 
 Community research that shaped specific patterns: [Thariq's Claude Code thread](https://x.com/trq212/status/2035372716820218141) (Anthropic — agent loop, bash-first search, verification patterns), Daniil Okhlopkov's multi-MCP setup (git worktrees, self-improving CLAUDE.md), and Shrivu Shankar's feature guide (hook placement strategy, `/catchup` workflow).
 
