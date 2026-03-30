@@ -141,7 +141,7 @@ How to decide where a behavior belongs:
 | A repeatable procedure with defined inputs/outputs | **Script** (invoked by skill, hook, or Cloud task) |
 | Requires AI judgment, dialogue, or synthesis | **Skill** (structured conversation) |
 | A behavioral rule or preference | **CLAUDE.md section** (loaded every session) |
-| Stable identity or context | **Profiles/** (loaded every session) |
+| Stable identity and context | **Profiles/** (loaded every session) |
 
 ## Skills (17)
 
