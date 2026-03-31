@@ -234,6 +234,8 @@ One overnight task, three sequential phases:
 | Morning Briefing | Assemble 10-section briefing from Plane, Reddit, Gmail, git log, retro output |
 | Email Fetch | Pull and categorize inbox |
 
+Full implementation guide: [docs/overnight-batch.md](docs/overnight-batch.md)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Security & Privacy
