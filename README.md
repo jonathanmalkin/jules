@@ -13,7 +13,7 @@ An open source reference implementation built on [Claude Code][claude-code-url].
 [![Hooks: 5][hooks-shield]][hooks-url]
 [![Token Savings: 60-90%][tokens-shield]][rtk-url]
 
-[Website][website-url] · [Architecture Docs][architecture-url] · [Get Started](#build-your-own)
+[Website][website-url] · [Overnight Batch][overnight-url] · [Get Started](#build-your-own)
 
 </div>
 
@@ -114,7 +114,7 @@ compare it against the reference implementation at https://github.com/jonathanma
 
 1. Read my existing configuration and understand my project, workflow, and goals.
 2. Fetch and study the Jules repo README, CLAUDE.md, profiles/, .claude/hooks/,
-   .claude/skills/, and docs/architecture.md to understand the patterns.
+   .claude/skills/, and docs/overnight-batch.md to understand the patterns.
 3. Identify the highest-impact improvements I could make, prioritized by:
    - What I'm missing entirely (e.g., no safety hooks, no decision framework)
    - What I have but could strengthen (e.g., thin CLAUDE.md, no agent personality)
@@ -325,7 +325,7 @@ v4's simplification was possible because Anthropic shipped features that replace
 [tokens-shield]: https://img.shields.io/badge/token_savings-60--90%25-brightgreen?style=flat-square
 [rtk-url]: https://github.com/rtk-ai/rtk
 [website-url]: https://builtwithjon.com/jules
-[architecture-url]: docs/architecture.md
+[overnight-url]: docs/overnight-batch.md
 [claude-code-url]: https://docs.anthropic.com/en/docs/claude-code/overview
 [claude-web-url]: https://docs.anthropic.com/en/docs/claude-code/overview
 [channels-url]: https://docs.anthropic.com/en/docs/claude-code/mcp
