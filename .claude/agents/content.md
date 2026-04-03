@@ -18,7 +18,6 @@ allowed-tools:
   - mcp__reddit-mcp-buddy__browse_subreddit
   - mcp__reddit-mcp-buddy__search_reddit
   - mcp__reddit-mcp-buddy__get_post_details
-  - mcp__perplexity__search
 ---
 
 # Content Agent

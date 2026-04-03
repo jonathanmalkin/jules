@@ -44,11 +44,10 @@ See `.claude/rules/search-tools.md` for the full tool routing guide. Research-sp
 |-----------|------|-----|
 | Community discussion, opinions, experiences | Reddit MCP (`search_reddit`, `get_post_details`) | Direct access to threads and comments |
 | General web search, news, blog posts | WebSearch (built-in) | Broad coverage, keyword-based |
-| Synthesized answer, tradeoff comparison | Perplexity search | Combines multiple sources with citations |
 | Library docs, API references | Context7 (`resolve-library-id` → `query-docs`) | Returns actual docs, prevents hallucinated APIs |
 | Full page content extraction | WebFetch with a descriptive prompt | Prompt parameter guides extraction |
 
-If Context7 or Perplexity aren't configured, fall back to WebSearch + WebFetch. Don't block on missing tools.
+If Context7 isn't configured, fall back to WebSearch + WebFetch. Don't block on missing tools.
 
 ## Phase 2: Research Dispatch
 
@@ -93,10 +92,6 @@ Search for authoritative sources: official docs, research papers, expert blog po
 - Official documentation on the topic
 - Blog posts from recognized practitioners
 - GitHub repos/issues with relevant implementations
-
-**Perplexity search** for synthesis questions:
-- "What are the tradeoffs between X and Y?"
-- "What's the current best practice for Z?"
 
 Return format:
 ```

@@ -26,14 +26,6 @@ returns copy-paste-ready code from official sources. Two calls required
 (resolve → query), worth it for known frameworks (Astro, React, Next.js,
 Anthropic SDKs, Plane, Supabase, etc).
 
-**Perplexity search** is for questions that need synthesis — combining multiple
-sources into one answer. Best for error fixes, tradeoff comparisons, and current
-best practices. Returns structured answers with inline citations. Costs
-~$0.005/query — don't use for simple factual lookups that WebSearch handles.
-
-**Perplexity reason** is for complex multi-step technical reasoning only. Most
-questions don't need it. Default to Perplexity search.
-
 **Reddit MCP** (search_reddit, get_post_details) is for community discussion
 when you know which subreddit to target. Returns thread content with vote counts
 and comments. Bad for broad topics spanning communities — use WebSearch instead.
@@ -47,11 +39,11 @@ on x.com/twitter.com — use Scripts/x-search.sh instead.
 | What you need | Primary tool | Fallback |
 |---------------|-------------|----------|
 | Official API syntax, correct method signatures | Context7 | WebSearch |
-| Fix for a specific error message | Perplexity search | WebSearch (for raw GitHub issues) |
+| Fix for a specific error message | WebSearch (for GitHub issues) | — |
 | Recent changes, changelogs, release notes | WebSearch | — |
 | Community opinions on a specific subreddit topic | Reddit MCP | WebSearch |
-| Broad community sentiment across platforms | WebSearch | Perplexity search |
-| Comparison or tradeoff synthesis | Perplexity search | WebSearch (for comparison articles) |
+| Broad community sentiment across platforms | WebSearch | — |
+| Comparison or tradeoff synthesis | WebSearch (for comparison articles) | — |
 | Competitive intelligence, "what's X doing" | WebSearch | — |
 | Content at a known URL | WebFetch with extraction prompt | — |
 | Simple factual lookup | WebSearch | — |
@@ -66,11 +58,8 @@ Single-tool answers are fine for quick lookups. For deeper questions, layer:
 2. **WebSearch + WebFetch**: Find the right page, then read it in full. Common
    for changelogs and documentation.
 
-3. **Reddit MCP + Perplexity**: Raw community discussion, then synthesize.
-   Common in /research dispatch.
-
-4. **Perplexity + WebSearch**: Synthesized answer, then verify specific claims.
-   Common for high-stakes decisions.
+3. **Reddit MCP + WebSearch**: Raw community discussion, then verify claims
+   with web search. Common in /research dispatch.
 
 Don't stack tools for simple questions. One call that answers it is better than
 three that triangulate.

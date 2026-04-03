@@ -170,8 +170,7 @@ You MUST complete each phase before proceeding to the next.
    - Ask for help
    - Research the error online:
      - Library-specific issue → Context7 first (verify correct API usage against official docs)
-     - Error message or known bug → Perplexity search (synthesizes the fix from multiple sources)
-     - Need raw GitHub issue thread → WebSearch (finds issues with exact error text)
+     - Error message or known bug → WebSearch (finds GitHub issues with exact error text)
 
 ### Phase 4: Implementation
 
