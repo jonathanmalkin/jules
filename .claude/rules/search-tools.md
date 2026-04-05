@@ -32,7 +32,7 @@ and comments. Bad for broad topics spanning communities — use WebSearch instea
 
 **WebFetch** is for reading a known URL. Always include a descriptive prompt
 telling it what to extract. Only tool for URL content extraction. Hook-blocked
-on x.com/twitter.com — use Scripts/x-search.sh instead.
+on x.com/twitter.com — use `xurl search` instead.
 
 ## Routing by Answer Type
 

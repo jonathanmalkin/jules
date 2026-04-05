@@ -127,7 +127,7 @@ platforms:
 
 **Tagging:** Check `Documents/Content-Pipeline/Social-Handles.md` for verified handles. Tag relevant people in body tweets, not the hook.
 
-**Posting:** `Scripts/x-post.sh --thread --file /tmp/x-thread.txt`
+**Posting:** `xurl post "first tweet"`, then `xurl reply TWEET_ID "next tweet"` for each subsequent tweet
 
 ## LinkedIn
 

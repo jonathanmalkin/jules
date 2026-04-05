@@ -25,10 +25,11 @@ if [[ "$TOOL" == "WebFetch" ]]; then
   # Avoids false positives on flex.com, next.com, etc.
   if echo "$URL" | grep -qEi '(^https?://(www\.)?(x\.com|twitter\.com)|://(mobile|m)\.(x\.com|twitter\.com))'; then
     cat >&2 <<'EOF'
-BLOCKED: WebFetch to x.com/twitter.com returns login walls. Use X API instead:
-- Post/reply/thread: bash Scripts/x-post.sh "text" (--reply-to, --thread, --file)
-- Search tweets: bash Scripts/x-search.sh
-- Read a tweet by ID: curl with Bearer Token (extract ID from URL)
+BLOCKED: WebFetch to x.com/twitter.com returns login walls. Use xurl instead:
+- Post: xurl post "text"
+- Reply: xurl reply TWEET_ID "text"
+- Search: xurl search "query" -n 10
+- Read a tweet: xurl read TWEET_ID
 - Full workflow: invoke /replies skill
 EOF
     exit 2

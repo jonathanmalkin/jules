@@ -2,7 +2,7 @@
 name: replies
 model: sonnet
 effort: medium
-description: "Check X/Twitter for mentions and engagement opportunities, draft reply candidates, post approved ones. Simple script wrapper around x-search and x-post. Use when user says 'check mentions', 'reply to tweets', 'engagement scan', 'check X', or invokes /replies."
+description: "Check X/Twitter for mentions and engagement opportunities, draft reply candidates, post approved ones. Uses xurl CLI. Use when user says 'check mentions', 'reply to tweets', 'engagement scan', 'check X', or invokes /replies."
 user-invocable: true
 ---
 
@@ -17,13 +17,13 @@ Check X/Twitter for mentions and engagement opportunities, draft replies, post a
 Search for mentions and engagement opportunities:
 
 ```bash
-bash Scripts/x-search.sh
+xurl search "@builtwithjules" -n 20
 ```
 
 If the user specified a query (e.g., `/replies claude code hooks`), pass it:
 
 ```bash
-bash Scripts/x-search.sh "claude code hooks"
+xurl search "claude code hooks" -n 20
 ```
 
 Present results: N items found. Show each with tweet text, author, engagement counts, and tweet ID.
@@ -64,7 +64,7 @@ Present each draft alongside the original tweet for approval:
 For each approved reply:
 
 ```bash
-bash Scripts/x-post.sh --reply-to [TWEET_ID] "[reply text]"
+xurl reply [TWEET_ID] "[reply text]"
 ```
 
 Confirm post success for each. If a post fails, report the error and continue with remaining replies.

@@ -64,7 +64,7 @@ cd Code/[your-site] && npm run build
 
 | Check | How | Fail condition |
 |-------|-----|----------------|
-| X API auth cached | `Scripts/x-post.sh --dry-run "test"` | Non-zero exit |
+| X API auth cached | `xurl auth status` | No `oauth1: ✓` in output |
 | LinkedIn token valid | `python3 Scripts/post-to-linkedin.py --check-auth` | Non-zero exit or "expired" in output |
 
 ## Editorial Quality Checks (Author Review)

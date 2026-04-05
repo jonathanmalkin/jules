@@ -380,9 +380,8 @@ Present both adaptations to [Your Name]. Iterate if needed.
 
 **X Thread:**
 1. Write thread to `/tmp/x-thread.txt` (format: tweets separated by `---`)
-2. Dry-run: `bash Scripts/x-post.sh --thread --dry-run --file /tmp/x-thread.txt`
-3. Show the dry-run output. Confirm with [Your Name]: "Thread looks good?"
-4. Post: `bash Scripts/x-post.sh --thread --file /tmp/x-thread.txt`
+2. Show thread preview. Confirm with [Your Name]: "Thread looks good?"
+3. Post first tweet: `xurl post "first tweet text"`, then chain replies: `xurl reply TWEET_ID "next tweet"` for each subsequent tweet
 5. Capture the thread URL from output
 
 ### 4d: Decision point
