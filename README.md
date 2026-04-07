@@ -9,9 +9,8 @@ Most AI tools do tasks. Jules thinks with you first, then does everything else.
 An open source reference implementation built on [Claude Code][claude-code-url].
 
 [![License: MIT][license-shield]][license-url]
-[![Skills: 17][skills-shield]][skills-url]
-[![Hooks: 5][hooks-shield]][hooks-url]
-[![Token Savings: 60-90%][tokens-shield]][rtk-url]
+[![Skills: 19][skills-shield]][skills-url]
+[![Hooks: 3][hooks-shield]][hooks-url]
 
 [Website][website-url] · [Overnight Batch][overnight-url] · [Get Started](#build-your-own)
 
@@ -28,8 +27,8 @@ An open source reference implementation built on [Claude Code][claude-code-url].
 - [Build Your Own](#build-your-own)
 - [Under the Hood](#under-the-hood)
 - [Architecture](#architecture)
-- [Skills](#skills-17)
-- [Hooks](#hooks-5)
+- [Skills](#skills-19)
+- [Hooks](#hooks-3)
 - [Cloud Batch](#cloud-batch)
 - [Security & Privacy](#security--privacy)
 - [Evolution](#evolution)
@@ -134,11 +133,10 @@ Start small. The system grew organically over weeks of daily use.
 
 | | What | Details |
 |:-:|------|---------|
-| **17** | **Skills** | `/think`, `/build`, `/write`, `/research`, `/debug`. Multi-phase workflows, not single prompts. |
-| **5** | **Hooks** | Unified safety guard, RTK token optimization, desktop notifications, session-start sync. |
+| **19** | **Skills** | `/think`, `/build`, `/write`, `/research`, `/debug`. Multi-phase workflows, not single prompts. |
+| **3** | **Hooks** | Unified safety guard, desktop notifications, session-start sync. |
 | **1** | **Cloud Batch** | Overnight: daily retro, morning briefing, email fetch. Ready before the laptop opens. |
 | **3** | **Environments** | Mac, Claude Web, Telegram. No VPS, no Docker, no daemons. |
-| **60-90%** | **Token Savings** | [RTK][rtk-url] rewrites dev commands for massive context savings. |
 | **<500** | **Lines in CLAUDE.md** | Identity, routing, authority, safety. One file, always loaded. |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -191,7 +189,7 @@ How to decide where a behavior belongs:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Skills (17)
+## Skills (19)
 
 | Skill | What It Does |
 |-------|-------------|
@@ -200,9 +198,11 @@ How to decide where a behavior belongs:
 | `write` | Content production: seed to platform-ready output across all channels. |
 | `research` | Standalone research with persistence and cross-session pickup. Living documents. |
 | `debug` | Systematic debugging: hypothesize, test, narrow. |
-| `replies` | Check X mentions, draft replies, post approved ones. |
+| `reply-x` | Check X mentions, draft replies, post approved ones. Multi-account support. |
 | `good-morning` | Interactive walkthrough of the morning briefing (10 sections). |
 | `wrap-up` | End-of-session: issue capture, report, ship. 3 phases. |
+| `watch-contacts` | Monitor contacts' X posts, surface engagement opportunities. |
+| `simplify-jules` | On-demand config hygiene — analyzes cold-start bundle for waste and duplication. |
 | `stop-slop` | Structural audit for AI writing patterns. |
 | `pdf` | PDF operations. |
 | `plane` | Plane.so interface: MCP tools + gap scripts + reconciliation. |
@@ -213,7 +213,7 @@ How to decide where a behavior belongs:
 | `skill-creator` | Create and modify skills. |
 | `agent-browser` | Browser automation. |
 
-## Hooks (5)
+## Hooks (3)
 
 Hooks are deterministic. The LLM doesn't decide whether to run them — they fire on every matching tool call.
 
@@ -221,7 +221,6 @@ Hooks are deterministic. The LLM doesn't decide whether to run them — they fir
 |------|---------|-------------|
 | `safety-guard.sh` | PreToolUse: Bash, WebFetch, Write, Edit | Unified security: command blocking, secret scanning, financial data guard, domain blocking |
 | `notify-input.sh` | PostToolUse | Desktop notification when agent needs input |
-| `rtk-rewrite.sh` | PreToolUse: Bash | RTK token optimization rewrites (60-90% savings on dev operations) |
 | `session-start.sh` | SessionStart | Git pull on session open |
 
 ## Cloud Batch
@@ -263,6 +262,7 @@ A unified `safety-guard.sh` hook fires on every Bash, WebFetch, Write, and Edit 
 | **v1** | Identity + Skills | Personality, voice registers, decision authority. CLAUDE.md and early skill workflows. |
 | **v2–v3** | Automation + Planning | Container infrastructure, scheduled jobs, planning dispatch, research agents, security hooks. |
 | **v4** | Simplification | 32 skills became 17. 15 hooks became 5. VPS eliminated. Same power, half the parts. |
+| **v4.2** | Expansion + Cleanup | 19 skills (added reply-x, watch-contacts, simplify-jules). RTK removed (Claude Code's built-in context handling caught up). 3 hooks. |
 
 ## Design Decisions
 
@@ -318,11 +318,10 @@ v4's simplification was possible because Anthropic shipped features that replace
 
 [license-shield]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
 [license-url]: LICENSE
-[skills-shield]: https://img.shields.io/badge/skills-17-8A2BE2?style=flat-square
+[skills-shield]: https://img.shields.io/badge/skills-19-8A2BE2?style=flat-square
 [skills-url]: https://docs.anthropic.com/en/docs/claude-code/slash-commands
-[hooks-shield]: https://img.shields.io/badge/hooks-5-orange?style=flat-square
+[hooks-shield]: https://img.shields.io/badge/hooks-3-orange?style=flat-square
 [hooks-url]: https://docs.anthropic.com/en/docs/claude-code/hooks
-[tokens-shield]: https://img.shields.io/badge/token_savings-60--90%25-brightgreen?style=flat-square
 [rtk-url]: https://github.com/rtk-ai/rtk
 [website-url]: https://builtwithjon.com/jules
 [overnight-url]: docs/overnight-batch.md
