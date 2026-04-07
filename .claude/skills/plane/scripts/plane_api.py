@@ -13,9 +13,9 @@ import subprocess
 import sys
 import time
 
-WORKSPACE = "open-door-learning"
+WORKSPACE = "[your-workspace-slug]"
 PROJECT_ID = "8238b353-5e87-4b72-b199-fec061be8b98"
-USER_ID = "[your-user-id]"  # [Your Name]
+USER_ID = "[YOUR_USER_ID]"  # [Your Name]
 API_BASE = "https://api.plane.so/api/v1"
 
 TASK_DIR = "Documents/Grand-Plan/projects"
@@ -28,7 +28,7 @@ TASK_FILES = {
     "collaboration": f"{TASK_DIR}/collaboration/task-breakdown.md",
 }
 
-LABEL_NAMES = ["jonathan", "jules-auto", "jules-interactive", "decision-needed", "deferred"]
+LABEL_NAMES = ["[your-name]", "jules-auto", "jules-interactive", "decision-needed", "deferred"]
 
 
 def get_api_key():
@@ -37,7 +37,7 @@ def get_api_key():
     if not key:
         print("ERROR: Set PLANE_API_KEY env var", file=sys.stderr)
         print(
-            '  PLANE_API_KEY=$(op item get "Plane API" --vault "Your-Vault"'
+            '  PLANE_API_KEY=$(op item get "Plane API" --vault "Dev Secrets"'
             ' --fields label="API Key" --reveal) python3 <script>',
             file=sys.stderr,
         )
@@ -141,7 +141,7 @@ def fetch_modules():
         "Content Pipeline": "content",
         "Infrastructure": "infrastructure",
         "Flourishing": "flourishing",
-        "[Agent Name] Public": "jules-public",
+        "Jules Public": "jules-public",
         "Rebrand": "rebrand",
         "Collaboration": "collaboration",
     }
@@ -149,7 +149,7 @@ def fetch_modules():
 
 
 def fetch_labels():
-    """Get label IDs by name. Returns {"jonathan": uuid, ...}."""
+    """Get label IDs by name. Returns {"[your-name]": uuid, ...}."""
     resp = api("GET", project_url("/labels/"))
     labels = resp.get("results", resp if isinstance(resp, list) else [])
     return {l["name"]: l["id"] for l in labels if l["name"] in LABEL_NAMES}

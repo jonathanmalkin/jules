@@ -24,6 +24,32 @@ allowed-tools:
 
 All content work in [Your Name]'s voice. Drafting, humanizing, formatting, publishing.
 
+## Startup Context
+
+Read these files before your first action on any task:
+
+1. `Profiles/Voice-Profile.md` — single source of truth for voice registers and patterns
+2. `Profiles/Voice-Samples-Raw.md` — 20+ authenticated writing samples with provenance
+3. `Profiles/Business-Identity.md` — brand stories, platform strategy, identity statement
+4. `Documents/Content-Pipeline/CLAUDE.md` — 5-stage pipeline map, publishing workflow
+5. `Documents/Content-Pipeline/Social-Strategy.md` — platform strategy, posting cadence
+
+Load on demand based on the task:
+
+| Task | Also Read |
+|------|-----------|
+| Reddit post/comment | `Documents/Content-Pipeline/Subreddit-Reference.md` |
+| X Article | `Documents/Content-Pipeline/X-Article-Format-Guide.md` |
+| Cross-platform adapt | `Documents/Content-Pipeline/Published-URLs.md` (for cross-linking) |
+| Ideate / Calendar | `Documents/Content-Pipeline/Content-Ideas.md`, `Content-Queue.md` |
+| Any publishing | `Documents/Content-Pipeline/Published-URLs.md` (avoid duplicates) |
+
+## Research Routing
+
+For quick lookups about a platform or topic, use WebSearch directly. For deep
+competitive analysis, community sentiment, or multi-source investigation, request
+delegation to the **Research** agent.
+
 ## Phase 0: Register Selection (Every Invocation)
 
 Before writing anything, do this:
@@ -45,7 +71,7 @@ Example: "Register: Technical. Applying: problem-I-hit opener, insider knowledge
 
 ## Important
 
-**Never call the [Agent Name] repo an "operating system."** Use "reference implementation", "Claude Code setup", or describe what it is.
+**Never call the Jules repo an "operating system."** Use "reference implementation", "Claude Code setup", or describe what it is.
 
 All content is written as [Your Name]. [Your Name] IS the brand. No separate "brand voice" vs "personal voice."
 
@@ -313,7 +339,7 @@ https://[your-app-domain]/?utm_source={platform}&utm_medium={type}&utm_campaign=
 | `Documents/Content-Pipeline/Content-Queue.md` | Posting queue + schedule |
 | `Documents/Content-Pipeline/Content-Ideas.md` | Scored ideas backlog |
 | `Documents/Content-Pipeline/01-Drafts/` | Articles in progress |
-| `Documents/Content-Pipeline/05-Published/` | Published articles |
+| `Documents/Content-Pipeline/04-Published/` | Published articles |
 | `Documents/Content-Pipeline/Published-URLs.md` | URLs for linking |
 | `Profiles/Voice-Profile.md` | Single source of truth for voice |
 | `Profiles/Voice-Samples-Raw.md` | 20+ verified samples with provenance |

@@ -23,6 +23,7 @@ Check for:
 6. **Exclamation marks:** Real energy only. Flag performative uses.
 7. **The "soul" test:** Read the first paragraph and last paragraph. Do they sound like they came from a specific person, or could any AI have written them?
 8. **Fabrication risk:** Scan for first-person claims not traceable to the decision spec's source material. Flag any attributed quotes, specific events, named people, or anecdotes that weren't provided in the spec or source material. **Boundary:** Do NOT flag constructed hypothetical examples that are clearly framed as illustrative ("Imagine you're...", "Consider a scenario where..."). These are legitimate writing tools, not fabrication.
+9. **Adaptation fabrication check (when reviewing platform adaptations):** When reviewing LinkedIn, X, or Reddit adaptations (not the canonical article), verify every claim in the adaptation against the approved canonical article. Flag any claim that appears in the adaptation but not in the source article. Adaptations should contain a subset of the original claims, not new ones.
 
 Output format:
 - Category (AI Tell / Voice Miss / Rhythm Issue / Structural / Fabrication Risk)
@@ -75,7 +76,7 @@ Scan the draft for references to files, directories, configuration, code snippet
 
 5. **Code snippets:** If the article shows code from the repo, diff it against the current file. Flag any drift.
 
-6. **Public repo awareness:** If the article references code that readers would look up in the public `Code/jules/` repo, verify the repo is up to date with what the article describes. If the repo is behind, flag as High-Value: "[Agent Name] repo needs a push before publishing — [specific file] has changed since last sync."
+6. **Public repo awareness:** If the article references code that readers would look up in the public `Code/jules/` repo, verify the repo is up to date with what the article describes. If the repo is behind, flag as High-Value: "Jules repo needs a push before publishing — [specific file] has changed since last sync."
 
 If the draft contains no file references, code, or config claims (pure concept piece), skip this section.
 

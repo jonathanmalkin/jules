@@ -119,7 +119,7 @@ Look up the project-specific deploy process:
 
 | Project | Deploy Command |
 |---------|---------------|
-| [your-domain] | `Scripts/push-[your-site].sh` |
+| [your-domain] | `Scripts/push-[your-handle].sh` |
 | Quiz app | `Scripts/deploy-quiz.sh` |
 | Other | Present the deploy command for review before running |
 

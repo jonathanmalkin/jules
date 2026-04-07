@@ -7,7 +7,7 @@
 - [ ] Most recent tax return (1040 + Schedule C if applicable)
 - [ ] Social Security statement (ssa.gov — create account if needed)
 - [ ] Current insurance policies (health, renter's, umbrella, life/disability if any)
-- [ ] LLC operating agreement (already at `Documents/Open-Door-Learning-LLC/Legal/`)
+- [ ] LLC operating agreement (already at `Documents/[Your-Company-LLC]/Legal/`)
 
 ## Tier 2 — Comprehensive (adds depth)
 

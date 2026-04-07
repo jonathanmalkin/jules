@@ -1,18 +1,12 @@
 {
   "mcpServers": {
+    "telegram": {
+      "type": "http",
+      "url": "http://localhost:7833/mcp"
+    },
     "reddit-mcp-buddy": {
       "type": "http",
       "url": "http://localhost:3000/mcp"
-    },
-    "plane": {
-      "command": "bash",
-      "args": [".claude/skills/plane/scripts/start-plane-mcp.sh"]
-    },
-    "context7": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
-      "env": {}
     }
   }
 }

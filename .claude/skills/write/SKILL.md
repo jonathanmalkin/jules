@@ -1,16 +1,22 @@
 ---
 name: write
-model: sonnet
-effort: medium
 description: "Multi-stage article pipeline from seed to published, with optional technical depth track. Takes a topic through structured decisions, website draft, LinkedIn+X distribution, and optionally deeper technical expansion to Reddit. Two flow shapes: business-only or business+technical."
 user-invocable: true
 ---
+
+@Profiles/Voice-Samples-Raw.md
 
 # Write
 
 Single-invocation pipeline that takes a topic and produces published content across platforms, with the website as the primary canvas.
 
 **Arrives from:** Direct invocation or chained from `/think` when content creation is identified.
+
+**Supporting references:**
+- `@references/content-packet-schema.md`
+- `@references/voice-scorecard.md`
+- `@references/faq-reply-loop.md`
+- `@references/platform-account-routing.md`
 
 ## Anti-Fabrication Guard
 
@@ -34,7 +40,7 @@ Before any platform-specific drafting: verify every factual claim in the draft i
 | 5. Write + Edit + Publish Website (Technical) | Expand with technical depth, publish | Jules + [Your Name] | OPTIONAL |
 | 6. Reddit | Adapt technical article for Reddit, publish | Jules + [Your Name] | OPTIONAL |
 | 7. LinkedIn + X (Technical) | Technical adaptations with Reddit link | Jules + [Your Name] | OPTIONAL |
-| 8. Track | Move files, update tracking docs | Jules (auto) | ~1 min |
+| 8. Track | Update published records, URLs, and content state | Jules (auto) | ~1 min |
 
 ---
 
@@ -47,7 +53,7 @@ Before any platform-specific drafting: verify every factual claim in the draft i
 Check for existing drafts first:
 
 ```bash
-ls Documents/Content-Pipeline/01-Drafts/*/[your-site].md Documents/Content-Pipeline/02-Pending-Review/*/[your-site].md 2>/dev/null
+ls Documents/Content-Pipeline/Drafts/*/[your-handle].md 2>/dev/null
 ```
 
 If drafts exist, present them: "Which article? Or starting fresh?"
@@ -75,6 +81,25 @@ Default message (always):
 
 Store all provided source material for the decision sprint.
 
+### Step 3: Pull the daily content packet if useful
+
+If the topic came from recent work, or [Your Name] did not supply much source material, generate a daily content packet:
+
+```bash
+python3 .claude/scripts/generate-content-packet.py --stdout
+```
+
+Use it as supporting input, not as a substitute for real source material. The content packet should help identify:
+
+- the strongest anchor article candidate
+- recent proof points
+- likely LinkedIn and X angles
+- good prompting questions for [Your Name]
+
+### Step 4: Check the answer bank when the topic is a recurring question
+
+If the topic looks like a repeated public question, skim `Documents/Engagement/Answer-Bank/` first. Reuse any verified framing, proof pack, or canonical link direction that already exists.
+
 ---
 
 ## Stage 2: Decision Sprint + Creative Brief
@@ -97,6 +122,8 @@ Announce the classification: "This feels [simple/medium/complex]. I'll run [N] r
 Use `AskUserQuestion` for each decision. For opening hooks and structural choices, use **previews** so [Your Name] can see the options side by side.
 
 **Round 1 (always):** Structure + Content questions. Opening hook, section architecture, what to expand/cut, depth level, key examples.
+
+**Adversarial challenge (always, after Round 1):** "A skeptical reader sees this headline. What would they say is obvious or not worth reading?" Present the objection and a proposed counter. If the counter is weak, sharpen the angle before proceeding. See `references/decision-sprint-questions.md` for the full prompt.
 
 **Round 2 (medium+):** Voice + Format questions. Register, visual elements, audience context, length target, code blocks.
 
@@ -138,6 +165,9 @@ Length target: {short/medium/long}
 
 ## Source Material (if provided)
 {Stories, anecdotes, data, or references [Your Name] supplied during Stage 1-2}
+
+## Supporting Packet
+{Daily content packet highlights, answer-bank pointers, or prior published links used to ground the draft}
 
 ## Placeholder Map
 | Section | What's needed | Type | Priority |
@@ -183,9 +213,15 @@ Dispatch the content agent (Opus) with:
 
 1. The approved creative brief (primary input) and full decision spec (reference)
 2. Voice profile: `@Profiles/Voice-Profile.md`
-3. Voice samples: Read 2-3 published articles from `Documents/Content-Pipeline/04-Published/` that match the story track for voice calibration
+3. **Few-shot voice examples:** Read `@Profiles/Voice-Samples-Raw.md` and select 1-2 samples that match the active register. Use this register-to-sample mapping:
+   - **Technical register:** Sample 1 (Reddit Change Monitor), Sample 4 (OpenClaw Tone Correction), Sample 17 (8 Layers of Memory)
+   - **Teaching register:** Sample 2 (FetLife Apology), Sample 8 (Brand Voice), Sample 13 (Kink Education Vision)
+   - **Professional short-form:** Sample 5 (LinkedIn Profile), Sample 15 (Content Strategy), Sample 16 (Reddit Article Direction)
+   - **Story 3 / Reflective:** Sample 21 (Value Stack Ascent), Sample 22 (Slot Machine Brain)
+   Pick the 2 most relevant samples for the article's topic within the register. Include [Your Name]'s version only (not the AI version). Keep each excerpt under 300 words; use the most representative passage if longer.
 4. Any source material [Your Name] provided in Stages 1-2
-5. **Instruction to the content agent:**
+5. Any useful content-packet or answer-bank material from Stage 1
+6. **Instruction to the content agent:**
 
 ```
 Write a business-level article for [your-domain]. This is the primary version targeting
@@ -232,7 +268,12 @@ Use these structured placeholders. The guidance fields help [Your Name] write th
 
 ## Voice
 
-Apply Voice-Profile.md patterns for the {register} register. Before writing, quote 2-3 specific patterns you'll use.
+You have been given 1-2 authentic writing samples from [Your Name] in this register. These are
+your primary voice reference. Write in this style. Match the rhythm, sentence length variation,
+opening patterns, and closing patterns you see in the samples.
+
+Also apply Voice-Profile.md patterns for the {register} register. Before writing, quote 2-3
+specific patterns from the samples you'll reproduce (not describe, reproduce).
 
 ## Self-review before returning
 
@@ -246,7 +287,7 @@ Apply Voice-Profile.md patterns for the {register} register. Before writing, quo
 
 ## Output
 
-Save the completed draft to: Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/[your-site].md
+Save the completed draft to: Documents/Content-Pipeline/Drafts/{Article-Folder}/[your-handle].md
 Create the article folder if it doesn't exist.
 Also return the full draft inline with word count and reading time.
 
@@ -262,9 +303,16 @@ Placeholders remaining: {count}
 After the draft is saved, run a stop-slop structural audit on the raw AI-generated draft **before presenting it to [Your Name]**. This catches AI patterns at their source.
 
 Dispatch a general-purpose agent (Sonnet) with:
-1. The draft from `02-Pending-Review/{Article-Folder}/[your-site].md`
+1. The draft from `Drafts/{Article-Folder}/[your-handle].md`
 2. Reference files: `.claude/skills/stop-slop/references/structures.md` and `.claude/skills/stop-slop/references/phrases.md`
-3. Instruction: scan for structural AI patterns (false agency, binary contrasts, dramatic fragmentation, copula avoidance, formulaic structure, synonym cycling, rule-of-three). Score on 5 dimensions: Directness, Rhythm, Trust, Authenticity, Density (each 1-10).
+3. The decision spec (for source material cross-reference)
+4. Instruction: scan for structural AI patterns (false agency, binary contrasts, dramatic fragmentation, copula avoidance, formulaic structure, synonym cycling, rule-of-three). Score on 5 dimensions: Directness, Rhythm, Trust, Authenticity, Density (each 1-10).
+
+Additionally, scan for **untraced first-person claims**: any sentence where the author says "I built/tried/found/discovered/noticed" or makes a specific factual claim (a number, a date, a named tool, a metric) that cannot be traced to the decision spec's source material section. Flag each as:
+
+`FABRICATION RISK: "{exact quote}" — no source material match found`
+
+This is not a judgment call. If the claim isn't in the source material and isn't a placeholder, flag it. Let the author decide.
 
 Present the stop-slop findings inline alongside the draft:
 
@@ -276,13 +324,26 @@ Present the stop-slop findings inline alongside the draft:
 
 If score < 35/50: flag prominently.
 
+After the structural audit, apply the scorecard in `references/voice-scorecard.md`. Report:
+
+```text
+Voice scorecard: {total}/25
+- Voice Match: X/5
+- Truth Grounding: X/5
+- Technical Specificity: X/5
+- Authenticity: X/5
+- Platform Fit: X/5
+```
+
+If Truth Grounding is below 4/5, do not recommend publishing without another pass.
+
 ### 3c: Author edit
 
 Display the full draft inline, followed by the stop-slop findings.
 
 Tell [Your Name]:
 
-> "Draft is at `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/[your-site].md`. Stop-slop findings are above. Edit directly, then let me know when you're done."
+> "Draft is at `Documents/Content-Pipeline/Drafts/{Article-Folder}/[your-handle].md`. Stop-slop findings are above. Edit directly, then let me know when you're done."
 
 Wait for [Your Name] to signal completion.
 
@@ -337,9 +398,9 @@ Fix critical issues automatically (or with confirmation if ambiguous). [Your Nam
 
 Once the article is approved:
 
-1. Create `Code/[your-site]/src/content/articles/{slug}.md` with YAML frontmatter per `references/platform-templates.md`
-2. Run `cd Code/[your-site] && npm run build` to verify the build passes
-3. Stage the specific article file: `git add Code/[your-site]/src/content/articles/{slug}.md`
+1. Create `Code/[your-handle]/src/content/articles/{slug}.md` with YAML frontmatter per `references/platform-templates.md`
+2. Run `cd Code/[your-handle] && npm run build` to verify the build passes
+3. Stage the specific article file: `git add Code/[your-handle]/src/content/articles/{slug}.md`
 4. Commit: `git commit -m "article: {title}"`
 5. Push: `git push origin main`
 6. Cloudflare auto-deploys. Capture URL: `[your-domain]/articles/{slug}/`
@@ -353,15 +414,47 @@ Once the article is approved:
 ### 4a: Write adaptations
 
 Dispatch the content agent to write both platform variants. Each gets:
-- The approved `[your-site].md`
+- The approved `[your-handle].md`
 - The website URL (for linking)
 - Platform-specific format guidelines from `@references/platform-templates.md`
 - Platform-specific editorial guidance from `@references/platform-writing-guide.md`
+- LinkedIn algorithm reference from `@references/linkedin-reference.md`
 - Voice profile for voice consistency
+- The anti-fabrication constraint below
+
+**Anti-fabrication constraint (include in dispatch):**
+
+```
+## Anti-fabrication constraint
+
+You are adapting an approved article, not writing new content. Every factual claim,
+personal anecdote, statistic, and named example in your adaptation must come from
+the approved source article. You may:
+- Reframe, condense, or restructure existing claims
+- Drop claims that don't fit the platform
+- Add platform-appropriate framing ("I wrote about this in depth on my site")
+
+You must NOT:
+- Introduce new personal stories not in the source article
+- Add statistics, metrics, or data points not in the source article
+- Attribute quotes or experiences not in the source article
+- State new first-person claims ("I found...", "In my experience...")
+  that aren't in the source
+
+If you need to add context the source article doesn't provide, use:
+[CONTEXT NEEDED: what would strengthen this adaptation]
+```
+
+**LinkedIn format choice:** Based on the article content, choose the best format:
+- **Long text post** (1,300-1,900 chars) — default for article adaptations. Technical depth welcome.
+- **Short text post** (100-300 chars) — teaser/conversation starter pointing to the article.
+- **Document carousel** (8-12 slides, PDF) — when the article has a clear step-by-step or list structure. Highest engagement format.
+
+LinkedIn can carry technical depth — it's not limited to business-level framing. Show the system AND the result. Code snippets welcome when they serve the story.
 
 **LinkedIn constraint:** Do NOT reference Reddit or promise a technical follow-up. The Reddit post doesn't exist yet. LinkedIn goes out with the website URL only.
 
-Save variants to `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/`:
+Save variants to `Documents/Content-Pipeline/Drafts/{Article-Folder}/`:
 - `LinkedIn.md`
 - `X-thread.md`
 
@@ -373,8 +466,8 @@ Present both adaptations to [Your Name]. Iterate if needed.
 
 **LinkedIn:**
 1. Write LinkedIn content to `/tmp/linkedin-post.txt`
-2. Dry-run: `python3 Scripts/post-to-linkedin.py --file /tmp/linkedin-post.txt --dry-run`
-3. Show preview. Post after [Your Name]'s approval: `python3 Scripts/post-to-linkedin.py --file /tmp/linkedin-post.txt`
+2. Dry-run: `python3 Scripts/linkedin-post.py --file /tmp/linkedin-post.txt --dry-run`
+3. Show preview. Post after [Your Name]'s approval: `python3 Scripts/linkedin-post.py --file /tmp/linkedin-post.txt`
 4. Capture the LinkedIn URL
 5. Tell [Your Name]: "Add the article URL as the first comment on LinkedIn (LinkedIn penalizes links in body text)."
 
@@ -411,7 +504,7 @@ Record the answer. This affects Stage 8 tracking:
 
 ### 5b: Draft
 
-Dispatch the content agent (Opus) with the same framework as Stage 3, but with updated instruction:
+Dispatch the content agent (Opus) with the same framework as Stage 3 (including few-shot voice examples from Voice-Samples-Raw.md, prioritizing Technical register samples), but with updated instruction:
 
 ```
 Expand this business-level article into a full technical deep-dive. Add:
@@ -427,7 +520,7 @@ Provide the approved business article as the starting point.
 
 ### 5c: Stop-slop pre-edit audit
 
-Same pattern as Stage 3b. Dispatch general-purpose agent (Sonnet) to scan the raw draft.
+Same pattern as Stage 3b. Dispatch general-purpose agent (Sonnet) to scan the raw draft. Includes the source-traceability scan for untraced first-person claims (same instruction as 3b).
 
 ### 5d: Author edit
 
@@ -442,12 +535,12 @@ If significant edits result, offer to re-run the panel.
 ### 5f: Publish to website
 
 If overwriting:
-1. Update the existing article file at `Code/[your-site]/src/content/articles/{slug}.md`
+1. Update the existing article file at `Code/[your-handle]/src/content/articles/{slug}.md`
 2. Update frontmatter (date, description if changed)
 3. Build, commit, push (same sequence as Stage 3e)
 
 If separate page:
-1. Create new article at `Code/[your-site]/src/content/articles/{slug}-technical.md`
+1. Create new article at `Code/[your-handle]/src/content/articles/{slug}-technical.md`
 2. Add cross-link in the original business article pointing to the technical version
 3. Build, commit, push
 4. Capture new URL: `[your-domain]/articles/{slug}-technical/`
@@ -465,8 +558,9 @@ Dispatch the content agent with:
 - The website URL(s)
 - Reddit format guidelines from `@references/platform-templates.md`
 - Reddit editorial guidance from `@references/platform-writing-guide.md`
+- The anti-fabrication constraint from Stage 4a (same block, included in dispatch)
 
-Save to `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/Reddit.md`
+Save to `Documents/Content-Pipeline/Drafts/{Article-Folder}/Reddit.md`
 
 ### 6b: Review and iterate
 
@@ -488,11 +582,11 @@ Present to [Your Name]. Iterate if needed.
 
 ### 7a: Write adaptations
 
-Dispatch the content agent to write:
+Dispatch the content agent to write (include the anti-fabrication constraint from Stage 4a in each dispatch):
 - LinkedIn technical adaptation (references the Reddit post and/or technical website article)
 - X thread with technical framing + link to Reddit
 
-Save to `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/`:
+Save to `Documents/Content-Pipeline/Drafts/{Article-Folder}/`:
 - `LinkedIn-technical.md`
 - `X-thread-technical.md`
 
@@ -520,7 +614,7 @@ Present both to [Your Name]. Iterate if needed.
 
 ### Business-only flow (Stages 1-4)
 
-1. Create/update `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/published.md` with:
+1. Create/update `Documents/Content-Pipeline/Drafts/{Article-Folder}/published.md` with:
    - Website URL
    - LinkedIn URL
    - X thread URL
@@ -529,7 +623,7 @@ Present both to [Your Name]. Iterate if needed.
 
 2. Move the article folder:
    ```bash
-   mv "Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}" "Documents/Content-Pipeline/04-Published/Story-{N}/{Article-Folder}"
+   mv "Documents/Content-Pipeline/Drafts/{Article-Folder}" "Documents/Content-Pipeline/Published/{Article-Folder}"
    ```
 
 3. Update `Documents/Content-Pipeline/Published-URLs.md` with all new URLs
@@ -543,9 +637,9 @@ Present both to [Your Name]. Iterate if needed.
 
 5. Stage and commit:
    ```bash
-   git add "Documents/Content-Pipeline/04-Published/Story-{N}/{Article-Folder}/"
+   git add "Documents/Content-Pipeline/Published/{Article-Folder}/"
    git add Documents/Content-Pipeline/Published-URLs.md
-   git add "Code/[your-site]/src/content/articles/{slug}.md"
+   git add "Code/[your-handle]/src/content/articles/{slug}.md"
    git commit -m "track: {title} published (business)"
    ```
 
@@ -572,7 +666,7 @@ Same as above, plus:
 
 ## Error Handling
 
-- **Content agent failure at Stage 3/5:** Retry once. If it fails again, write the draft directly ([Agent Name] writes it instead of the content agent).
+- **Content agent failure at Stage 3/5:** Retry once. If it fails again, write the draft directly (Jules writes it instead of the content agent).
 - **Build failure at Stage 3e/5f:** Fix the build error before proceeding. Common issues: frontmatter format, missing imports, image paths.
 - **Posting failure at Stage 4c/6c/7c:** Log the failure, continue with other platforms. Report all failures at the end. Manual posting is always the fallback.
 - **LinkedIn token expired:** Skip LinkedIn, note it in the tracking file. Remind [Your Name] to refresh: `python3 Scripts/linkedin-auth.py`
@@ -581,8 +675,8 @@ Same as above, plus:
 
 If the pipeline is interrupted (session ends, context clears), it can be resumed:
 - **Stage 2 complete?** The decision spec in `~/.claude/plans/article-{slug}.md` has everything needed.
-- **Stage 3 in progress?** The draft in `02-Pending-Review/` is the checkpoint.
+- **Stage 3 in progress?** The draft in `Drafts/` is the checkpoint.
 - **Stage 4 decision point reached?** Check which platforms have been posted to. `published.md` tracks progress.
 - **Stage 5-7 in progress?** Same checkpoints apply.
 
-To resume: "Continue /write-article for {title}" and [Agent Name] picks up from the last completed stage.
+To resume: "Continue /write-article for {title}" and Jules picks up from the last completed stage.

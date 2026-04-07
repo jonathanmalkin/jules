@@ -30,6 +30,16 @@ These establish the article's skeleton. Always ask these.
    - What's the most concrete proof this works? (numbers, before/after, screenshots)
    - Any examples that didn't make the cut but should?
 
+### Adversarial challenge (always, after Round 1)
+
+After Round 1 decisions are made, run this challenge before proceeding:
+
+> "Adversarial check: A skeptical reader in your target audience sees this headline. What would they say is obvious, already known, or not worth reading? How does this article answer that?"
+
+Present Jules's best guess at the skeptic's objection and a proposed counter. [Your Name] confirms, adjusts, or sharpens. If the counter is weak, the brief needs a stronger angle before proceeding to draft.
+
+This step forces differentiation. If the article can't answer "why is this worth reading over the ten other posts on this topic," it needs a sharper angle, not more words.
+
 ## Round 2: Voice + Format
 
 These shape how it reads. Ask for medium and complex theses.

@@ -77,14 +77,12 @@ PATTERNS=(
   '\bgit\b.*(checkout\s+\.\s*$|restore\s+\.\s*$|clean\s+-[a-zA-Z]*f)'
   # 11: kill -9 1, killall, shutdown, reboot, halt
   '\b(kill\s+-9\s+1\b|killall|shutdown|reboot|halt)\b'
-  # 12: git push to production branch
-  '\bgit\b.*\bpush\b.*(:production\b|origin\s+production\b)'
-  # 13: gh workflow run with production environment
-  '\bgh\b.*\bworkflow\b.*\brun\b.*environment=production'
-  # 14: destructive SSH commands on siteground (cp allowed — not destructive)
+  # 12: destructive SSH commands on siteground (cp allowed — not destructive)
   '\bssh\b.*\bsiteground\b.*\b(rm|mv)\b'
-  # 15: broad git staging (git add . or git add -A)
+  # 13: broad git staging (git add . or git add -A)
   '\bgit\b\s+add\s+(-A\b|\.(\s|$))'
+  # 14: file deletion via python/perl (bypasses rm block)
+  '\bpython3?\b.*\bos\.(remove|unlink|rmdir)\b|\bshutil\.(rmtree|move)\b|\bperl\b.*\bunlink\b'
 )
 
 MESSAGES=(
@@ -100,10 +98,9 @@ MESSAGES=(
   "BLOCKED: force push detected. Only regular push is permitted."
   "BLOCKED: destructive git operation (checkout ., restore ., clean -f). Too broad — specify files."
   "BLOCKED: system process/power management not permitted."
-  "BLOCKED: production deploy detected. Run the command in a separate terminal, or tell [Agent Name] to proceed after explicit approval."
-  "BLOCKED: production deploy via GitHub Actions detected. Run the command in a separate terminal, or tell [Agent Name] to proceed after explicit approval."
   "BLOCKED: destructive SSH command on siteground. Give the user the exact command to run in their terminal."
   "BLOCKED: broad git staging (git add . / git add -A). Stage specific files instead."
+  "BLOCKED: file deletion via python/perl. Use mv <target> ~/.Trash/ instead."
 )
 
 # Short-circuit loop: exit on first match
@@ -127,6 +124,8 @@ SECRET_PATTERNS=(
   'sk-ant-api03-[a-zA-Z0-9_\-]{93}AA'
   'sk-[a-zA-Z0-9]{20}T3BlbkFJ[a-zA-Z0-9]{20}'
   '-----BEGIN[ A-Z0-9_\-]{0,100}PRIVATE KEY'
+  're_[a-zA-Z0-9]{20,}'
+  'pplx-[a-zA-Z0-9]{20,}'
 )
 
 SECRET_MESSAGES=(
@@ -136,6 +135,8 @@ SECRET_MESSAGES=(
   "BLOCKED: Anthropic API key literal in command. Use ANTHROPIC_API_KEY env var."
   "BLOCKED: OpenAI API key literal in command. Use OPENAI_API_KEY env var."
   "BLOCKED: Private key material in command. Do not embed key content in shell commands."
+  "BLOCKED: Resend API key literal in command. Use RESEND_API_KEY env var."
+  "BLOCKED: Perplexity API key literal in command. Use PERPLEXITY_API_KEY env var."
 )
 
 for i in "${!SECRET_PATTERNS[@]}"; do
@@ -158,7 +159,7 @@ if [[ -f "$FLAG_FILE" ]]; then
   echo "$COMMAND" | grep -q '^# SAFE-OVERRIDE:' && exit 0
 
   # Only gate outbound Bash: clipboard writes, HTTP POSTs, X posting scripts
-  if echo "$COMMAND" | grep -qE '(pbcopy|curl.*(--data|-d|-F|--upload-file)|wget.*--post|x-post\.sh|post-to-x\.py)'; then
+  if echo "$COMMAND" | grep -qE '(pbcopy|curl.*(--data|-d|-F|--upload-file)|wget.*--post|x-post\.sh|post-to-x\.py|xurl\s+(post|reply|quote|dm))'; then
     MATCH=""
 
     # Dollar amounts

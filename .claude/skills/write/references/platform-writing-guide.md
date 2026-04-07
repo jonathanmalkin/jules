@@ -13,7 +13,7 @@ Editorial guidance for writing well on each platform. This complements `platform
 ### E-E-A-T signals
 
 - Include at least one "I built/tried/broke this" moment per article. First-hand experience is the strongest quality signal.
-- Link to the [Agent Name] repo or other public proof of the work described.
+- Link to the Jules repo or other public proof of the work described.
 - Reference specific tools, versions, and configurations. Vague descriptions ("a popular framework") lose credibility.
 
 ### Quality markers
@@ -81,24 +81,60 @@ Editorial guidance for writing well on each platform. This complements `platform
 
 ## LinkedIn
 
+### Hook Writing (REACT Framework)
+
+First 140 characters are everything — LinkedIn truncates on mobile with "...see more." Use REACT:
+
+- **R**esults: Lead with a specific outcome ("I automated 12 articles across 4 platforms")
+- **E**motion: Personal stake or feeling ("My AI assistant caught a bug I'd been shipping for 3 weeks")
+- **A**gitation: The problem that drove the action ("Every VC told me to avoid this market")
+- **C**redibility: Why you're the one ("One person. No employees. 200+ daily users.")
+- **T**ime: Urgency or timeliness ("Claude Code just shipped X. Here's what changed.")
+
+Combine 2-3 elements. Never open with generic statements ("In today's AI landscape...").
+
 ### Structure
 
 - **Short, fragmented style.** LinkedIn's native format is short paragraphs with line breaks. Dense prose gets scrolled past.
 - **Personal angle first.** "Last week I broke our deploy pipeline" beats "Deploy pipelines are critical infrastructure."
-- **No URL in body.** LinkedIn algorithmically deprioritizes posts with links in the body. Article URL goes in the first comment (manual step).
-- **Question close.** End with a genuine question. LinkedIn's algorithm rewards comments, and questions generate them.
+- **No URL in body.** 60% reach penalty confirmed. Article URL goes in the first comment (manual step).
+- **Question close.** End with a genuine question. Saves > Comments > Likes in algorithm weight. Questions drive comments.
+- **Bimodal length.** Short (100-300 chars) for conversation starters. Long (1,300-1,900 chars) for authority posts. Nothing in between.
+
+### Format-Specific Guidance
+
+**Text posts:** Fragment aggressively. One idea per line break. White space is your friend on mobile.
+
+**Document carousels (highest engagement — 6.6%):**
+- Hook slide → Context → Steps/Points (one per slide) → Takeaway → CTA
+- 8-12 slides. One idea per slide. Large, readable text.
+- 1080x1350 px (portrait). Upload as PDF.
+- Design: clean, dark text on light background. Minimal decoration.
+
+**Image posts:** Screenshots, terminal output, before/after comparisons, architecture diagrams. Real > polished.
 
 ### Writing quality
 
-- 150-300 words. Shorter is better on LinkedIn.
-- One clear takeaway. LinkedIn readers are skimming between meetings.
-- Can reference the blog post or thread for depth: "I wrote the full breakdown on my site (link in comments)."
+- Technical depth is welcome. Code snippets work when they serve the story.
+- Show the system AND the result. "Here's my Claude Code hook" + "it caught 3 bugs this week."
+- One clear takeaway per post. Practitioners value density, not breadth.
+- Can reference the blog post for depth: "I wrote the full breakdown on my site (link in comments)."
+
+### Engagement Protocol
+
+- **Golden hour:** Respond to every comment in the first 60 minutes after posting. This window heavily influences distribution.
+- **Daily routine (15 min):** Comment on 3-5 posts from target accounts (AI builders, technical founders). Reply to all comments on own posts.
+- Comment quality > quantity. Substantive replies, not "great post!"
 
 ### Anti-patterns
 
-- Don't use hashtags excessively. 3-5 relevant ones max, at the end.
+- Don't use hashtags excessively. 3-5 specific ones, at the end.
 - Don't open with "I'm excited to announce..." or "Thrilled to share..."
 - Don't write in essay format. Fragment. Break lines. Make it scannable.
+- Don't write AI-smooth prose. Choppy, specific, personal > polished and generic.
+- Don't use vague openings ("In today's fast-paced world..."). Start with a specific result or claim.
+- Don't land in the dead zone (300-1,000 characters). Go short or go long.
+- Don't post the same format 3x in a row (20% reach penalty).
 
 ## Cross-Platform Cascade Strategy
 
@@ -108,6 +144,6 @@ When publishing the same article across all platforms, the adaptations should fo
 2. **Reddit** = peer-oriented retelling with technical depth, emphasis on what was tried/learned
 3. **X Thread** = distilled insights, one per tweet, the "highlight reel"
 4. **X Article** = narrative personal retelling, more casual than blog
-5. **LinkedIn** = shortest, most personal angle, teaser for the full piece
+5. **LinkedIn** = practitioner-friendly adaptation, technical depth OK, bimodal length (short teaser or long authority post)
 
 Each platform version should feel native to that platform. A reader who sees all five should get complementary perspectives, not the same text reformatted.

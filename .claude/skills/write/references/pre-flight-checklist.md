@@ -6,7 +6,7 @@ Deterministic checks that run before Stage 6 (Publish). All checks are automated
 
 ```bash
 # 1. Build passes
-cd Code/[your-site] && npm run build
+cd Code/[your-handle] && npm run build
 
 # 2. Frontmatter complete
 # Check that the article .md file has all required fields
@@ -30,9 +30,10 @@ cd Code/[your-site] && npm run build
 |-------|-----|----------------|
 | No em-dashes | `grep -n '—' {file}` | Any match |
 | No en-dashes used as em-dashes | `grep -nP ' – ' {file}` | Any match (en-dashes in number ranges are fine) |
-| Repo link footer present | `grep -l 'github.com/jonathanmalkin/jules' {canonical}` | Missing from canonical [your-site].md |
+| Repo link footer present | `grep -l 'github.com/[your-github]/jules' {canonical}` | Missing from canonical [your-handle].md |
 | First paragraph is AI-extractable summary | Manual check: first paragraph stands alone as a summary | Requires judgment (flag for author review if unclear) |
 | No AI tells in opening/closing | `grep -niE 'certainly|I.d be happy|great question|let me break' {file}` | Any match in first or last 5 lines |
+| No remaining placeholders | `grep -nE '\[(STORY\|FACT\|STAT\|EXAMPLE\|CONTEXT) NEEDED' {file}` | Any match |
 
 ## X Thread Checks
 
@@ -56,7 +57,7 @@ cd Code/[your-site] && npm run build
 
 | Check | How | Fail condition |
 |-------|-----|----------------|
-| Word count 150-300 | `wc -w {file}` | Outside range |
+| Word count matches format | `wc -w {file}` and compare to declared format | Outside expected range for short/long post |
 | No URL in body | `grep -nE 'https?://' {file}` | URL found (LinkedIn penalizes links in body) |
 | No code blocks | `grep -c '^\`\`\`' {file}` | Any match |
 
@@ -65,7 +66,7 @@ cd Code/[your-site] && npm run build
 | Check | How | Fail condition |
 |-------|-----|----------------|
 | X API auth cached | `xurl auth status` | No `oauth1: ✓` in output |
-| LinkedIn token valid | `python3 Scripts/post-to-linkedin.py --check-auth` | Non-zero exit or "expired" in output |
+| LinkedIn token valid | `python3 Scripts/linkedin-post.py --check-auth` | Non-zero exit or "expired" in output |
 
 ## Editorial Quality Checks (Author Review)
 
@@ -103,7 +104,7 @@ These are flagged for [Your Name]'s review, not automated PASS/FAIL. Present alo
 
 ### LinkedIn
 
-- [ ] Under 300 words
+- [ ] Length matches the intended format (short post or long authority post)
 - [ ] Personal angle leads (not abstract observation)
 - [ ] No URL in body text
 - [ ] Scannable (short paragraphs, line breaks, not dense prose)

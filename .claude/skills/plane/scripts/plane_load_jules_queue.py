@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Load [Agent Name] Queue items from Terrain.md into Plane as work items.
+Load Jules Queue items from Terrain.md into Plane as work items.
 
 One-shot script for Phase 1.5A of Plane evaluation.
 Creates items, assigns to modules, sets labels.
@@ -28,7 +28,7 @@ STATES = {
 }
 
 LABELS = {
-    "jonathan": "e5ccbcaf-5cf9-4b6b-87cc-84b3593ffd5c",
+    "[your-name]": "e5ccbcaf-5cf9-4b6b-87cc-84b3593ffd5c",
     "jules-auto": "f38bfd28-7570-4ca9-b79f-0f8d5882a161",
     "jules-interactive": "49bd956c-e6c9-4dba-a07f-6db82d32e3ca",
     "decision-needed": "c58bed1c-79af-4de5-9ae0-fed991afdef8",
@@ -44,7 +44,7 @@ MODULES = {
     "collaboration": "c0b384b4-2aa9-4d09-9b14-f29164920f14",
 }
 
-# [Agent Name] Queue items parsed from Terrain.md
+# Jules Queue items parsed from Terrain.md
 # Format: (jq_id, title, description_html, module_or_none, labels, state, priority, start_date)
 ITEMS = [
     # --- Content Pipeline ---
@@ -69,12 +69,12 @@ ITEMS = [
      "content", ["jules-auto"], "todo", "high", None),
 
     ("JQ-7", "Compile article approval list for site migration",
-     "<p>List all articles marked \"published\" with titles, URLs, and engagement data. Flag [domain] articles for exclusion. [Your Name] approves which ones migrate to [your-domain]. Pre-step for bulk migration.</p><p><strong>Est:</strong> 30m | <em>Queued 2026-03-23</em></p>",
+     "<p>List all articles marked \"published\" with titles, URLs, and engagement data. Flag kink articles for exclusion. [Your Name] approves which ones migrate to [your-domain]. Pre-step for bulk migration.</p><p><strong>Est:</strong> 30m | <em>Queued 2026-03-23</em></p>",
      "content", ["jules-auto"], "todo", "medium", None),
 
     ("JQ-8", "Review + approve 3 Phase 8 drafts",
      "<p>[Your Name] reads \"My AI Agrees With Everything\", \"Thinking Toolkit\", \"Multi-Agent Systems\". Move approved to <code>02-Pending-Review/</code>. Article 1 has placeholder URLs to verify.</p><p><strong>Est:</strong> 20m | <em>Queued 2026-03-23</em></p>",
-     "content", ["jonathan"], "todo", "medium", None),
+     "content", ["[your-name]"], "todo", "medium", None),
 
     ("JQ-9", 'Article 4: "27 Plugins, Zero Survived"',
      "<p>Full plugin lifecycle from the System Evolution Tracker. Story 1.</p><p><strong>Est:</strong> 45m | <strong>Blocked on:</strong> Approve content strategy direction | <em>Queued 2026-03-22</em></p>",
@@ -90,7 +90,7 @@ ITEMS = [
 
     # --- Infrastructure ---
     ("JQ-12", "Fix stale domain refs in scripts",
-     "<p><code>quiz-health-monitor.sh</code> checks <code>[legacy-app-domain]</code>, <code>validate-utm-tags.sh</code> validates <code>[legacy-domain]</code> URLs. Both need [your-app-domain].</p><p><strong>Est:</strong> 15m | <em>Queued 2026-03-21</em></p>",
+     "<p><code>quiz-health-monitor.sh</code> checks <code>quiz.[previous-domain]</code>, <code>validate-utm-tags.sh</code> validates <code>[previous-domain]</code> URLs. Both need [your-app].app.</p><p><strong>Est:</strong> 15m | <em>Queued 2026-03-21</em></p>",
      "infrastructure", ["jules-auto"], "todo", "low", None),
 
     ("JQ-13", "Pre-migration PoC: Cloud task push + quota test",
@@ -151,20 +151,20 @@ ITEMS = [
 
     # --- Rebrand ---
     ("JQ-27", "Scan social bios for stale domain refs",
-     "<p>Check @[your-site] (X), @builtwithjules (X), Reddit, [your-domain], LinkedIn for [legacy-domain] or old branding. Google Search Console and Proton Mail already handled.</p><p><strong>Est:</strong> 15m | <em>Queued 2026-03-23</em></p>",
+     "<p>Check @[your-handle] (X), @builtwithjules (X), Reddit, [your-domain], LinkedIn for [previous-domain] or old branding. Google Search Console and Proton Mail already handled.</p><p><strong>Est:</strong> 15m | <em>Queued 2026-03-23</em></p>",
      "rebrand", ["jules-auto"], "todo", "low", None),
 
     ("JQ-28", "Quiz policy pages brand swap",
-     "<p>React components (<code>PrivacyPolicy.tsx</code>, <code>TermsOfService.tsx</code>, <code>EducationDisclaimer.tsx</code>) still say \"[Legacy Brand].\" Swap to \"Kink Archetypes\" / <code>[your-app-domain]</code> / <code>legal@[your-app-domain]</code>. Markdown versions done.</p><p><strong>Est:</strong> 30m | <em>Queued 2026-03-23, approved 2026-03-23</em></p>",
+     "<p>React components (<code>PrivacyPolicy.tsx</code>, <code>TermsOfService.tsx</code>, <code>EducationDisclaimer.tsx</code>) still say \"[Previous Brand].\" Swap to \"Kink Archetypes\" / <code>[your-app].app</code> / <code>legal@[your-app].app</code>. Markdown versions done.</p><p><strong>Est:</strong> 30m | <em>Queued 2026-03-23, approved 2026-03-23</em></p>",
      "rebrand", ["jules-auto"], "todo", "medium", None),
 
-    # --- [Agent Name] Public ---
+    # --- Jules Public ---
     ("JQ-29", "Auto-enrich System Evolution [R] entries",
      "<p>First pass: use git blame/commit messages to fill in rationale for ~10 thin [R]-tagged entries in System-Evolution.md. [Your Name] reviews interesting ones later.</p><p><strong>Est:</strong> 30m | <em>Queued 2026-03-23</em></p>",
      "jules-public", ["jules-auto"], "todo", "low", None),
 
     ("JQ-30", "Advisory Toolkit Plugin: research publishable skill packaging",
-     "<p>Package the thinking toolkit (mental models, lenses, operations, advisory framework) as a publishable Claude Code skill or plugin. Brand/name TBD. Overlaps with [Agent Name] Public sprint J-A tracks.</p><p><strong>Est:</strong> 45m | <em>Queued 2026-03-23</em></p>",
+     "<p>Package the thinking toolkit (mental models, lenses, operations, advisory framework) as a publishable Claude Code skill or plugin. Brand/name TBD. Overlaps with Jules Public sprint J-A tracks.</p><p><strong>Est:</strong> 45m | <em>Queued 2026-03-23</em></p>",
      "jules-public", ["jules-auto"], "backlog", "medium", None),
 
     ("JQ-31", "Implement voice architecture: Option B",
@@ -177,11 +177,11 @@ ITEMS = [
 
     # --- Flourishing ---
     ("JQ-33", "Housing evaluation: research options",
-     "<p>Three tracks: mobile home/trailer (cost savings), elsewhere in Austin (different neighborhoods), Silicon Valley move (meetup/speaking opportunities). Lease expires Sept 2026.</p><p><strong>Est:</strong> 2h | <em>Queued 2026-03-25</em></p>",
-     "flourishing", ["jonathan"], "todo", "high", None),
+     "<p>Three tracks: mobile home/trailer (cost savings), elsewhere in [your-city] (different neighborhoods), Silicon Valley move (meetup/speaking opportunities). Lease expires Sept 2026.</p><p><strong>Est:</strong> 2h | <em>Queued 2026-03-25</em></p>",
+     "flourishing", ["[your-name]"], "todo", "high", None),
 
     ("JQ-34", "Speaker submissions: AgentCon + AI Tinkerers SF",
-     "<p>Advisory session. [Your Name] writes ideas first, [Agent Name] provides ideas, iterate Q&amp;A. AgentCon Sessionize deadline <strong>Mar 31</strong>. AI Tinkerers SF demo proposal for Apr 11. AI Engineer World's Fair by Apr 12.</p><p><em>Updated 2026-03-26</em></p>",
+     "<p>Advisory session. [Your Name] writes ideas first, Jules provides ideas, iterate Q&amp;A. AgentCon Sessionize deadline <strong>Mar 31</strong>. AI Tinkerers SF demo proposal for Apr 11. AI Engineer World's Fair by Apr 12.</p><p><em>Updated 2026-03-26</em></p>",
      "flourishing", ["jules-interactive"], "todo", "urgent", "2026-03-27"),
 
     ("JQ-35", "Flourishing F1-1: open questions session",
@@ -204,7 +204,7 @@ ITEMS = [
 
     ("JQ-39", "Sign corrected insurance application + send to Hannah",
      "<p>PDF at <code>Insurance/.../Chubb-Application-Corrected-2026-03-26.pdf</code>. Attachments at <code>Attachments-PDF/</code>.</p><p><em>Queued 2026-03-26</em></p>",
-     None, ["jonathan"], "todo", "urgent", None),
+     None, ["[your-name]"], "todo", "urgent", None),
 
     ("JQ-40", "Run 5-agent insurance validation prompt",
      "<p>Technical accuracy, factual consistency, app-to-attachment alignment, business identity, sensitive data scan.</p><p><strong>Est:</strong> 15m | <em>Queued 2026-03-26</em></p>",
@@ -212,11 +212,11 @@ ITEMS = [
 
     ("JQ-41", "Direct insurance applications to specialty carriers",
      "<p>Panel consensus: target Coalition + Lloyd's syndicates via Ashlin Hadden wholesale. Hartford/Hiscox standard will decline (adult content). Hiscox ClearTech possible for consulting carve-out.</p><p><em>Updated 2026-03-26</em></p>",
-     None, ["jonathan"], "todo", "high", None),
+     None, ["[your-name]"], "todo", "high", None),
 
     ("JQ-42", "Engage Founder Shield",
      "<p>After Hannah's carrier list. Cross-reference to avoid duplicate submissions.</p><p><strong>Blocked on:</strong> Hannah carrier list | <em>Queued 2026-03-23</em></p>",
-     None, ["jonathan"], "backlog", "medium", None),
+     None, ["[your-name]"], "backlog", "medium", None),
 
     # --- Visualization (Infrastructure) ---
     ("JQ-43", "Fix Excalidraw export pipeline (P12-12A)",
@@ -235,7 +235,7 @@ ITEMS = [
 
 def main():
     mode = "DRY RUN" if DRY_RUN else "LIVE"
-    print(f"[load-jq] [Agent Name] Queue → Plane | Mode: {mode}")
+    print(f"[load-jq] Jules Queue → Plane | Mode: {mode}")
     print(f"[load-jq] {len(ITEMS)} items to create\n")
 
     # Skip JQ-1 — already created via MCP

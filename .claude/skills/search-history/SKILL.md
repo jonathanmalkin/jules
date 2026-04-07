@@ -1,6 +1,5 @@
 ---
 name: search-history
-model: sonnet
 effort: medium
 description: "Search structured session documents: session reports, issues, retros, memory syntheses, plans, research docs, Decision Log, and System Evolution. Use when user says 'search history', 'search sessions', 'find session', 'when did we', 'what session', 'session where', 'search logs', 'find that plan', 'what plan did we write', 'look through past sessions', 'did we ever discuss', 'have we talked about', 'what was the decision about', 'check field notes', or wants to find past session context."
 ---

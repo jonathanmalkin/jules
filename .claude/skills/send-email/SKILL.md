@@ -7,9 +7,9 @@ description: Send email to [Your Name] via Resend API. Use when user says "email
 
 ## Critical Constraints
 
-- **Recipient is hardcoded.** `jonathan.d.malkin@gmail.com`. Cannot be changed. Cannot email anyone else.
+- **Recipient is hardcoded.** `[your-email]`. Cannot be changed. Cannot email anyone else.
 - **Rate limit: 3 emails per calendar day.** Exit code 2 = rate limit hit. Do not retry.
-- **From address:** `Jules <playbook@[legacy-domain]>` (verified Resend sender, still active post-rebrand).
+- **From address:** `Jules <playbook@[previous-domain]>` (verified Resend sender, still active post-rebrand).
 
 ## Sending Email
 
@@ -84,12 +84,9 @@ If at 3/3, inform the user the limit is hit and suggest Slack as an alternative.
 
 ## API Key Resolution
 
-The send script resolves the key in this order:
-1. `RESEND_API_KEY` environment variable (always set in the container)
-2. `~/.env.jules` file (legacy fallback)
-3. 1Password via `op-cache-read.sh` (Mac sessions)
+The send script uses `RESEND_API_KEY` from the environment. The overnight batch injects it via `op read` at startup. For manual runs, the service account token in the shell environment handles it automatically.
 
-No manual key handling needed. The script manages this.
+No manual key handling needed.
 
 ## Send Log
 

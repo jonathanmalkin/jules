@@ -4,10 +4,10 @@
 
 | Entity | Value |
 |--------|-------|
-| Workspace slug | `open-door-learning` |
+| Workspace slug | `[your-workspace-slug]` |
 | Project (Grand Plan) | `8238b353-5e87-4b72-b199-fec061be8b98` |
 | Project identifier | `GP` (issues are `GP-1`, `GP-42`, etc.) |
-| [Your Name]'s User ID | `[your-user-id]` |
+| [Your Name]'s User ID | `[YOUR_USER_ID]` |
 
 ## State Groups
 
@@ -32,7 +32,7 @@ Modules map to Grand Plan project areas:
 | Content Pipeline | `content` |
 | Infrastructure | `infrastructure` |
 | Flourishing | `flourishing` |
-| [Agent Name] Public | `jules-public` |
+| Jules Public | `jules-public` |
 | Rebrand | `rebrand` |
 | Collaboration | `collaboration` |
 
@@ -42,9 +42,9 @@ Module UUIDs change per workspace. Fetch dynamically.
 
 | Label | Purpose |
 |-------|---------|
-| `jonathan` | Requires [Your Name]'s direct action |
-| `jules-auto` | [Agent Name] can handle autonomously |
-| `jules-interactive` | [Agent Name] needs [Your Name] present |
+| `[your-name]` | Requires [Your Name]'s direct action |
+| `jules-auto` | Jules can handle autonomously |
+| `jules-interactive` | Jules needs [Your Name] present |
 | `decision-needed` | Blocked on a decision |
 | `deferred` | Parked for later |
 
@@ -56,19 +56,19 @@ Task IDs use prefixes that map to project areas:
 - `S1-`, `S2-`, etc. = Content sprints
 - `P2-`, `P3-`, etc. = Infrastructure phases
 - `F1-`, `F2-`, etc. = Flourishing
-- `J-A`, `J-B` = [Agent Name] Public
+- `J-A`, `J-B` = Jules Public
 - `R-` = Rebrand
 - `C-` = Collaboration
 
 ## API Base URL
 
 ```
-https://api.plane.so/api/v1/workspaces/open-door-learning/projects/8238b353-5e87-4b72-b199-fec061be8b98
+https://api.plane.so/api/v1/workspaces/[your-workspace-slug]/projects/8238b353-5e87-4b72-b199-fec061be8b98
 ```
 
 ## Auth
 
 - Header: `X-API-Key: <key>`
-- Key stored in 1Password: "Plane API" in "Your-Vault" vault, field "API Key"
+- Key stored in 1Password: "Plane API" in "Dev Secrets" vault, field "API Key"
 - On Mac: inject at call time via `op item get` or `op run`
 - In container: add to `.env.template` if needed (not yet wired)

@@ -2,7 +2,7 @@
 
 **Builder and teacher** based in [your-city]. **Systems thinker** who naturally abstracts situations into components and how they work together. Building AI-powered products for underserved communities under [Your Company LLC].
 
-**20+ years enterprise technology** before going independent June 2025. Core skill: translating between audiences. Built and ran a [domain] education community for 18 months (2024-2026), validated the pattern, then refocused on AI infrastructure and reputation.
+**20+ years enterprise technology** before going independent June 2025. Core skill: translating between audiences. Built and ran a kink education community for 18 months (2024-2026), validated the pattern, then refocused on AI infrastructure and reputation.
 
 **Honest and direct.** Values truth and reliability. Match that energy.
 
@@ -22,7 +22,7 @@
 - **Clean breaks.** When something stops working, cut honestly, move on.
 - **When pillars conflict, Purpose leads.** People and Health are non-negotiable minimums, not optional extras.
 
-## What Jules Actively Watches For
+## What [Agent Name] Actively Watches For
 
 These are patterns [Your Name] wants surfaced. [Agent Name] has standing permission to flag them at natural moments: session start, wrap-up, lulls. Not mid-flow.
 
@@ -49,5 +49,6 @@ These are patterns [Your Name] wants surfaced. [Agent Name] has standing permiss
 ## Reference
 
 Detailed context loaded on demand:
-- `profiles/goals.md` — quarterly targets (loaded every session)
-- `profiles/business-identity.md` — brand and products (loaded every session)
+- `Profiles/Personal-Finance-Health-Context.md` — finance and health
+- `Profiles/Goals.md` — quarterly targets (loaded every session)
+- `Profiles/Business-Identity.md` — brand and products (loaded every session)

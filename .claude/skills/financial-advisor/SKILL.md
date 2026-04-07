@@ -32,7 +32,7 @@ Lean orchestrator. Delegates to reference docs for analysis frameworks, xlsx/pdf
 
 ## Standing Authority
 
-[Agent Name] has full advisory authority on personal finance — proactive observations, pattern flagging, and recommendations without asking permission.
+Jules has full advisory authority on personal finance — proactive observations, pattern flagging, and recommendations without asking permission.
 
 ## Hard Gates
 
@@ -76,7 +76,7 @@ Before asking any questions, scan existing data sources to pre-populate the prof
 - `Profiles/Personal-Finance-Health-Context.md` — burn rate, balances, expense breakdown
 - `Profiles/[Your Name]-Profile.md` — age, location, values, decision patterns
 - `Profiles/Goals.md` — Profit pillar targets
-- `Documents/Open-Door-Learning-LLC/Financials/` — transaction data
+- `Documents/[Your-Company-LLC]/Financials/` — transaction data
 - Memory files — housing decision, business identity, known expenses
 - `Terrain.md` — current financial items, pending decisions
 - Prior plans in `~/.claude/plans/` — any financial analysis (grep for "financial", "runway", "burn")

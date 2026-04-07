@@ -19,13 +19,6 @@ for project-specific questions.
 is a better fit. Free, fast, reliable — covers news, blogs, GitHub,
 StackOverflow, and forums in one call.
 
-**Context7** is for library and framework documentation. Call resolve-library-id
-first — if the library isn't indexed or results look wrong, stop and use
-WebSearch instead. Don't waste a second call on a bad match. When it hits, it
-returns copy-paste-ready code from official sources. Two calls required
-(resolve → query), worth it for known frameworks (Astro, React, Next.js,
-Anthropic SDKs, Plane, Supabase, etc).
-
 **Reddit MCP** (search_reddit, get_post_details) is for community discussion
 when you know which subreddit to target. Returns thread content with vote counts
 and comments. Bad for broad topics spanning communities — use WebSearch instead.
@@ -38,7 +31,7 @@ on x.com/twitter.com — use `xurl search` instead.
 
 | What you need | Primary tool | Fallback |
 |---------------|-------------|----------|
-| Official API syntax, correct method signatures | Context7 | WebSearch |
+| Official API syntax, correct method signatures | WebSearch | — |
 | Fix for a specific error message | WebSearch (for GitHub issues) | — |
 | Recent changes, changelogs, release notes | WebSearch | — |
 | Community opinions on a specific subreddit topic | Reddit MCP | WebSearch |
@@ -52,13 +45,10 @@ on x.com/twitter.com — use `xurl search` instead.
 
 Single-tool answers are fine for quick lookups. For deeper questions, layer:
 
-1. **Context7 + WebSearch**: Official API first, then community experiences
-   using it. Common when debugging library-specific issues.
-
-2. **WebSearch + WebFetch**: Find the right page, then read it in full. Common
+1. **WebSearch + WebFetch**: Find the right page, then read it in full. Common
    for changelogs and documentation.
 
-3. **Reddit MCP + WebSearch**: Raw community discussion, then verify claims
+2. **Reddit MCP + WebSearch**: Raw community discussion, then verify claims
    with web search. Common in /research dispatch.
 
 Don't stack tools for simple questions. One call that answers it is better than

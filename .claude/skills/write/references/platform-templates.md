@@ -4,7 +4,7 @@ Templates and adaptation guidelines for each platform variant.
 
 ## Website Article ([your-domain])
 
-**File:** `Code/[your-site]/src/content/articles/{slug}.md`
+**File:** `Code/[your-handle]/src/content/articles/{slug}.md`
 
 **Frontmatter template:**
 ```yaml
@@ -27,7 +27,7 @@ platforms:
 - Markdown with full formatting support
 - Code blocks with language identifiers
 - Images in `src/assets/articles/{slug}/`
-- Footer with [Agent Name] repo link: `*Full source: [github.com/jonathanmalkin/jules](https://github.com/jonathanmalkin/jules)*`
+- Footer with Jules repo link: `*Full source: [github.com/[your-github]/jules](https://github.com/[your-github]/jules)*`
 - No em-dashes
 - First paragraph must stand alone as an AI-extractable summary
 
@@ -35,7 +35,7 @@ platforms:
 
 ## Reddit
 
-**File:** `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/Reddit.md`
+**File:** `Documents/Content-Pipeline/Drafts/{Article-Folder}/Reddit.md`
 
 **Format:**
 ```markdown
@@ -47,10 +47,10 @@ platforms:
 
 ---
 
-*Full source: [github.com/jonathanmalkin/jules](https://github.com/jonathanmalkin/jules)*
+*Full source: [github.com/[your-github]/jules](https://github.com/[your-github]/jules)*
 ```
 
-**Target audience:** Technical practitioners, AI builders, developers. Full depth. Code blocks welcome. This is the peer audience. (LinkedIn targets business decision-makers instead.)
+**Target audience:** Technical practitioners, AI builders, developers. Full depth. Code blocks welcome. This is the peer audience.
 
 **Adaptation rules:**
 - Hook-first opening (the most interesting insight leads)
@@ -66,7 +66,7 @@ platforms:
 
 ## X Article
 
-**File:** `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/X-article.md`
+**File:** `Documents/Content-Pipeline/Drafts/{Article-Folder}/X-article.md`
 
 **Format:** Plain text with limited formatting. Full guide: `Documents/Content-Pipeline/X-Article-Format-Guide.md`
 
@@ -76,7 +76,7 @@ platforms:
 - `>`/`>>` quotes
 - NO code blocks, NO bold/italic, NO blank lines between paragraphs
 
-**Target audience:** Technical practitioners and AI-curious readers. Narrative tone, but don't shy from specifics. (LinkedIn targets business decision-makers instead.)
+**Target audience:** Technical practitioners and AI-curious readers. Narrative tone, but don't shy from specifics.
 
 **Adaptation rules:**
 - 800-2000 words
@@ -90,7 +90,7 @@ platforms:
 
 ## X Thread
 
-**File:** `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/X-thread.md`
+**File:** `Documents/Content-Pipeline/Drafts/{Article-Folder}/X-thread.md`
 
 **Format:**
 ```markdown
@@ -127,40 +127,84 @@ platforms:
 
 **Tagging:** Check `Documents/Content-Pipeline/Social-Handles.md` for verified handles. Tag relevant people in body tweets, not the hook.
 
+**Account routing:** Use `@[your-handle]` for authority posts and first-person technical threads. See `@platform-account-routing.md`.
+
 **Posting:** `xurl post "first tweet"`, then `xurl reply TWEET_ID "next tweet"` for each subsequent tweet
 
 ## LinkedIn
 
-**File:** `Documents/Content-Pipeline/02-Pending-Review/{Article-Folder}/LinkedIn.md`
+**File:** `Documents/Content-Pipeline/Drafts/{Article-Folder}/LinkedIn.md`
 
-**Format:**
+**Algorithm reference:** `@linkedin-reference.md` — load when writing LinkedIn content for format specs, hook formulas, and engagement benchmarks.
+
+**Two post formats:**
+
+### Short Post (100-300 characters)
 ```markdown
-*Track: {track} | Platform: LinkedIn | Status: Draft*
+*Track: {track} | Platform: LinkedIn (Short) | Status: Draft*
 
-{Body: 150-300 words, no URL in body}
+{Body: 100-300 characters. Conversation starter, hot take, or question.}
+
+{3-5 hashtags}
 ```
 
-**Target audience:** Business owners, managers, executives. NOT developers. Frame AI as operational leverage, not technical achievement. Strip jargon. Lead with business outcomes, not implementation details. This is the key audience split: LinkedIn = decision-makers, X/Reddit = technical practitioners.
+### Long Post (1,300-1,900 characters)
+```markdown
+*Track: {track} | Platform: LinkedIn (Long) | Status: Draft*
+
+{Body: 1,300-1,900 characters. Authority post with depth.}
+
+{3-5 hashtags}
+```
+
+**Avoid:** 300-1,000 characters (dead zone — too long to skim, too short for depth).
+
+### Document Carousel
+```markdown
+*Track: {track} | Platform: LinkedIn (Carousel) | Status: Draft*
+
+## Slide 1 (Hook)
+{Bold claim or result — stop the scroll}
+
+## Slide 2 (Context)
+{Why this matters}
+
+## Slides 3-{N-2} (Content)
+{One idea per slide, 8-12 slides total}
+
+## Slide {N-1} (Takeaway)
+{Core insight}
+
+## Slide {N} (CTA)
+{Question + follow prompt}
+```
+Carousel specs: 1080x1350 px (portrait), upload as PDF. See `@linkedin-reference.md` for design guidance.
+
+**Target audience:** AI builders, technical founders, solo operators — practitioners who are also decision-makers. Technical depth welcome. Code snippets welcome when they serve the story.
+
+**Content mix:** 60% applied results (Story 3), 30% systems/infrastructure (Story 1), 10% contrarian/thesis (Story 2).
 
 **Adaptation rules:**
+- **Hook rule:** First 140 chars must stop the scroll. Specific numbers, contrarian takes, or personal stakes. No corporate openers.
 - Short, fragmented style (LinkedIn's native format)
 - Personal angle: why this matters, what was learned
-- Hook-first opening
-- No code blocks
-- No URL in post body (LinkedIn penalizes links in body text)
-- End with a question targeting decision-makers (operational pain points, delegation, ROI), not builders
+- Code snippets welcome when they illustrate a point
+- No URL in post body (60% reach penalty confirmed)
 - Article URL goes in first comment (manual step, prompted to user)
+- End with a question to drive comments (Saves > Comments > Likes in algorithm weight)
 - Use feed posts, NOT LinkedIn Articles (Articles get minimal feed distribution and no API support)
+- **Format rotation:** Never same format 3x in a row. Rotate between text, carousels, images, video.
+- **Hashtags:** 3-5 specific ones (e.g., #ClaudeCode, #AIBuilder over #AI, #Tech). Algorithm scans post copy for context.
 
-**Posting:** `python3 Scripts/post-to-linkedin.py --file /tmp/linkedin-post.txt`
+**Posting:** `python3 Scripts/linkedin-post.py --file /tmp/linkedin-post.txt`
 
 ## Article Folder Structure
 
 Each article gets a folder in the pipeline:
 
 ```
-Documents/Content-Pipeline/02-Pending-Review/{Article-Title}/
-  [your-site].md    # Canonical article (website version)
+Documents/Content-Pipeline/Drafts/{Article-Title}/
+  [your-handle].md    # Canonical article (website version)
   Reddit.md          # Reddit adaptation
   X-article.md       # X Article adaptation
   X-thread.md        # X Thread adaptation
@@ -189,4 +233,4 @@ Story: {track}
 | LinkedIn | {url} | {date} |
 ```
 
-Move the entire folder to `Documents/Content-Pipeline/04-Published/Story-{N}/{Article-Folder}/`
+Move the entire folder to `Documents/Content-Pipeline/Published/{Article-Folder}/`

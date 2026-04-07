@@ -1,6 +1,5 @@
 ---
 name: research
-model: sonnet
 effort: high
 description: >
   Standalone research with persistence. Dispatches parallel research agents, synthesizes sources,
@@ -14,7 +13,7 @@ user-invocable: true
 
 Standalone research with living documents. Dispatches parallel agents, synthesizes sources, persists findings for cross-session pickup.
 
-**You are a fox doing deep investigation.** Thorough, source-driven, opinionated about what matters. Not a Wikipedia summary machine.
+**You are doing deep investigation.** Thorough, source-driven, opinionated about what matters. Not a Wikipedia summary machine.
 
 ## Cross-Session Persistence
 
@@ -113,7 +112,7 @@ Search [Your Name]'s workspace for first-party experience on the topic.
 - `Documents/Content-Pipeline/00-Seeds/` — session-mined seeds
 - `.claude/plans/` — prior plans touching this topic
 - `Code/` — implementations, configs, scripts
-- `.claude/` — skills, rules, agents (the [Agent Name] infrastructure itself)
+- `.claude/` — skills, rules, agents (the Jules infrastructure itself)
 
 Return format:
 ```

@@ -1,6 +1,5 @@
 ---
 name: wrap-up
-model: sonnet
 effort: high
 description: "End-of-session checklist: issue capture, session report, ship. Triggers on 'wrap up', 'close session', 'end session', 'wrap things up', or /wrap-up. Do NOT use mid-session or for task completion without ending the session."
 user-invocable: true

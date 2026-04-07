@@ -63,6 +63,7 @@ Before delivering prose, scan for:
 - Synonym cycling (protagonist, main character, central figure)? Just repeat the clearest word.
 - "Serves as" / "stands as" / "features" instead of "is" / "has"? Use the simple copula.
 - False range ("from X to Y" where the scale is meaningless)? List topics directly.
+- Sentence lengths clustering in 10-20 word range? Calculate SD of word counts per sentence. SD < 8 = metronomic (AI tell). [Your Name]'s writing: SD 9-14.
 
 ## Scoring Rubric
 
@@ -71,7 +72,7 @@ Rate 1-10 on each dimension:
 | Dimension | Question |
 |-----------|----------|
 | **Directness** | Does it state things or announce them? Is it making points or building up to them? |
-| **Rhythm** | Do sentence lengths vary naturally, or is the cadence metronomic? Any staccato stacking? |
+| **Rhythm** | Do sentence lengths vary naturally, or is the cadence metronomic? Any staccato stacking? **Burstiness check:** Calculate the standard deviation of sentence word counts across the draft. Human writing typically has SD > 8 words ([Your Name]'s samples: SD 9-14). Flag if SD < 8 as "metronomic uniformity" and cap Rhythm score at 6/10 regardless of other rhythm qualities. Report the SD value in the audit output. |
 | **Trust** | Does it respect reader intelligence, or does it soften, justify, and hand-hold? |
 | **Authenticity** | Does it sound like a specific human wrote it, or like median-internet-text? |
 | **Density** | Is every sentence doing work, or is there cuttable filler? |
@@ -88,6 +89,7 @@ When invoked as an audit:
 ## Stop-Slop Audit
 
 **Score: [N]/50** (Directness: X | Rhythm: X | Trust: X | Authenticity: X | Density: X)
+**Burstiness:** Sentence length SD = X.X words (threshold: 8.0 | [Your Name] baseline: 9-14)
 
 ### Findings
 

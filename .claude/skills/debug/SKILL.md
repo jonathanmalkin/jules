@@ -1,6 +1,5 @@
 ---
 name: debug
-model: sonnet
 effort: medium
 description: "Structured debugging methodology that finds root causes before attempting fixes. Reproduces issues, traces data flow, forms hypotheses, and tests one variable at a time. Use when encountering any bug, test failure, unexpected behavior, or error message. Triggers on 'debug', 'fix this bug', 'why is this failing', 'test failure', 'error', or any unexpected behavior. Do NOT use for feature requests (use /build) or general code questions."
 user-invocable: true

@@ -4,6 +4,7 @@
 # Server reads PLANE_API_KEY and PLANE_WORKSPACE_SLUG from env (not CLI flags).
 set -euo pipefail
 
+source "$HOME/Active-Work/Scripts/lib/ensure-op-token.sh"
 export PLANE_API_KEY=$(op item get "Plane API" --vault "Dev Secrets" --fields label="API Key" --reveal)
-export PLANE_WORKSPACE_SLUG="open-door-learning"
+export PLANE_WORKSPACE_SLUG="[your-workspace-slug]"
 exec uvx --from plane-mcp-server plane-mcp-server

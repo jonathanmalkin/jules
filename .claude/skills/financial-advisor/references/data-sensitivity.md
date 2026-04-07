@@ -42,11 +42,11 @@ Three layers of protection:
 1. **`sensitive-session-tracker.sh`** (PostToolUse on Read)
    - Detects when financial files are read
    - Writes session-scoped flag to `/tmp/claude-sensitive-session-$$`
-   - Triggers: `Documents/Personal-Finance/*`, `Profiles/Personal-Finance-Health-Context.md`, `Documents/Open-Door-Learning-LLC/Financials/*`
+   - Triggers: `Documents/Personal-Finance/*`, `Profiles/Personal-Finance-Health-Context.md`, `Documents/[Your-Company-LLC]/Financials/*`
 
 2. **`sensitive-outbound-guard.sh`** (PreToolUse on Bash + Slack MCP)
    - Two-gate check: session flag exists AND outbound content has financial patterns
-   - Blocks: Bash (pbcopy, curl POST, xurl post/reply/quote), Slack (send_message, schedule_message, create_canvas)
+   - Blocks: Bash (pbcopy, curl POST, x-post.sh), Slack (send_message, schedule_message, create_canvas)
    - Override: `# SAFE-OVERRIDE:` prefix after user confirmation
 
 3. **`check-sensitive-data.sh`** (called by clipboard-validate.sh)

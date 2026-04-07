@@ -1,7 +1,7 @@
 {
   "env": {
+    "PATH": "/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/rustup/bin:/Users/[username]/Library/pnpm:/Users/[username]/.bun/bin:/Users/[username]/.local/bin:/opt/homebrew/opt/postgresql@15/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
     "ENABLE_TOOL_SEARCH": "auto:5",
     "CLAUDE_CODE_ENABLE_TASKS": "1",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
@@ -12,7 +12,9 @@
     "ENABLE_LSP_TOOL": "1",
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_BUG_COMMAND": "1",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+    "CLAUDE_AUTOCOMPACT_DISABLED": "true",
+    "CLAUDE_CODE_NO_FLICKER": "1",
+    "MCP_CONNECTION_NONBLOCKING": "true"
   },
   "includeCoAuthoredBy": false,
   "includeGitInstructions": false,
@@ -27,10 +29,7 @@
       "Agent",
       "Skill(*)",
       "mcp__reddit-mcp-buddy",
-      "mcp__claude_ai_Gmail",
-      "mcp__claude_ai_Google_Calendar",
-      "mcp__claude-in-chrome",
-      "mcp__plane"
+      "mcp__claude-in-chrome"
     ],
     "deny": [
       "Bash(rm *)",
@@ -47,7 +46,8 @@
       "Bash(: > *)",
       "Bash(git add .)",
       "Bash(git add -A)"
-    ]
+    ],
+    "defaultMode": "plan"
   },
   "hooks": {
     "SessionStart": [

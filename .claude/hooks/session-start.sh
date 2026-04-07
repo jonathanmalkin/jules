@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-WORKSPACE="${CLAUDE_PROJECT_DIR:-$HOME/Jules}"
+WORKSPACE="${CLAUDE_PROJECT_DIR:-$HOME/Active-Work}"
 cd "$WORKSPACE"
 
 # Pull latest (fast-forward only, no merge commits)
