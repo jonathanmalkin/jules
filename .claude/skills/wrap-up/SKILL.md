@@ -1,120 +1,298 @@
 ---
 name: wrap-up
-effort: high
-description: "End-of-session checklist: issue capture, session report, ship. Triggers on 'wrap up', 'close session', 'end session', 'wrap things up', or /wrap-up. Do NOT use mid-session or for task completion without ending the session."
-user-invocable: true
+description: End-of-conversation shipping and review workflow. Use when the user says wrap up, close out, end session, ship this, commit and push, prepare handoff, or asks for a session closeout. Runs a scheduler-safe preflight, verifies work, commits and pushes specific files when appropriate, captures open loops and improvement candidates, and ends with a clear handoff.
 ---
 
-# Session Wrap-Up
+# Wrap-Up
 
-Run three phases in order. All phases auto-apply without asking; present a consolidated report at the end.
+Use this at the end of a meaningful conversation or when the user asks to ship,
+close out, commit, push, or prepare a handoff.
 
-## Phase 1: Issue Capture (Conditional)
+The job is not just repo cleanup. The job is to leave the workspace in a known
+state, avoid stepping on running schedulers, ship only intentional changes, and
+turn repeated friction into improvement candidates.
 
-Do a **quick session health check** (inline, no subagents):
+## Opening
 
-1. Were there errors, failed tool calls, or retries during this session?
-2. Were there compliance failures (guidance existed but wasn't followed)?
-3. Were there workarounds or hacky fixes?
-4. Was there confusion, misunderstanding, or significant course corrections?
-
-**If YES to any:** Extract issues and save a structured issue file.
-
-Scan the **entire conversation** for issues across these categories:
-- **Repeated errors** — Same root cause 2+ times
-- **Compliance failures** — Guidance existed but wasn't followed
-- **Missing guidance** — Issue arose with no existing guidance covering it
-- **Workarounds** — Hacky fix where a proper solution likely exists
-- **Knowledge gaps** — Information needed but unavailable or outdated
-
-Save to `Documents/Field-Notes/Logs/YYYY-MM-DD-Session-Issues.md` (append if file exists from an earlier session):
-
-```markdown
-# Session Issues — YYYY-MM-DD (Session N)
-
-## Issues Found
-
-### 1. [Category] Brief description
-- **Severity:** high/medium/low
-- **Occurrences:** N
-- **Context:** What happened — include error messages, file paths, sequence of attempts. Rich enough for someone with no conversation context to understand the issue.
-- **What was tried:** Solutions attempted, in order
-- **What worked:** Final resolution (if any)
-
-### 2. ...
-
-## Determinism Candidates
-- [description of mechanical instruction that should be a script]
-```
-
-**Write rich context for each issue.** Error messages, file paths, what was tried and in what order, why workarounds were needed. This is the only record available for later analysis.
-
-**If NO to all (clean session):** Skip issue capture. Note "Clean session — no issues" in the session report.
-
-## Phase 2: Session Report
-
-Create the session report:
+Start with `Workflow: wrap-up`. Then run the deterministic preflight before
+making any changes:
 
 ```bash
-bash .claude/scripts/session-report-scaffold.sh
+python3 ~/.agents/skills/workflows/wrap-up/scripts/wrapup_preflight.py --workspace "$PWD" --due-window-minutes 90
 ```
 
-Fill in the sections based on the conversation:
+If this skill is running from a copied surface where `~/.agents` is unavailable,
+run the copy-local script at `scripts/wrapup_preflight.py`.
 
-```markdown
-# Session Report — [date]
+## Core Sequence
 
-**Session focus:** [1 sentence — what was the main goal?]
+Run these phases in order.
 
-## What Got Done
-- [Concrete outcomes — shipped code, created files, decisions made]
+### 1. Outcome State
 
-## Decisions Made
-- [Brief — log significant decisions to Decision-Log.md if applicable]
+Summarize the session's original objective and current state:
 
-## Open Items
-- [Unfinished, blocked, or needs attention next session]
+- what got done
+- what did not get done
+- whether the work changed scope
+- whether the handoff is `Complete` or `Continues`
 
-## Commitments Made
-- [**What** — by when — to whom (if applicable)]
+Do not call the session complete if the stated objective is unfinished.
 
-## Context for Next Session
-- [WIP state, gotchas, things to watch for]
+### 2. Scheduler-Safe Preflight
 
-## Handoff
-**Status: Complete** — No additional work needed.
-```
+Use the preflight script output as the collision map. At minimum, account for:
 
-**OR** if the session's stated focus has unfinished work:
+- user LaunchAgents in `~/Library/LaunchAgents`
+- user crontab from `crontab -l`
+- Hermes cron jobs in `~/.hermes/profiles/*/cron/jobs.json`
+- Codex automations in `~/.codex/automations/*/automation.toml`
+- running Hermes gateways, dashboards, WebUI, Dev Secrets, history-search, and
+  other launchd-managed services when visible
 
-```markdown
-## Handoff
-**Status: Continues**
-**Resume prompt:** `<exact prompt to paste into a fresh session>`
-**What's left:** [brief list of remaining items]
-**Blockers:** [anything that must happen before resumption, or "None"]
-```
+Default safety rules:
 
-**Handoff rules:**
-- **Always present.** Every session report gets a Handoff section.
-- **Binary:** Complete or Continues. No ambiguity.
-- **Complete** = the session's stated focus is resolved. Follow-on work in Open Items is normal and doesn't change the status.
-- **Continues** = the session's stated focus has unfinished work. The resume prompt must be specific enough for a fresh session with no prior context. Reference specific files (plans, research docs, specs) — don't rely on "read the session report."
+- Do not restart, unload, kickstart, repair, or create background services
+  during normal wrap-up.
+- Do not edit LaunchAgents, Hermes `config.yaml`, Hermes `cron/jobs.json`,
+  secrets runtime files, scheduler scripts, or automation definitions unless the
+  session explicitly touched scheduler work.
+- Treat scheduler output, logs, state snapshots, lock files, and generated
+  reports as owned by running processes unless they are part of this session's
+  deliverable.
+- If a scheduled job is unhealthy, record it as an improvement candidate unless
+  the user explicitly asked for scheduler repair.
+- If a job is due soon, avoid broad staging. Stage only files known to belong to
+  this session.
 
-Skip empty sections (except Handoff — always include it).
+If the preflight cannot inspect a surface because of permissions, report that
+surface as unverified. Do not claim it is clean.
 
-## Phase 3: Ship
+### 3. Verification
+
+Run the narrowest meaningful checks for the work done:
+
+- tests for code changes
+- build or typecheck for frontend/app changes
+- script smoke checks for wrappers and automation helpers
+- syntax checks for JSON, TOML, YAML, plist, shell, or Python files
+- health checks for services only when the session touched those services
+
+If verification is skipped, state why. A skipped check is not a pass.
+
+### 4. Change Review
+
+Inspect git before staging:
 
 ```bash
-bash .claude/scripts/wrap-up-ship.sh "Wrap-up: <brief description of session>"
+git status --short
+git diff --stat
 ```
 
-After shipping, always end with the Handoff status stated directly in the conversation:
+Classify changes:
 
-> **Handoff: Complete** — No additional work needed.
+- session changes to stage
+- user or scheduler changes to leave alone
+- generated artifacts to review before staging
+- secret or credential-looking files to avoid and flag
+- unrelated dirty files to preserve
 
-or
+Never use `git add .` or `git add -A`. Stage specific files only.
 
-> **Handoff: Continues** — [what's left + resume prompt]
+### 5. Commit
 
-This is the last thing [Your Name] sees. Don't skip it.
+Commit only after verification and change review.
+
+Use a descriptive message that says what shipped, not that the session ended.
+Prefer:
+
+```text
+Add scheduler-safe wrap-up workflow
+Repair Pam calendar auth probe
+Update Jules Live Studio turn handling
+```
+
+Avoid vague messages like:
+
+```text
+Wrap-up changes
+Session updates
+Misc fixes
+```
+
+Do not use `--no-verify` unless the user explicitly approves bypassing hooks and
+the reason is stated in the final report.
+
+### 6. Push
+
+Push the current branch to its configured upstream or to the branch requested by
+the user.
+
+Rules:
+
+- Do not force push.
+- If push is rejected, report the reason and stop for review unless the user
+  already authorized pull/rebase behavior.
+- Do not pull or rebase during generic wrap-up unless that behavior was clearly
+  approved for this session.
+- If the user said "do not pull", preserve that constraint.
+
+### 7. Open Loops and Commitments
+
+List only real open loops:
+
+- blockers
+- next actions
+- user commitments to another person
+- outbound drafts needing approval
+- calendar, email, social, or partner follow-ups
+- background jobs or health issues discovered but not repaired
+
+For a continuing handoff, include a resume prompt specific enough for a fresh
+session.
+
+### 8. Improvement Candidates
+
+Look for improvements in these categories:
+
+- **Skill gap**: the assistant struggled or missed existing guidance.
+- **Friction**: a repeated manual step should become a script, check, or skill.
+- **Knowledge**: a durable fact should be captured in the right local doc.
+- **Automation**: a scheduled job, wrapper, or health check could be hardened.
+- **Quality**: tests, docs, or validation were missing for behavior that matters.
+
+Do not automatically edit shared instructions during wrap-up. Present concrete
+candidates with suggested files or procedures.
+
+Hermes profiles may run their own profile-native skill review/update procedure.
+Codex and Claude should follow this skill's guidance and propose shared skill
+edits for review before changing `.agents` or profile-specific skills.
+
+### 9. Final Report
+
+End with a compact report:
+
+```markdown
+Wrap-up complete.
+
+Verification:
+- [check]: pass/fail/skipped
+
+Git:
+- branch:
+- commit:
+- push:
+
+Scheduler safety:
+- checked:
+- due soon:
+- unverified:
+
+Open loops:
+- ...
+
+Improvement candidates:
+- ...
+
+Handoff: Complete - [one sentence]
+```
+
+If the objective continues, end with:
+
+```markdown
+Handoff: Continues - [what remains]
+Resume prompt: [exact prompt]
+```
+
+On Codex, after a successful stage, commit, push, branch creation, or PR creation,
+emit the relevant Codex app git directives in the final answer.
+
+### 10. Optional Report Artifact
+
+The conversational final report is always required. A file artifact is
+conditional.
+
+Save a wrap-up report file when at least one is true:
+
+- code, docs, config, or assets were committed or pushed
+- a durable decision was made
+- the work continues and needs a fresh-session resume prompt
+- a background job, scheduler, automation, auth surface, or service was touched
+- there are concrete improvement candidates worth reviewing later
+- Jonathan explicitly asks for a report artifact
+
+Do not save a file for trivial Q&A, quick lookups, or conversations with no
+state change.
+
+When saving, use a run artifact path rather than a durable Knowledge-OS report:
+
+```text
+System/Runs/<surface>/wrap-up/YYYY-MM-DD/HHMMSS-<slug>.md
+System/Runs/<surface>/wrap-up/YYYY-MM-DD/HHMMSS-<slug>.json
+```
+
+Use the helper to create the artifact deterministically:
+
+```bash
+python3 ~/.agents/skills/workflows/wrap-up/scripts/wrapup_report.py \
+  --workspace "$PWD" \
+  --surface codex \
+  --status Complete \
+  --focus "Add scheduler-safe wrap-up workflow" \
+  --summary "Created the shared wrap-up skill and helper scripts." \
+  --verification "preflight helper runs" \
+  --improvement "Review surface symlink plan before installing adapters" \
+  --write
+```
+
+Report artifacts are receipts and ingestion inputs. They do not replace
+transcripts, git history, history-search, Pam reports, Subconscious notes,
+Researcher intake, Archivist distillation, Builder's Log, or future gbrain.
+
+For gbrain, keep the artifact short and structured: session id if known, surface,
+status, focus, files/commits, verification, scheduler safety, open loops,
+improvement candidates, and resume prompt. Do not paste raw transcript content or
+secret values.
+
+Promote only durable decisions, reusable facts, or stable operating rules into
+Knowledge-OS or memory. Do not treat every wrap-up artifact as durable knowledge.
+
+## Surface Adapters
+
+The canonical skill lives at:
+
+```text
+~/.agents/skills/workflows/wrap-up
+```
+
+Use the read-only target planner before installing or changing surface links:
+
+```bash
+python3 ~/.agents/skills/workflows/wrap-up/scripts/wrapup_surface_targets.py
+```
+
+Recommended adapter behavior:
+
+- **Codex**: symlink `~/.codex/skills/wrap-up` to the canonical skill. Codex
+  adds app git directives after successful git operations.
+- **Claude Code**: symlink `~/.claude/skills/wrap-up` to the canonical skill.
+  Claude uses plain final text and its own slash-command behavior.
+- **Hermes profiles**: symlink
+  `~/.hermes/profiles/<profile>/skills/workflows/wrap-up` for approved
+  workflow-owning profiles only. Current live adapters are `pam` and `director`.
+  Do not install this skill on `archivist`, `dreamer`, `researcher`, or
+  `subconscious` unless Jonathan explicitly re-approves those profile surfaces.
+  Hermes may run profile-native skill review before proposing shared edits.
+- **Public/reference Jules repo**: copy or sync a sanitized copy into the repo
+  rather than symlinking to a host-local path.
+
+Do not replace existing physical skill directories with symlinks without review.
+
+## Deterministic Helpers
+
+- `scripts/wrapup_preflight.py`: read-only scheduler, git, and automation
+  preflight. It intentionally avoids prompts and secret values.
+- `scripts/wrapup_surface_targets.py`: read-only inventory of surface adapter
+  targets and whether each is missing, a symlink, or a physical directory.
+- `scripts/wrapup_report.py`: optional writer for compact Markdown plus JSON
+  wrap-up artifacts under `System/Runs/<surface>/wrap-up/`.
